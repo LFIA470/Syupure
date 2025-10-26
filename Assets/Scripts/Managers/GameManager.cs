@@ -33,19 +33,19 @@ public class GameManager : MonoBehaviour
     #region Variables
     [Header("Component References")]
     [SerializeField] private DeckManager deckManager;
-    [SerializeField] private Transform playerHandArea;//手札エリアのTransformを設定
+    [SerializeField] private Transform playerHandArea;  //手札エリアのTransformを設定
     public Transform PlayerHandArea { get { return playerHandArea; } }
-
-    [SerializeField] private Transform playerLeaderArea;
+        
+    [SerializeField] private Transform playerLeaderArea;    //リーダーエリアのTransformを設定
     public Transform PlayerLeaderArea { get { return playerLeaderArea; } }
 
-    [SerializeField] private Transform playerCharacterSlotsParent;
+    [SerializeField] private Transform playerCharacterSlotsParent;  //キャラクタースロットのTrasnformを設定
     public Transform PlayerCharacterSlotsParent { get { return playerCharacterSlotsParent; } }
 
-    [SerializeField] private Transform enemyLeaderArea;
+    [SerializeField] private Transform enemyLeaderArea; //リーダーエリアのTransformを設定※相手用
     public Transform EnemyLeaderArea { get {return enemyLeaderArea; } }
 
-    [SerializeField] private Transform enemyCharacterSlotsParent;
+    [SerializeField] private Transform enemyCharacterSlotsParent;   //キャラクタースロットのTransformを設定※相手用
     public Transform EnemyCharacterSlotsParent { get {return enemyCharacterSlotsParent; } }
 
     [Header("Game State")]

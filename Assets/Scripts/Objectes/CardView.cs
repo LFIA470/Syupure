@@ -4,36 +4,47 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.U2D.Animation;
 
 public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
-    public Card cardData;   //ScriptableObject などで定義されたカード情報
-   
+    //変数宣言
+    #region Variables
+    [Header("CardData")]
+    [SerializeField] private Card _cardData;    //Inspectorで設定する場合
+    public Card cardData　=> _cardData;  //外部からは読み取り専用
+
+    [Header("UI References")]
     public Image artworkImage;      //イメージ画像（表示用
     public Text nameText;           //名前テキスト（表示用
     public Text descriptionText;    //効果テキスト（表示用
     [SerializeField] private Image costImage;   //コスト画像（表示用
     [SerializeField] private GameObject AppealContainer;    //ハート(アピール力)を入れる箱
+
+    [Header("Asset References")]
     [SerializeField] private GameObject HeartIconPrefab;   //ハートアイコンのプレファブ
+    [SerializeField] private List<Sprite> numberSprites;    //0～10の数字スプライトを格納するリスト
 
-    [SerializeField] private List<Sprite> numberSprites;    //0～9の数字スプライトを格納するリスト
+    [Header("Drag & Drop")]
+    private bool isDraggable = false;    //ドラッグ中か確認
+    private RectTransform canvasRectTransform;  //ドラッグ座標計算用
+    public Transform originalParent { get; private set; }   //カードの元の場所を覚えておく変数
+    #endregion
 
-    private Transform fieldArea;    //フィールド領域への参照
-
-    private RectTransform canvasRectTransform;
-
-    private bool isDraggble = false;    //ドラッグ中か確認
-
+    //Start,UpdateなどUnityが自動で呼ぶメソッド
+    # region Unity Lifecycle Methods
     void Start()
     {
         //CanvasのRectTransformを最初に取得しておく
         canvasRectTransform = GetComponentInParent<Canvas>().GetComponent<RectTransform>();
     }
+    #endregion
 
-    //カード情報
-    public void SetCard(Card card)
+    //カードを表示するためのメソッド
+    #region Card View Methods
+    public void SetCard(Card card)  //カード情報
     {
-        cardData = card;
+        _cardData = card;
 
         nameText.text = card.cardName;
         descriptionText.text = card.description;
@@ -43,7 +54,10 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
 
         //コストとハート(アピール力)の表示リセット
         costImage.gameObject.SetActive(false);
-        foreach (Transform child in AppealContainer.transform) { Destroy(child.gameObject); }
+        while (AppealContainer.transform.childCount > 0)
+        {
+            Destroy(AppealContainer.transform.GetChild(0).gameObject);
+        }
 
         //カードタイプに応じて処理を分岐
         switch (cardData.cardType)
@@ -58,8 +72,16 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
                 //cardDataをCharacterCard型にキャスト
                 CharacterCard character = cardData as CharacterCard;
                 //コスト画像を表示
-                costImage.sprite = numberSprites[character.cost];
-                costImage.gameObject.SetActive(true);
+                if (character.cost >= 0 && character.cost < numberSprites.Count)
+                {
+                    costImage.sprite = numberSprites[character.cost];
+                    costImage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    costImage.gameObject.SetActive(false);  //対応画像がない場合は非表示
+                    Debug.LogWarning("コスト" + character.cost + "に対応する画像がありません。");
+                }
                 //ハート(アピール力)を表示
                 for (int i = 0; i < character.appeal; i++) { Instantiate(HeartIconPrefab, AppealContainer.transform); }
                 break;
@@ -76,26 +98,39 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
                 //cardDataをEventCard型にキャスト
                 EventCard ev = cardData as EventCard;
                 //コスト画像を表示
-                costImage.sprite = numberSprites[ev.cost];
-                costImage.gameObject.SetActive(true);
-                break;
+                if (ev.cost >= 0 && ev.cost < numberSprites.Count)
+                {
+                    costImage.sprite = numberSprites[ev.cost];
+                    costImage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    costImage.gameObject.SetActive(false);
+                    Debug.LogWarning("コスト" + ev.cost + "に対応する画像がありません。");
+                }
+                    break;
             case CardType.Appeal:
                 //cardDataをAppealCard型にキャスト
                 AppealCard appeal = cardData as AppealCard;
                 //コスト画像を表示
-                costImage.sprite = numberSprites[appeal.cost];
-                costImage.gameObject.SetActive(true);
+                if (appeal.cost >= 0 && appeal.cost < numberSprites.Count)
+                {
+                    costImage.sprite = numberSprites[appeal.cost];
+                    costImage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    costImage.gameObject.SetActive(false);
+                    Debug.LogWarning("コスト" + appeal.cost + "に対応する画像がありません。");
+                }
                 break;
         }
     }
+    #endregion
 
-    public void SetFieldArea(Transform area)
-    {
-        fieldArea = area;
-    }
-
-    //カードがクリックされたか
-    public void OnPointerClick(PointerEventData eventData)
+    //カードのクリックに関連するメソッド
+    #region Click Methods
+    public void OnPointerClick(PointerEventData eventData)  //カードがクリックされたか
     {
         //もしドラッグ中だったら、拡大表示せずに処理を終了する
         if (eventData.dragging) return;
@@ -112,32 +147,30 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
             ZoomUIPanelManager.Instance.Show(this);
         }
     }
+    #endregion
 
-    //originalParentを、他のスクリプトから読み取れるように
-    public Transform originalParent { get; private set; }   //カードの元の場所を覚えておく変数
-
-    //ドラッグが始まった瞬間に呼ばれる
-    public void OnBeginDrag(PointerEventData eventData)
+    //カードのドラッグ&ドロップに関連するメソッド
+    #region Drag Drop Methods
+    public void OnBeginDrag(PointerEventData eventData) //ドラッグが始まった瞬間に呼ばれる
     {
         //このカードの親が、GameManagerが知っている手札エリアと同じかどうかをチェック
         if (transform.parent != GameManager.Instance.PlayerHandArea)
         {
             Debug.Log("手札のカードではないため、ドラッグできません");
-            isDraggble = false; //無効なドラッグとして記憶
+            isDraggable = false; //無効なドラッグとして記憶
             eventData.pointerDrag = null;   //Unityにドラッグ操作をキャンセルするように伝える
             return;
         }
 
-        isDraggble = true;
+        isDraggable = true;
         originalParent = transform.parent;  //元いた場所を記憶
         transform.SetParent(transform.root);    //一時的に最前面に表示するため、親をCanvasのルートにする
         GetComponent<CanvasGroup>().blocksRaycasts = false; //ドラッグ中はカード自身がマウスイベントをブロックしないようにする
     }
-
-    //ドラッグ中に呼ばれる
-    public void OnDrag(PointerEventData eventData)
+    
+    public void OnDrag(PointerEventData eventData)  //ドラッグ中に呼ばれる
     {
-        if (!isDraggble) return;
+        if (!isDraggable) return;
 
         //スクリーン座標をCanvasのローカル座標に変換
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
@@ -151,8 +184,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
         transform.localPosition = localPosition;
     }
 
-    //ドラッグが終了した瞬間に呼ばれる
-    public void OnEndDrag(PointerEventData eventData)
+    public void OnEndDrag(PointerEventData eventData)   //ドラッグが終了した瞬間に呼ばれる
     {
         if (eventData.pointerEnter != null)
         {
@@ -163,7 +195,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
             Debug.Log("ドラッグの終了地点には何もUIがありませんでした。");
         }
 
-        if (!isDraggble) return;
+        if (!isDraggable) return;
 
         //ドロップされなかった場合(元の場所に戻す)
         if (transform.parent == transform.root)
@@ -173,21 +205,20 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
         GetComponent<CanvasGroup>().blocksRaycasts = true;  //マウスイベントを再び受け付けるようにする
     }
 
-    //カードの上にカードをドロップされたか
-    public void OnDrop (PointerEventData eventData)
+    public void OnDrop (PointerEventData eventData) //カードの上にカードをドロップされたか
     {
         //ドロップされたカード(進化キャラクター)を取得
-        CardView evoluveCard = eventData.pointerDrag.GetComponent<CardView>();
-        if (evoluveCard == null) return;
+        CardView evolveCard = eventData.pointerDrag.GetComponent<CardView>();
+        if (evolveCard == null) return;
 
         //GameMangerに「このカードの上に、進化カードがドロップされました」と報告
         //thisはドロップされた側(進化元)のカード
-        GameManager.Instance.CardDroppedOnCharacter(evoluveCard, this);
+        GameManager.Instance.CardDroppedOnCharacter(evolveCard, this);
     }
 
-    //プレイが失敗した時にGameManagerから呼び出す
-    public void ReturnToOriginalParent()
+    public void ReturnToOriginalParent()    //プレイが失敗した時にGameManagerから呼び出す
     {
         transform.SetParent(originalParent, false);
     }
+    #endregion
 }
