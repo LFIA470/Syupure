@@ -64,7 +64,7 @@ UnityとC#で開発中のオリジナル対戦カードゲームです。
 
 
 
-![カードプレイの様子]
+![カードプレイの様子](Images/CardPlay_Drag_Drop.gif)
 
 
 
