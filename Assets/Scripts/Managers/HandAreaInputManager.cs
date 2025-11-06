@@ -99,7 +99,7 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
         isDragOutside = false;
     }
 
-    public void OnPointerExit   //(安全装置) ドラッグ中にポインタがエリアから出た場合の処理
+    public void OnPointerExit   //ドラッグ中にポインタがエリアから出た場合の処理
     (PointerEventData eventData)
     {
         // OnDragで処理しているので、基本的には不要だが、

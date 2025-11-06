@@ -167,6 +167,9 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
         isDraggable = true;
         originalParent = transform.parent;
         transform.SetParent(transform.root);
+
+        transform.localRotation = Quaternion.identity;
+
         GetComponent<CanvasGroup>().blocksRaycasts = false;
 
         // ★重要★ Unityのイベントシステムに、ドラッグ対象がこのカードに移ったことを知らせる
