@@ -95,7 +95,7 @@ public class CardDataImporter : EditorWindow
                 //ScriptableObjectアセットの作成
 
                 //アセットの保存パスを決定
-                string assetPath = Path.Combine(saveFolderPath, $"{cardName}_{cardID}.asset");
+                string assetPath = Path.Combine(saveFolderPath, $"{cardID}_{cardName}.asset");
 
                 //既にアセットが存在するか確認
                 Card existingCard = AssetDatabase.LoadAssetAtPath<Card>(assetPath);

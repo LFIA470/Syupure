@@ -9,15 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4cd15a2608c2d654797858819fa111c3, type: 3}
-  m_Name: "\u30EA\u30FC\u30C0\u30FC_1001"
+  m_Script: {fileID: 11500000, guid: 8b9d0c9d8bc64a34c8b178858759500f, type: 3}
+  m_Name: "1004_\u30A2\u30D4\u30FC\u30EB"
   m_EditorClassIdentifier: 
-  cardName: "\u30EA\u30FC\u30C0\u30FC"
-  cardType: 0
-  artwork: {fileID: 21300000, guid: accc9941fcc6d9e4e859ab93bfaa3374, type: 3}
+  cardName: "\u30A2\u30D4\u30FC\u30EB"
+  cardType: 3
+  artwork: {fileID: 21300000, guid: 8ff792a9ca60e164e896e5720db4a638, type: 3}
   effectID: 
   effectValue: 0
   effectTarget: 
-  description: "\u30EA\u30FC\u30C0\u30FC\u3060\u3088"
-  appeal: 2
-  evolveBaseName: None
+  description: "\u30A2\u30D4\u30FC\u30EB\u306D"
+  cost: 1
