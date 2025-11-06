@@ -289,15 +289,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deckManager: {fileID: 789508824}
-  selectedCard: {fileID: 0}
-  playerFieldAreaL: {fileID: 1716074281}
-  playerFieldAreaR: {fileID: 1992328896}
   playerHandArea: {fileID: 367815213}
+  playerLeaderArea: {fileID: 0}
+  playerCharacterSlotsParent: {fileID: 0}
+  enemyLeaderArea: {fileID: 0}
+  enemyCharacterSlotsParent: {fileID: 0}
   isPlayerTurn: 1
   playerMana: 0
-  enemyMana: 0
   playerAppealPoints: 0
+  enemyMana: 0
   enemyAppealPoints: 0
+  selectedCard: {fileID: 0}
 --- !u!4 &346155603
 Transform:
   m_ObjectHideFlags: 0
@@ -906,21 +908,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_gameObject: {fileID: 0}
   playerDeck:
-  - {fileID: 11400000, guid: afb3a7a0045ddd14fad68556cb7936b9, type: 2}
-  - {fileID: 11400000, guid: afb3a7a0045ddd14fad68556cb7936b9, type: 2}
-  - {fileID: 11400000, guid: 74ff10b8fc450e34fa8fc147d36ff5fc, type: 2}
-  - {fileID: 11400000, guid: 20c77b3dfefd3a843a7b8bf2d9869103, type: 2}
-  - {fileID: 11400000, guid: 20c77b3dfefd3a843a7b8bf2d9869103, type: 2}
-  - {fileID: 11400000, guid: 343d6f43d43168e4389df0ace1a85540, type: 2}
-  - {fileID: 11400000, guid: 343d6f43d43168e4389df0ace1a85540, type: 2}
-  playerLeader: {fileID: 11400000, guid: 96e8e3361cba74e47ae5a5160b9dd6ac, type: 2}
+  - {fileID: 11400000, guid: 11f8b281a5f93454f91198153652e926, type: 2}
+  - {fileID: 11400000, guid: 11f8b281a5f93454f91198153652e926, type: 2}
+  - {fileID: 11400000, guid: a5d296163a82c5749a3dfb868637ee77, type: 2}
+  - {fileID: 11400000, guid: a5d296163a82c5749a3dfb868637ee77, type: 2}
+  - {fileID: 11400000, guid: f8d39348c73debe4785145341c804de9, type: 2}
+  - {fileID: 11400000, guid: f8d39348c73debe4785145341c804de9, type: 2}
+  - {fileID: 11400000, guid: 8dc27840c7337104bbcfbeadb650eefd, type: 2}
+  playerLeader: {fileID: 11400000, guid: c0a60b722ecaba54fbce421d9933e61d, type: 2}
   enemyDeck:
   - {fileID: 11400000, guid: afb3a7a0045ddd14fad68556cb7936b9, type: 2}
   - {fileID: 11400000, guid: afb3a7a0045ddd14fad68556cb7936b9, type: 2}
   - {fileID: 11400000, guid: 74ff10b8fc450e34fa8fc147d36ff5fc, type: 2}
+  - {fileID: 11400000, guid: 74ff10b8fc450e34fa8fc147d36ff5fc, type: 2}
   - {fileID: 11400000, guid: 20c77b3dfefd3a843a7b8bf2d9869103, type: 2}
   - {fileID: 11400000, guid: 20c77b3dfefd3a843a7b8bf2d9869103, type: 2}
-  - {fileID: 11400000, guid: 343d6f43d43168e4389df0ace1a85540, type: 2}
   - {fileID: 11400000, guid: 343d6f43d43168e4389df0ace1a85540, type: 2}
   enemyLeader: {fileID: 11400000, guid: 96e8e3361cba74e47ae5a5160b9dd6ac, type: 2}
   playerHandArea: {fileID: 367815213}
