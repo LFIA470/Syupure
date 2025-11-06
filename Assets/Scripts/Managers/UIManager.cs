@@ -5,10 +5,9 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    //シングルトン
+    #region Singleton
     public static UIManager Instance;
-
-    [SerializeField] private Text playerAppealPointText;
-    [SerializeField] private Text enemyAppealPointText;
 
     private void Awake()
     {
@@ -18,8 +17,18 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    //GameManagerから呼び出され、画面のUIを更新する
-    public void UppdateAppealPointUI(int playerPoints, int enemyPoints)
+    #endregion
+
+    //変数宣言
+    #region Variables
+    [SerializeField] private Text playerAppealPointText;
+    [SerializeField] private Text enemyAppealPointText;
+    #endregion
+
+    //UI更新メソッド
+    #region UppdataUI Methods
+    public void UppdateAppealPointUI    //GameManagerから呼び出され、画面のUIを更新する
+    (int playerPoints, int enemyPoints)
     {
         if (playerAppealPointText != null)
         {
@@ -30,4 +39,5 @@ public class UIManager : MonoBehaviour
             enemyAppealPointText.text = enemyPoints.ToString();
         }
     }
+    #endregion
 }

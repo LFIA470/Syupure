@@ -5,6 +5,8 @@ using UnityEngine.EventSystems;
 
 public class SpellArea : MonoBehaviour, IDropHandler
 {
+    //スペルエリアのプレイに関するメソッド
+    #region Play SpellArea Methods
     public void OnDrop(PointerEventData eventData)
     {
         CardView droppedCard = eventData.pointerDrag.GetComponent<CardView>();
@@ -13,4 +15,5 @@ public class SpellArea : MonoBehaviour, IDropHandler
         //GameManagerに「呪文エリアに、このカードがドロップされました」と報告
         GameManager.Instance.CardDroppedOnSpellArea(droppedCard, this);
     }
+    #endregion
 }

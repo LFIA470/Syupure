@@ -5,8 +5,13 @@ using UnityEngine.EventSystems;
 
 public class CharacterSlot : MonoBehaviour, IPointerClickHandler, IDropHandler
 {
+    //変数宣言
+    #region Variables
     public CardView occupiedCard = null;    //このスロットに置かれているカード
+    #endregion
 
+    //キャラクタースロットのプレイに関するメソッド
+    #region Play CharacterSlot Methods
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("クリック成功！");
@@ -26,4 +31,5 @@ public class CharacterSlot : MonoBehaviour, IPointerClickHandler, IDropHandler
         //GameManagerに、「このスロットに、このカードがドロップされた」と報告
         GameManager.Instance.CardDroppedOnSlot(droppedCard, this);
     }
+    #endregion
 }

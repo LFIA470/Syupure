@@ -5,20 +5,9 @@ using UnityEngine.UI;
 
 public class ZoomUIPanelManager : MonoBehaviour
 {
+    //シングルトン
+    #region Singleton
     public static ZoomUIPanelManager Instance;
-
-    public GameObject zoomPanel;       
-    public Image artworkImage;         //イメージ画像（表示用
-    public Text nameText;              //名前テキスト（表示用
-    public Text descriptionText;       //効果テキスト（表示用
-    [SerializeField] private Image costImage;       //コスト画像（表示用
-    [SerializeField] private GameObject AppealContainer;    //拡大表示用のハート置き場
-    [SerializeField] private GameObject HeartIconPrefab;   //ハート一つ分のプレファブ
-
-    [SerializeField] private List<Sprite> numberSprites;    //0～9の数字スプライトを格納するリスト
-
-    public GameObject playButton;       //プレイボタン
-    private CardView zoomedCardView;    //どのcardViewを拡大しているかを記憶
 
     void Awake()
     {
@@ -34,9 +23,27 @@ public class ZoomUIPanelManager : MonoBehaviour
 
         zoomPanel.SetActive(false); // 最初は非表示
     }
+    #endregion
 
-    //拡大表示
-    public void Show(CardView cardView)
+    //変数宣言
+    #region Variables
+    public GameObject zoomPanel;       
+    public Image artworkImage;         //イメージ画像（表示用
+    public Text nameText;              //名前テキスト（表示用
+    public Text descriptionText;       //効果テキスト（表示用
+    [SerializeField] private Image costImage;       //コスト画像（表示用
+    [SerializeField] private GameObject AppealContainer;    //拡大表示用のハート置き場
+    [SerializeField] private GameObject HeartIconPrefab;   //ハート一つ分のプレファブ
+
+    [SerializeField] private List<Sprite> numberSprites;    //0～9の数字スプライトを格納するリスト
+
+    public GameObject playButton;       //プレイボタン
+    private CardView zoomedCardView;    //どのcardViewを拡大しているかを記憶
+    #endregion
+
+    //拡大パネルの表示に関するメソッド
+    #region Show Methods
+    public void Show(CardView cardView) //拡大表示
     {
         //拡大表示用のカードが選ばれているか？
         if (cardView == null) return;
@@ -113,8 +120,16 @@ public class ZoomUIPanelManager : MonoBehaviour
         zoomPanel.SetActive(true);
     }
 
-    //プレイボタンが押された時に呼ばれる
-    public void OnPlayButtonPressed()
+    public void Hide()  //拡大パネル非表示
+    {
+        zoomedCardView = null;
+        zoomPanel.SetActive(false);
+    }
+    #endregion
+
+    //ボタン操作に関するメソッド
+    #region Operation Button
+    public void OnPlayButtonPressed()   //プレイボタンが押された時に呼ばれる
     {
         //GameMangerに盤面選択モード開始するように命令
         GameManager.Instance.EnterTargetingMode(zoomedCardView);
@@ -123,11 +138,5 @@ public class ZoomUIPanelManager : MonoBehaviour
         //拡大表示を閉じる
         Hide();
     }
-
-    //閉じるボタン
-    public void Hide()
-    {
-        zoomedCardView = null;
-        zoomPanel.SetActive(false);
-    }
+    #endregion
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DeckManager : MonoBehaviour
 {
+    //変数宣言
+    #region Variables
     [SerializeField] private GameObject m_gameObject;   //GameManagerへの参照を追加
 
     //デッキの原本（インスペクターで設定する用）
@@ -20,13 +22,19 @@ public class DeckManager : MonoBehaviour
     public Transform playerFieldArea;
     public Transform enemyHandArea;
     public GameObject cardPrefab;
+    #endregion
 
+    //Start,UpdateなどUnityが自動で呼ぶメソッド
+    #region Unity Lifecycle Methods
     void Awake()
     {
         playerDeckPile = new List<Card>(playerDeck);
         enemyDeckPile = new List<Card>(enemyDeck);
     }
+    #endregion
 
+    //デッキ操作に関するメソッド
+    #region Operation Deck Methods
     //デッキシャッフル
     public void DeckShuffle(TurnOwner owner)
     {
@@ -132,4 +140,5 @@ public class DeckManager : MonoBehaviour
 
         Debug.Log(owner + "が" + cardData.cardName + "を引きました。");
     }
+    #endregion
 }

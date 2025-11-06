@@ -16,8 +16,8 @@ public class CardDataImporter : EditorWindow
     private string artworkFolderPath = "Assets/Images/Images/"; //イラスト画像の保存先
     #endregion
 
-    //ウィンドウ関連メソッド
-    #region Window
+    //Unityに表示するウィンドウメソッド
+    #region Window Methods
     [MenuItem("My Tools/カードデータ取込")] //Unityの上部メニューに「Mu Tools > カードデータ取込」を追加
     
     public static void ShowWindou() //ウィンドウ表示
@@ -50,8 +50,8 @@ public class CardDataImporter : EditorWindow
     }
     #endregion
 
-    //インポートメソッド
-    #region Import
+    //インポートボタン押下時のメソッド
+    #region Import Methods
     private void ImportCards()
     {
         //フォルダが存在しなければ作成
@@ -129,8 +129,8 @@ public class CardDataImporter : EditorWindow
     }
     #endregion
 
-    //アセットメソッド
-    #region Asset
+    //アセットの作成・更新に関するメソッド
+    #region Asset Methods
     private void CreateNewCardAsset //新規アセット作成メソッド
     (string assetPath, string cardName, CardType cardType, string artworkFileName,
     string effectID, int effectValue, string effectTarget, string description,
@@ -213,7 +213,7 @@ public class CardDataImporter : EditorWindow
     #endregion
 
     //画像ロードメソッド
-    #region Load
+    #region Load Methods
     private Sprite LoadSprite   //イラスト画像をファイル名から読み込むヘルパーメソッド
     (string fileName)
     {

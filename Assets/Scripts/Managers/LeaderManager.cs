@@ -4,19 +4,26 @@ using UnityEngine;
 
 public class LeaderManager : MonoBehaviour
 {
+    //変数宣言
+    #region Variables
     [SerializeField] private DeckManager _deckManager;
 
     [SerializeField] private Transform playerLeaderArea;
     [SerializeField] private Transform enemyLeaderArea;
     [SerializeField] private GameObject cardPrefab;
+    #endregion
 
+    //Start,UpdateなどUnityが自動で呼ぶメソッド
+    #region Unity Lifecycle Methods
     private void Start()
     {
         DrawLeader();
     }
+    #endregion
 
-    //リーダー表示
-    public void DrawLeader()
+    //リーダーカードの表示に関するメソッド
+    #region Draw Methods
+    public void DrawLeader()    //リーダー表示
     {
         //リーダーカードを取得
         Card playerLeader = _deckManager.playerLeader;
@@ -25,9 +32,11 @@ public class LeaderManager : MonoBehaviour
         CreateLeaderCard(playerLeader, playerLeaderArea);
         CreateLeaderCard(enemyLeader, enemyLeaderArea);
     }
-    
-    //リーダー情報
-    private void CreateLeaderCard(Card card, Transform parentArea)
+    #endregion
+
+    //リーダーカードの生成に関するメソッド
+    #region Create Methods
+    private void CreateLeaderCard(Card card, Transform parentArea)  //リーダーカード生成
     {
         //カードを生成
         GameObject cardObj = Instantiate(cardPrefab, parentArea);   //カードのプレハブをインスタンス化
@@ -43,4 +52,5 @@ public class LeaderManager : MonoBehaviour
         CardView view = cardObj.GetComponent<CardView>();   //CardViewコンポーネント追加
         view.SetCard(card); //カード情報をUIに反映
     }
+    #endregion
 }
