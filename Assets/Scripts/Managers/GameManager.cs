@@ -511,7 +511,7 @@ public class GameManager : MonoBehaviour
                 cost = (cardData as CharacterCard).cost;
                 break;
             case CardType.EvolveCharacter:
-                cost = (cardData as EvolveCharacterCard).evolveCost;
+                cost = (cardData as EvolveCharacterCard).cost;
                 break;
             case CardType.Appeal:
                 cost = (cardData as  AppealCard).cost;

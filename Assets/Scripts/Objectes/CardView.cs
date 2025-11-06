@@ -89,7 +89,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
                 //cardDataをCharacterCard型にキャスト
                 EvolveCharacterCard evolveCharacter = cardData as EvolveCharacterCard;
                 //コスト画像を表示
-                costImage.sprite = numberSprites[evolveCharacter.evolveCost];
+                costImage.sprite = numberSprites[evolveCharacter.cost];
                 costImage.gameObject.SetActive(true);
                 //ハート(アピール力)を表示
                 for (int i = 0; i < evolveCharacter.appeal; i++) { Instantiate(HeartIconPrefab, AppealContainer.transform); }

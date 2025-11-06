@@ -16,7 +16,10 @@ public abstract class Card : ScriptableObject
     [Header("全カード共通の基本情報")]
     public string cardName;     //カードネーム
     [TextArea]
-    public string description;  //効果テキスト
     public CardType cardType;   //カードタイプ
     public Sprite artwork;      //イラスト画像
+    public string effectID;     //効果ID
+    public int effectValue;     //効果値
+    public string effectTarget; //効果対象
+    public string description;  //効果テキスト
 }

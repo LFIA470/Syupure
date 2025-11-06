@@ -60,7 +60,7 @@ public class ZoomUIPanelManager : MonoBehaviour
             case CardType.Leader:
                 //cardDataをLeaderCard型にキャスト
                 LeaderCard leader = cardView.cardData as LeaderCard;
-                costImage.sprite = numberSprites[leader.evolveCost];
+                //costImage.sprite = numberSprites[leader.evolveCost];
                 costImage.gameObject.SetActive(true);
                 //ハート(アピール力)を表示
                 for (int i = 0; i < leader.appeal; i++) { Instantiate(HeartIconPrefab, AppealContainer.transform); }
@@ -78,7 +78,7 @@ public class ZoomUIPanelManager : MonoBehaviour
                 //cardDataをCharacterCard型にキャスト
                 EvolveCharacterCard evolveCharacter = cardView.cardData as EvolveCharacterCard;
                 //コスト画像を表示
-                costImage.sprite = numberSprites[evolveCharacter.evolveCost];
+                costImage.sprite = numberSprites[evolveCharacter.cost];
                 costImage.gameObject.SetActive(true);
                 //ハート(アピール力)を表示
                 for (int i = 0; i < evolveCharacter.appeal; i++) { Instantiate(HeartIconPrefab, AppealContainer.transform); }
