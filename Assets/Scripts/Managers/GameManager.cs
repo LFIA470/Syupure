@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
         deckManager.DeckShuffle(TurnOwner.Enemy);
 
         //‰ŠúèD‚ğ”z‚é
-        for (int i = 0; i < GameConstants.StartingHanSize; i++)
+        for (int i = 0; i < GameConstants.StartingHandSize; i++)
         {
             deckManager.DrawCard(TurnOwner.Player);
             deckManager.DrawCard(TurnOwner.Enemy);
