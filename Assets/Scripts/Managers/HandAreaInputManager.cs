@@ -51,7 +51,7 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
             //将来エフェクトを解除
 
             // CardViewに「ドラッグ操作を引き継いで！」と命令する
-            currenSelectedCard.ManuallyBeginDrag(eventData);
+            //currenSelectedCard.ManuallyBeginDrag(eventData);
         }
         else
         {
@@ -108,6 +108,7 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
         {
             isDragOutside = true;
             currenSelectedCard.ManuallyBeginDrag(eventData);
+            ZoomUIPanelManager.Instance.Hide();
         }
     }
     #endregion
