@@ -151,21 +151,31 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
 
     //カードのドラッグ&ドロップに関連するメソッド
     #region Drag Drop Methods
-    public void OnBeginDrag(PointerEventData eventData) //ドラッグが始まった瞬間に呼ばれる
+    public void ManuallyBeginDrag   //HandAreaなど、外部のスクリプトからドラッグ操作を開始させるためのメソッド
+    (PointerEventData eventData)   
     {
-        //このカードの親が、GameManagerが知っている手札エリアと同じかどうかをチェック
+        // OnBeginDragと全く同じ処理を実行する
+
+        // (ドラッグ可能かのチェック)
         if (transform.parent != GameManager.Instance.PlayerHandArea)
         {
-            Debug.Log("手札のカードではないため、ドラッグできません");
-            isDraggable = false; //無効なドラッグとして記憶
-            eventData.pointerDrag = null;   //Unityにドラッグ操作をキャンセルするように伝える
+            isDraggable = false;
+            eventData.pointerDrag = null;
             return;
         }
 
         isDraggable = true;
-        originalParent = transform.parent;  //元いた場所を記憶
-        transform.SetParent(transform.root);    //一時的に最前面に表示するため、親をCanvasのルートにする
-        GetComponent<CanvasGroup>().blocksRaycasts = false; //ドラッグ中はカード自身がマウスイベントをブロックしないようにする
+        originalParent = transform.parent;
+        transform.SetParent(transform.root);
+        GetComponent<CanvasGroup>().blocksRaycasts = false;
+
+        // ★重要★ Unityのイベントシステムに、ドラッグ対象がこのカードに移ったことを知らせる
+        eventData.pointerDrag = this.gameObject;
+    }
+
+    public void OnBeginDrag(PointerEventData eventData) //ドラッグが始まった瞬間に呼ばれる
+    {
+        ManuallyBeginDrag(eventData);
     }
     
     public void OnDrag(PointerEventData eventData)  //ドラッグ中に呼ばれる
