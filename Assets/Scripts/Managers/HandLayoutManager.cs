@@ -8,6 +8,10 @@ public class HandLayoutManager : MonoBehaviour
     #region Variables
     [Header("レイアウト設定")]
     [SerializeField]
+    [Tooltip("選択中のカードをどれだけ大きくするか")]
+    private float selectedCardScale = 1f;
+
+    [SerializeField]
     [Tooltip("カード同士が重なる角度（大きいほど広がる）")]
     private float cardSpacing = 10f;
 
@@ -31,6 +35,9 @@ public class HandLayoutManager : MonoBehaviour
     [Tooltip("カード1枚のおおよその横幅（当たり判定の調整用）")]
     private float cardWidth = 100f;
 
+    //現在選択されているカード
+    private CardView currenlySelectedCard = null;
+
     // カードのRectTransformを保持するリスト
     private List<RectTransform> cardRects = new List<RectTransform>();
     #endregion
@@ -41,6 +48,14 @@ public class HandLayoutManager : MonoBehaviour
     {
         // 毎フレーム、カードのレイアウトを更新する
         UpdateLayout();
+    }
+    #endregion
+
+    //Set,Getメソッド
+    #region Set Get Methods
+    public void SetSelectedCard(CardView card)  //現在選択中のカード
+    {
+        currenlySelectedCard = card;
     }
     #endregion
 
@@ -72,36 +87,48 @@ public class HandLayoutManager : MonoBehaviour
 
         // --- ここからが扇形レイアウトの計算 ---
 
-        // 1. 手札全体の広がり角度を計算
-        // (カード枚数 * 間隔) が、最大角度を超えないようにする
+        //手札全体の広がり角度を計算
+        //(カード枚数 * 間隔) が、最大角度を超えないようにする
         float totalAngle = Mathf.Min(childCount * cardSpacing, maxCurveAngle);
 
-        // 2. 扇の中心が0度になるよう、開始角度を計算
+        //扇の中心が0度になるよう、開始角度を計算
         float startAngle = -totalAngle / 2f;
 
-        // 3. 各カードを配置
+        //各カードを配置
         for (int i = 0; i < childCount; i++)
         {
             RectTransform card = cardRects[i];
+            CardView cardView = card.GetComponent<CardView>();
 
-            // 4. このカードの中心角度を計算
-            // (カードが1枚なら0度、3枚なら -10度, 0度, 10度 のようになる)
+            //このカードの中心角度を計算
+            //(カードが1枚なら0度、3枚なら -10度, 0度, 10度 のようになる)
             float targetAngle = startAngle + i * cardSpacing + (cardSpacing / 2f);
 
-            // 5. 角度から、円弧上の位置(X, Y)を計算 (三角関数)
+            //角度から、円弧上の位置(X, Y)を計算 (三角関数)
             float x = Mathf.Sin(targetAngle * Mathf.Deg2Rad) * curveRadius;
             float y = (1f - Mathf.Cos(targetAngle * Mathf.Deg2Rad)) * -curveRadius;
 
-            // 6. カードを少し持ち上げる (Y座標を足す)
+            //カードを少し持ち上げる (Y座標を足す)
             y += i * cardElevation;
 
-            // 7. 計算した位置と回転を適用
+            //計算した位置と回転を適用
             card.anchoredPosition = new Vector2(x, y);
             card.localRotation = Quaternion.Euler(0, 0, -targetAngle);
 
-            // 8. 重なり順を調整（真ん中のカードが一番手前になるように）
-            // （ここでは単純に、リストの順番で奥から手前に並べています）
-            card.SetSiblingIndex(i);
+            if (cardView != null && cardView == currenlySelectedCard)
+            {
+                //もし、このカードが現在選択中のカードなら
+                card.localScale = Vector3.one * selectedCardScale;
+            }
+            else
+            {
+                //それ以外のカードなら、通常のスケールに戻す
+                card.localScale = Vector3.one * 0.8f;
+            }
+
+                //重なり順を調整（真ん中のカードが一番手前になるように）
+                //（ここでは単純に、リストの順番で奥から手前に並べています）
+                card.SetSiblingIndex(i);
         }
 
         //当たり判定エリアの横幅を調整

@@ -9,6 +9,7 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
     #region Variables
     [Header("連携するエリア")]
     [SerializeField] private Transform playerHandArea; // カードが実際に並んでいる親オブジェクト
+    [SerializeField] private HandLayoutManager handLayoutManager;
 
     [Header("操作中の状態")]
     private CardView currenSelectedCard = null; //現在操作中(カーソルが合ってる)カード
@@ -33,13 +34,17 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
         currenSelectedCard = draggedCard;
         isDragOutside = false;
 
-        //将来エフェクトをかける
+        //レイアウトマネージャに「このカードを選んだ」と伝える
+        if (handLayoutManager != null)
+        {
+            handLayoutManager.SetSelectedCard(currenSelectedCard);
+        }
     }
 
     public void OnDrag  //ドラッグ中の処理
     (PointerEventData eventData)
     {
-        if (currenSelectedCard == null || isDragOutside) return;
+        if (draggedCard == null || isDragOutside) return;
         
         //マウスカーソルがHandAreaの範囲内にまだいるかチェック
         if (!RectTransformUtility.RectangleContainsScreenPoint(rectTransform, eventData.position, eventData.pressEventCamera))
@@ -48,10 +53,12 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
             Debug.Log("エリアの外に出ました。カードのプレイを開始します。");
             isDragOutside = true;
 
-            //将来エフェクトを解除
+            if (handLayoutManager != null)
+            {
+                handLayoutManager.SetSelectedCard(null);
+            }
 
-            // CardViewに「ドラッグ操作を引き継いで！」と命令する
-            //currenSelectedCard.ManuallyBeginDrag(eventData);
+            draggedCard.ManuallyBeginDrag(eventData);
         }
         else
         {
@@ -61,10 +68,12 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
 
             if (cardOver != currenSelectedCard)
             {
-                //将来エフェクトを切り替える
-
-
                 currenSelectedCard = cardOver;
+
+                if (handLayoutManager != null)
+                {
+                    handLayoutManager.SetSelectedCard(currenSelectedCard);
+                }
 
                 Debug.Log("選択中のカードが" + currenSelectedCard.cardData.cardName + "に変わりました。");
             }
@@ -91,7 +100,10 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
             }
         }
 
-        //将来エフェクトを解除
+        if (handLayoutManager != null)
+        {
+            handLayoutManager.SetSelectedCard(null);
+        }
 
         // 状態をリセット
         draggedCard = null;
