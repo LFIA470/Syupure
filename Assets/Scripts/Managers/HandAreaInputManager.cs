@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler, IPointerExitHandler
+public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     //変数宣言
     #region Variables
@@ -15,6 +15,7 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
     private CardView currenSelectedCard = null; //現在操作中(カーソルが合ってる)カード
     private CardView draggedCard = null;        //最初に押した(ドラッグを開始した)カード
     private bool isDragOutside = false;         //エリアの外にドラッグしたか
+    private bool isCancelled = false;           //キャンセル操作中か
     private RectTransform rectTransform;
     #endregion
 
@@ -26,6 +27,7 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
     }
     #endregion
 
+    //手札操作関連メソッド
     #region Operation Hand Methods
     public void OnPointerDown   //マウスが押された瞬間の処理
     (PointerEventData eventData)
@@ -33,6 +35,7 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
         draggedCard = GetCardAtPosition(eventData);
         currenSelectedCard = draggedCard;
         isDragOutside = false;
+        isCancelled = false;
 
         //レイアウトマネージャに「このカードを選んだ」と伝える
         if (handLayoutManager != null)
@@ -44,12 +47,23 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
     public void OnDrag  //ドラッグ中の処理
     (PointerEventData eventData)
     {
-        if (draggedCard == null || isDragOutside) return;
-        
-        //マウスカーソルがHandAreaの範囲内にまだいるかチェック
-        if (!RectTransformUtility.RectangleContainsScreenPoint(rectTransform, eventData.position, eventData.pressEventCamera))
+        if (draggedCard == null) return;
+        if (isDragOutside) return;
+
+        Canvas canvas = GetComponentInParent<Canvas>();
+        Camera cam = (canvas.renderMode == RenderMode.ScreenSpaceOverlay) ? null : eventData.pressEventCamera;
+
+        //HandInputAreaの四隅のワールド座標を取得
+        Vector3[] corners = new Vector3[4];
+        rectTransform.GetWorldCorners(corners);
+        Vector2 screenTopLeft = RectTransformUtility.WorldToScreenPoint(cam, corners[1]);
+        //HandInputAreaの上辺のY座標を取得
+        float topEdgeY = screenTopLeft.y;
+
+        //マウスのY座標が、上辺より上にあるかチェック
+        if (eventData.position.y > topEdgeY)
         {
-            // ▼あなたの理想: 縦の位置がHandAreaを越えた場合▼
+            //プレイモードに移行
             Debug.Log("エリアの外に出ました。カードのプレイを開始します。");
             isDragOutside = true;
 
@@ -58,12 +72,12 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
                 handLayoutManager.SetSelectedCard(null);
             }
 
-            draggedCard.ManuallyBeginDrag(eventData);
+            currenSelectedCard.ManuallyBeginDrag(eventData);
         }
-        else
+        else if (RectTransformUtility.RectangleContainsScreenPoint(rectTransform, eventData.position, cam))
         {
-            // エリア内でのドラッグ
-            //現在カーソルがどのカードの上にあるか、リアルタイムで計算
+            //手札選択モード
+            //カーソル位置のカードを選択状態にする
             CardView cardOver = GetCardAtPosition(eventData);
 
             if (cardOver != currenSelectedCard)
@@ -78,6 +92,19 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
                 Debug.Log("選択中のカードが" + currenSelectedCard.cardData.cardName + "に変わりました。");
             }
         }
+        else
+        {
+            //キャンセルモードに移行
+            Debug.Log("エリアの横または下に出ました。キャンセルします。");
+
+            //拡大表示を解除
+            if (handLayoutManager != null)
+            {
+                handLayoutManager.SetSelectedCard(null);
+            }
+
+            isCancelled = true;
+        }
     }
 
     public void OnPointerUp //マウスが離された瞬間の処理
@@ -89,6 +116,10 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
         {
             // エリア外でドロップされた場合 (カードプレイ)
             // CardView側がOnEndDragを処理するので、ここでは何もしない
+        }
+        else if (isCancelled)
+        {
+            Debug.Log("ドラッグがキャンセルされました。");
         }
         else
         {
@@ -109,19 +140,7 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
         draggedCard = null;
         currenSelectedCard = null;
         isDragOutside = false;
-    }
-
-    public void OnPointerExit   //ドラッグ中にポインタがエリアから出た場合の処理
-    (PointerEventData eventData)
-    {
-        // OnDragで処理しているので、基本的には不要だが、
-        // 念のため、ドラッグ中にエリア外に出たらプレイモードとみなす
-        if (currenSelectedCard != null && eventData.dragging && !isDragOutside)
-        {
-            isDragOutside = true;
-            currenSelectedCard.ManuallyBeginDrag(eventData);
-            ZoomUIPanelManager.Instance.Hide();
-        }
+        isCancelled = false;
     }
     #endregion
 

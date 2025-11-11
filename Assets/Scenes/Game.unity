@@ -478,6 +478,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f53af1cdfd38d744b9f8fc9653afecc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedCardScale: 1
   cardSpacing: 10
   curveRadius: 800
   cardElevation: 0
@@ -2645,7 +2646,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1000, y: 216}
+  m_SizeDelta: {x: 1000, y: 280}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1540959950
 MonoBehaviour:
@@ -2660,6 +2661,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHandArea: {fileID: 367815213}
+  handLayoutManager: {fileID: 367815218}
 --- !u!114 &1540959951
 MonoBehaviour:
   m_ObjectHideFlags: 0
