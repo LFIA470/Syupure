@@ -221,12 +221,17 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
     public void OnDrop (PointerEventData eventData) //カードの上にカードをドロップされたか
     {
         //ドロップされたカード(進化キャラクター)を取得
-        CardView evolveCard = eventData.pointerDrag.GetComponent<CardView>();
-        if (evolveCard == null) return;
+        CardView droppedCard = eventData.pointerDrag.GetComponent<CardView>();
+        if (droppedCard == null) return;
 
-        //GameMangerに「このカードの上に、進化カードがドロップされました」と報告
-        //thisはドロップされた側(進化元)のカード
-        GameManager.Instance.CardDroppedOnCharacter(evolveCard, this);
+        CardType type = droppedCard.cardData.cardType;
+
+        if (type == CardType.EvolveCharacter)
+        {
+            //GameMangerに「このカードの上に、進化カードがドロップされました」と報告
+            //thisはドロップされた側(進化元)のカード
+            GameManager.Instance.CardDroppedOnCharacter(droppedCard, this);
+        }
     }
 
     public void ReturnToOriginalParent()    //プレイが失敗した時にGameManagerから呼び出す

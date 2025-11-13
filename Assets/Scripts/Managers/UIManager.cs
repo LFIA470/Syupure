@@ -11,9 +11,18 @@ public class UIManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null)
+        Debug.Log("UIManagerのAwake()が呼ばれました！");
+
+        if (Instance == null)
         {
             Instance = this;
+        }
+
+        else if (Instance != this)
+        {
+            // この（重複した）コンポーネントだけを破棄する
+            Debug.LogWarning("UIManagerが重複しています。このコンポーネントを破棄します。");
+            Destroy(this);
         }
     }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -89,6 +90,9 @@ public class GameManager : MonoBehaviour
         }
 
         //先攻・後攻を決める
+
+        //UIを0で初期化
+        UIManager.Instance.UppdateAppealPointUI(playerAppealPoints, enemyAppealPoints);
 
         //最初のターンを開始する
         StartTurn(TurnOwner.Player);
@@ -263,29 +267,26 @@ public class GameManager : MonoBehaviour
     public void CardDroppedOnSpellArea(CardView card, SpellArea spellArea)//アピール・イベントエリアにドロップされた時の処理
     {
         //ルールチェック
-        //カードタイプがアピールかイベントかどうか
-        if (card.cardData.cardType != CardType.Appeal && card.cardData.cardType != CardType.Event)
-        {
-            card.ReturnToOriginalParent();
-            return;
-        }
-
         //共通ルールチェック
         bool canPlay = PlayCard(card.cardData, TurnOwner.Player);
 
         //実行処理
-        if (canPlay)
+        if (!canPlay)
         {
-            Debug.Log(card.cardData.cardName + "が使用されました。");
-            //カードの種類に応じて効果を分岐
-            switch (card.cardData.cardType)
-            {
-                case CardType.Appeal:
-                    PerformAppeal(TurnOwner.Player);
-                    break;
-                case CardType.Event:
-                    break;
-            }
+            // 失敗したら手札に戻す
+            card.ReturnToOriginalParent();
+            return;
+        }
+
+        switch (card.cardData.cardType)
+        {
+            case CardType.Appeal:
+                Debug.Log(card.cardData.cardName + " をプレイするため、ターゲット選択に移行します。");
+                EnterTargetingMode(card);
+                break;
+            case CardType.Event:
+                Debug.Log(card.cardData.cardName + " の効果を発動します。");
+                break;
         }
 
         //全てOKなら効果発動
@@ -294,7 +295,7 @@ public class GameManager : MonoBehaviour
         //効果処理
 
         //効果発動後処理(トラッシュに送るなど)
-        Destroy(card.gameObject);
+        //Destroy(card.gameObject);
     }
       #endregion
 
@@ -346,67 +347,61 @@ public class GameManager : MonoBehaviour
         //プレイヤーがターンを終了した
         EndTurn(TurnOwner.Player);
     }
-    public void OnFieldClicked(Transform fieldTransform)//FieldManagerから呼ばれる
+    public void OnFieldClicked(Transform fieldTransform)
     {
-        //盤面選択モード中でなければ、何もしない
-        if (!isTargetingMode || cardToPlay == null)
-        {
-            return;
-        }
+        //盤面選択モード出なければ、何もせず終了
+        if (!isTargetingMode || cardToPlay == null) return;
 
-        Debug.Log("GameManagerが盤面のクリックを検知しました。isTargetingModeは" + isTargetingMode + "です");
-
-        //プレイしようとしているカード　の種類を確認する
+        //プレイするカードの種類を取得
         CardType type = cardToPlay.cardData.cardType;
 
-        //カードの種類に応じて、正しい場所に置こうとしているかチェックする
+        //カードの種類に応じて、クリックした場所が正しいか判定
         switch (type)
         {
+            //キャラクターをプレイしようとしている場合
             case CardType.Character:
+                //クリックした場所は「空のスロット」か？
                 CharacterSlot slot = fieldTransform.GetComponent<CharacterSlot>();
                 if (slot != null)
                 {
-                    //正しい場所なので、キャラを置く専門のメソッドを呼ぶ
+                    //正しい場所→スロット処理を呼ぶ
                     CardDroppedOnSlot(cardToPlay, slot);
-                }
-                else
-                {
-                    //間違った場所をクリックした
-                    Debug.Log("キャラクターカードはキャラクタースロットにしか置けません。");
                 }
                 break;
             case CardType.EvolveCharacter:
-                //進化カードの場合：クリックされた場所がキャラクターカードか？
+                //クリックした場所は「キャラクターカード」か？
                 CardView baseCharacter = fieldTransform.GetComponent<CardView>();
                 if (baseCharacter != null && baseCharacter.cardData.cardType == CardType.Character)
                 {
-                    //正しいターゲットなので、進化させる専門のメソッドを呼ぶ
+                    //正しい場所→進化処理を呼ぶ
                     CardDroppedOnCharacter(cardToPlay, baseCharacter);
                 }
-                else
+                break;
+            //アピール/イベントをプレイしようとしている場合
+            case CardType.Appeal:
+                //アピールカードのターゲット選択
+                //クリックされた場所は「リーダー」か「キャラクター」か？
+                CardView targetCard = fieldTransform.GetComponent<CardView>();
+                if (targetCard != null && (targetCard.cardData.cardType == CardType.Leader || targetCard.cardData.cardType == CardType.Character))
                 {
-                    Debug.Log("進化カードはフィールドのキャラクターの上にしか置けません。");
+                    // 正しいターゲット！ アピール処理を実行
+                    PerformAppeal(TurnOwner.Player, targetCard);
+
+                    // 待機していたアピールカードを破棄
+                    //Destroy(cardToPlay.gameObject);
                 }
                 break;
-
-            case CardType.Appeal:
             case CardType.Event:
-                //クリックされた場所がアピール/イベントエリアか？
+                //クリックした場所は「呪文エリア」か？
                 SpellArea spellArea = fieldTransform.GetComponent<SpellArea>();
                 if (spellArea != null)
                 {
-                    //正しい場所なので、アピール/イベントをプレイする専門のメソッドを呼ぶ
+                    //正しい場所→呪文処理を呼ぶ
                     CardDroppedOnSpellArea(cardToPlay, spellArea);
-                }
-                else
-                {
-                    //間違った場所をクリックした
-                    Debug.Log("アピール/イベントカードは専用のエリアでしか使えません。");
                 }
                 break;
         }
-
-        //選択状態を解除して次に備える
+        //モード解除
         isTargetingMode = false;
         cardToPlay = null;
     }
@@ -428,7 +423,7 @@ public class GameManager : MonoBehaviour
 
     //ゲームのアクションに関するメソッド
     #region Game Action Methods
-    public void PerformAppeal(TurnOwner owner)//指定されたオーナーのアピール処理を実行する
+    public void PerformAppeal(TurnOwner owner, CardView targetCard)//指定されたオーナーのアピール処理を実行する
     {
         //誰のアピールかによって
         Transform leaderArea;
@@ -449,43 +444,40 @@ public class GameManager : MonoBehaviour
             characterSlotsParent = enemyCharacterSlotsParent;
         }
 
-        int totalAppealPower = 0;
-        
-        //リーダーのアピール力を合計に加える
-        CardView leaderView = leaderArea.GetComponentInChildren<CardView>();
-        if (leaderView != null)
-        {
-            //リーダーカードにキャストしてアピール力を取得
-            if (leaderView.cardData is LeaderCard leaderCard)
-            {
-                totalAppealPower += leaderCard.appeal;
-            }
-        }
+        //int totalAppealPower = 0;
 
-        //フィールド上の全キャラクターのアピール力を合計に加える
-        foreach (CharacterSlot slot in characterSlotsParent.GetComponentsInChildren<CharacterSlot>())
+        // 2. ターゲットのアピール力を取得
+        int appealPower = 0;
+        if (targetCard.cardData is LeaderCard leaderCard)
         {
-            if (slot.occupiedCard != null)
-            {
-                //キャラクターカードにキャストしてアピール力を取得
-                if (slot.occupiedCard.cardData is CharacterCard characterCard)
-                {
-                    totalAppealPower += characterCard.appeal;
-                }
-            }
+            Debug.Log("リーダーとして認識。アピール力: " + leaderCard.appeal);
+            appealPower = leaderCard.appeal;
+        }
+        else if (targetCard.cardData is CharacterCard characterCard) // 通常キャラ
+        {
+            appealPower = characterCard.appeal;
+        }
+        else if (targetCard.cardData is EvolveCharacterCard evolveCard) // 進化キャラ
+        {
+            appealPower = evolveCard.appeal;
+        }
+        else
+        {
+            Debug.LogWarning(targetCard.cardData.cardName + " はアピール力を持ちません。");
+            return;
         }
 
         //合計したアピール力を、対応する側のポイントに加算する
         if (owner == TurnOwner.Player)
         {
-            playerAppealPoints += totalAppealPower;
+            playerAppealPoints += appealPower;
         }
         else
         {
-            enemyAppealPoints += totalAppealPower;
+            enemyAppealPoints += appealPower;
         }
 
-        Debug.Log(owner + "が" + totalAppealPower + "アピールして、合計ポイントは" + (owner == TurnOwner.Player ? playerAppealPoints : enemyAppealPoints) + " になった！");
+        Debug.Log(owner + "が" + appealPower + "アピールして、合計ポイントは" + (owner == TurnOwner.Player ? playerAppealPoints : enemyAppealPoints) + " になった！");
 
         //UIの表示を更新する
         UIManager.Instance.UppdateAppealPointUI(playerAppealPoints, enemyAppealPoints);
