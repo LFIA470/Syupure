@@ -295,6 +295,7 @@ public class GameManager : MonoBehaviour
                 break;
             case CardType.Event:
                 Debug.Log(card.cardData.cardName + " ‚ÌŒø‰Ê‚ğ”­“®‚µ‚Ü‚·B");
+                EffectManager.Instance.ExecuteEffect(card.cardData, TurnOwner.Player);
                 MoveCardToDiscard(card, TurnOwner.Player);
                 break;
         }

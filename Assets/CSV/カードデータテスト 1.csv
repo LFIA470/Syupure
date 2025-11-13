@@ -3,4 +3,4 @@
 01002,キャラクター,Character,pipo-enemy002.png,None,0,None,キャラだよ,1,1,None
 01003,進化,EvolveCharacter,pipo-enemy002a.png,None,0,None,進化したよ,2,2,キャラクター
 01004,アピール,Appeal,pipo-enemy012.png,None,0,None,アピールね,1,0,None
-01005,イベント,Event,pipo-enemy012.png,None,0,None,イベントね,3,0,None
+01005,イベント,Event,pipo-enemy012.png,DRAW_CARD,1,None,イベントね,3,0,None

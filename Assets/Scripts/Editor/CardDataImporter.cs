@@ -176,6 +176,10 @@ public class CardDataImporter : EditorWindow
         newCard.cardType = cardType;
         newCard.description = description;
         newCard.artwork = LoadSprite(artworkFileName);
+        newCard.effectID = effectID;
+        newCard.effectValue = effectValue;
+        newCard.effectTarget = effectTarget;
+        newCard.timingID = "Main";
         
 
         //アセットとしてプロジェクトに保存
