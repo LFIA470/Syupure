@@ -43,11 +43,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform playerCharacterSlotsParent;  //キャラクタースロットのTrasnformを設定
     public Transform PlayerCharacterSlotsParent { get { return playerCharacterSlotsParent; } }
 
+    [SerializeField] private Transform PlayerReserveArea;   //トラッシュのTransformを設定
+
     [SerializeField] private Transform enemyLeaderArea; //リーダーエリアのTransformを設定※相手用
     public Transform EnemyLeaderArea { get {return enemyLeaderArea; } }
 
     [SerializeField] private Transform enemyCharacterSlotsParent;   //キャラクタースロットのTransformを設定※相手用
     public Transform EnemyCharacterSlotsParent { get {return enemyCharacterSlotsParent; } }
+
+    [SerializeField] private Transform EnemyReserveArea;    //トラッシュのTransformを設定※相手用
 
     [Header("Game State")]
     public bool isPlayerTurn = true;        //ターン確認
@@ -282,10 +286,15 @@ public class GameManager : MonoBehaviour
         {
             case CardType.Appeal:
                 Debug.Log(card.cardData.cardName + " をプレイするため、ターゲット選択に移行します。");
+                card.transform.SetParent(spellArea.transform, false);
+                //card.transform.localPosition = Vector2.zero;    //エリアの真ん中に配置
+                card.transform.localRotation = Quaternion.identity;
+                card.transform.localScale = Vector3.one;
                 EnterTargetingMode(card);
                 break;
             case CardType.Event:
                 Debug.Log(card.cardData.cardName + " の効果を発動します。");
+                MoveCardToDiscard(card, TurnOwner.Player);
                 break;
         }
 
@@ -388,7 +397,7 @@ public class GameManager : MonoBehaviour
                     PerformAppeal(TurnOwner.Player, targetCard);
 
                     // 待機していたアピールカードを破棄
-                    //Destroy(cardToPlay.gameObject);
+                    MoveCardToDiscard(cardToPlay, TurnOwner.Player);
                 }
                 break;
             case CardType.Event:
@@ -481,6 +490,42 @@ public class GameManager : MonoBehaviour
 
         //UIの表示を更新する
         UIManager.Instance.UppdateAppealPointUI(playerAppealPoints, enemyAppealPoints);
+    }
+    public void MoveCardToDiscard (CardView card, TurnOwner owner)  //使用したカードを墓地に送る
+    {
+        Transform targetPile = null;
+
+        if (owner == TurnOwner.Player)
+        {
+            targetPile = PlayerReserveArea;
+        }
+        else
+        {
+            targetPile = EnemyReserveArea;
+        }
+
+        if (targetPile == null)
+        {
+            Debug.LogError(owner + "の墓地が設定されていません！カードは破棄されます。");
+            Destroy(card.gameObject);
+            return;
+        }
+
+        //カードの親を墓地エリアに変更
+        card.transform.SetParent(targetPile, false);
+
+        //カードの操作を不能にし、見た目をリセット
+        card.transform.localRotation = Quaternion.identity; //傾きをリセット
+        card.transform.localScale = Vector3.one;    //大きさをリセット
+
+        //カードをクリックやドラッグの対象外にする
+        CanvasGroup cg = card.GetComponent<CanvasGroup>();
+        if (cg != null )
+        {
+            cg.blocksRaycasts = false;
+        }
+
+        Debug.Log(card.cardData.cardName + "を墓地に送りました。");
     }
     private bool PlayCard(Card cardData, TurnOwner owner)//カードプレイのルールチェックとコストの消費
     {
