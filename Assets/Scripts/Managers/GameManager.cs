@@ -199,6 +199,7 @@ public class GameManager : MonoBehaviour
             //成功した場合のみ、カードをスロットに配置し、スロットに使用中であることを記憶させる
             Debug.Log(card.cardData.cardName + "をスロットに配置しました。");
             card.transform.SetParent(slot.transform, false);
+            card.transform.localScale = Vector3.one * 0.8f;
             slot.occupiedCard = card;
         }
         else
@@ -289,7 +290,7 @@ public class GameManager : MonoBehaviour
                 card.transform.SetParent(spellArea.transform, false);
                 //card.transform.localPosition = Vector2.zero;    //エリアの真ん中に配置
                 card.transform.localRotation = Quaternion.identity;
-                card.transform.localScale = Vector3.one;
+                card.transform.localScale = Vector3.one * 0.8f;
                 EnterTargetingMode(card);
                 break;
             case CardType.Event:
@@ -516,7 +517,7 @@ public class GameManager : MonoBehaviour
 
         //カードの操作を不能にし、見た目をリセット
         card.transform.localRotation = Quaternion.identity; //傾きをリセット
-        card.transform.localScale = Vector3.one;    //大きさをリセット
+        card.transform.localScale = Vector3.one * 0.8f;    //大きさをリセット
 
         //カードをクリックやドラッグの対象外にする
         CanvasGroup cg = card.GetComponent<CanvasGroup>();
