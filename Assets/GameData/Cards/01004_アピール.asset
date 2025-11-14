@@ -16,8 +16,8 @@ MonoBehaviour:
   cardType: 3
   description: "\u30A2\u30D4\u30FC\u30EB\u306D"
   artwork: {fileID: 21300000, guid: 8ff792a9ca60e164e896e5720db4a638, type: 3}
-  effectID: None
-  effectValue: 0
+  effectID: UP_APPEAL
+  effectValue: 1
   effectTarget: None
   timingID: Main
   cost: 1

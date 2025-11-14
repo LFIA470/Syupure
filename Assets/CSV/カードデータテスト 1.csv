@@ -1,6 +1,0 @@
-﻿カードID,カード名,カードタイプ,イラストファイル名,効果ID,効果値,効果対象,効果テキスト,消費コスト,アピール力,進化元名
-01001,リーダー,Leader,pipo-enemy014a.png,None,0,None,リーダーだよ,0,2,None
-01002,キャラクター,Character,pipo-enemy002.png,None,0,None,キャラだよ,1,1,None
-01003,進化,EvolveCharacter,pipo-enemy002a.png,None,0,None,進化したよ,2,2,キャラクター
-01004,アピール,Appeal,pipo-enemy012.png,None,0,None,アピールね,1,0,None
-01005,イベント,Event,pipo-enemy012.png,DRAW_CARD,1,None,イベントね,3,0,None

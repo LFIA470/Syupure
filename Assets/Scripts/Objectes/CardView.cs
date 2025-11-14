@@ -29,6 +29,10 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
     private bool isDraggable = false;    //ドラッグ中か確認
     private RectTransform canvasRectTransform;  //ドラッグ座標計算用
     public Transform originalParent { get; private set; }   //カードの元の場所を覚えておく変数
+
+    [Header("Buff")]
+    public int appealBuff = 0;  //アピール力への一時的な補正値(バフ/デバフ)
+    
     #endregion
 
     //Start,UpdateなどUnityが自動で呼ぶメソッド

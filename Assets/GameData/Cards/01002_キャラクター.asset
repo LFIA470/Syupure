@@ -16,7 +16,7 @@ MonoBehaviour:
   cardType: 1
   description: "\u30AD\u30E3\u30E9\u3060\u3088"
   artwork: {fileID: 21300000, guid: c9e0c39f9152b804fb50e231ed7c1606, type: 3}
-  effectID: None
+  effectID: NONE
   effectValue: 0
   effectTarget: None
   timingID: Main

@@ -57,6 +57,7 @@ public class GameManager : MonoBehaviour
     public bool isPlayerTurn = true;        //ターン確認
     private bool isTargetingMode = false;   //盤面選択モード中かどうかのフラグ
     private CardView cardToPlay;            //プレイしようとしているカード
+    private List<CardView> buffedCardsThisTurn = new List<CardView>();
 
     [Header("Player & Enemy Stats")]
     public int playerMana = 0;              //マナ(プレイヤー)
@@ -131,6 +132,9 @@ public class GameManager : MonoBehaviour
     }
     public void EndTurn(TurnOwner owner)//ターン移行(終了)
     {
+        //バフ解除
+        ClearAllBuffs();
+
         switch (owner)
         {
             case TurnOwner.Player:
@@ -152,6 +156,19 @@ public class GameManager : MonoBehaviour
                 }
                 break;
         }
+    }
+    private void ClearAllBuffs()
+    {
+        Debug.Log("ターン終了。全ての一時効果をリセットします。");
+        foreach (CardView card in buffedCardsThisTurn)
+        {
+            if (card != null)   //カードが退場などで消えていないチェック
+            {
+                card.appealBuff = 0;
+            }
+        }
+        //リストを空にする
+        buffedCardsThisTurn.Clear();
     }
     #endregion
 
@@ -388,17 +405,18 @@ public class GameManager : MonoBehaviour
                     CardDroppedOnCharacter(cardToPlay, baseCharacter);
                 }
                 break;
-            //アピール/イベントをプレイしようとしている場合
             case CardType.Appeal:
-                //アピールカードのターゲット選択
-                //クリックされた場所は「リーダー」か「キャラクター」か？
+                //クリックした場所は「リーダー」か「キャラクター」か？
                 CardView targetCard = fieldTransform.GetComponent<CardView>();
                 if (targetCard != null && (targetCard.cardData.cardType == CardType.Leader || targetCard.cardData.cardType == CardType.Character))
                 {
-                    // 正しいターゲット！ アピール処理を実行
+                    //アピール効果実行
+                    EffectManager.Instance.ExecuteEffect(cardToPlay.cardData, TurnOwner.Player, targetCard);
+
+                    //アピール処理を実行
                     PerformAppeal(TurnOwner.Player, targetCard);
 
-                    // 待機していたアピールカードを破棄
+                    //待機していたアピールカードを破棄
                     MoveCardToDiscard(cardToPlay, TurnOwner.Player);
                 }
                 break;
@@ -455,28 +473,38 @@ public class GameManager : MonoBehaviour
             characterSlotsParent = enemyCharacterSlotsParent;
         }
 
-        //int totalAppealPower = 0;
-
-        // 2. ターゲットのアピール力を取得
-        int appealPower = 0;
+        //ターゲットのアピール力を取得
+        int appealPower = 0;    //効果などを考慮した最終的なカードのアピール力
+        int baseAppeal = 0;     //カードに記載された本来のアピール力
         if (targetCard.cardData is LeaderCard leaderCard)
         {
-            Debug.Log("リーダーとして認識。アピール力: " + leaderCard.appeal);
-            appealPower = leaderCard.appeal;
+            baseAppeal = leaderCard.appeal;
         }
         else if (targetCard.cardData is CharacterCard characterCard) // 通常キャラ
         {
-            appealPower = characterCard.appeal;
+            baseAppeal = characterCard.appeal;
         }
         else if (targetCard.cardData is EvolveCharacterCard evolveCard) // 進化キャラ
         {
-            appealPower = evolveCard.appeal;
+            baseAppeal = evolveCard.appeal;
         }
         else
         {
             Debug.LogWarning(targetCard.cardData.cardName + " はアピール力を持ちません。");
             return;
         }
+
+        //バフ計算
+        appealPower = baseAppeal + targetCard.appealBuff;
+        //0以下の場合はアピール失敗
+        if (appealPower <= 0)
+        {
+            appealPower = 0;
+            Debug.Log(targetCard.cardData.cardName + "のアピールは失敗しました。");
+        }
+
+        Debug.Log($"アピール計算：基本({baseAppeal}) + 補正({targetCard.appealBuff}) = {appealPower}");
+
 
         //合計したアピール力を、対応する側のポイントに加算する
         if (owner == TurnOwner.Player)
@@ -582,6 +610,18 @@ public class GameManager : MonoBehaviour
         //UIManager.Instance.UpdateManaUI
     
         return true;
+    }
+    #endregion
+
+    //EffectManagerから呼ばれる窓口メソッド
+    #region Window EffectManager Methods
+    public void RegisterBuffToClear(CardView card)
+    {
+        //まだリストになければ追加
+        if (!buffedCardsThisTurn.Contains(card))
+        {
+            buffedCardsThisTurn.Add(card);
+        }
     }
     #endregion
 }

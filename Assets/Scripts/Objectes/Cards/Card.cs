@@ -17,9 +17,12 @@ public abstract class Card : ScriptableObject
     public string cardName;     //カードネーム
     [TextArea]
     public CardType cardType;   //カードタイプ
+    public string description;  //効果テキスト
     public Sprite artwork;      //イラスト画像
+
+    [Header("効果")]
     public string effectID;     //効果ID
     public int effectValue;     //効果値
     public string effectTarget; //効果対象
-    public string description;  //効果テキスト
-}
+    public string timingID;     //カード使用タイミングID
+} 

@@ -16,8 +16,8 @@ MonoBehaviour:
   cardType: 0
   description: "\u30EA\u30FC\u30C0\u30FC\u3060\u3088"
   artwork: {fileID: 21300000, guid: accc9941fcc6d9e4e859ab93bfaa3374, type: 3}
-  effectID: None
-  effectValue: 0
+  effectID: UP_APPEAL
+  effectValue: 1
   effectTarget: None
   timingID: Main
   appeal: 2
