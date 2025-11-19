@@ -132,7 +132,7 @@ public class ZoomUIPanelManager : MonoBehaviour
     public void OnPlayButtonPressed()   //プレイボタンが押された時に呼ばれる
     {
         //GameMangerに盤面選択モード開始するように命令
-        GameManager.Instance.EnterTargetingMode(zoomedCardView);
+        GameManager.Instance.ProcessPlayRequest(zoomedCardView);
         Debug.Log("盤面を選択してください");
 
         //拡大表示を閉じる

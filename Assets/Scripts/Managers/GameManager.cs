@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform playerCharacterSlotsParent;  //キャラクタースロットのTrasnformを設定
     public Transform PlayerCharacterSlotsParent { get { return playerCharacterSlotsParent; } }
 
+    [SerializeField] private SpellArea playerSpellArea; //スペルエリア
+
     [SerializeField] private Transform PlayerReserveArea;   //トラッシュのTransformを設定
 
     [SerializeField] private Transform enemyLeaderArea; //リーダーエリアのTransformを設定※相手用
@@ -157,6 +159,18 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
+    private void CheckGameEnd() //勝敗がついたかチェック
+    {
+        //プレイヤーが勝ったか?
+        if (playerAppealPoints >= GameConstants.WinAppealPoint)
+        {
+            Debug.Log("プレイヤーの勝利です！");
+        }
+        else if (enemyAppealPoints >= GameConstants.WinAppealPoint)
+        {
+            Debug.Log("あなたの敗北です。");
+        }
+    }
     private void ClearAllBuffs()
     {
         Debug.Log("ターン終了。全ての一時効果をリセットします。");
@@ -217,6 +231,7 @@ public class GameManager : MonoBehaviour
             Debug.Log(card.cardData.cardName + "をスロットに配置しました。");
             card.transform.SetParent(slot.transform, false);
             card.transform.localScale = Vector3.one * 0.8f;
+            card.transform.localRotation = Quaternion.identity;
             slot.occupiedCard = card;
         }
         else
@@ -520,6 +535,8 @@ public class GameManager : MonoBehaviour
 
         //UIの表示を更新する
         UIManager.Instance.UppdateAppealPointUI(playerAppealPoints, enemyAppealPoints);
+
+        CheckGameEnd();
     }
     public void MoveCardToDiscard (CardView card, TurnOwner owner)  //使用したカードを墓地に送る
     {
@@ -610,6 +627,38 @@ public class GameManager : MonoBehaviour
         //UIManager.Instance.UpdateManaUI
     
         return true;
+    }
+    public void ProcessPlayRequest(CardView card)
+    {
+        //カードの種類
+        switch (card.cardData.cardType)
+        {
+            //場所が決まっているカード
+            case CardType.Event:
+            case CardType.Appeal:
+                if (playerSpellArea != null)
+                {
+                    //ドラッグ＆ドロップの時と同じ処理を呼び出す！
+                    //これだけで、イベントなら即発動、アピールなら置いてターゲット待ちになる
+                    CardDroppedOnSpellArea(card, playerSpellArea);
+                }
+                else
+                {
+                    Debug.LogError("PlayerSpellAreaがGameManagerに設定されていません！");
+                }
+                break;
+
+            case CardType.Character:
+            case CardType.EvolveCharacter:
+                //これまで通り、盤面選択モードを開始する
+                EnterTargetingMode(card);
+                Debug.Log(card.cardData.cardName + "を出す場所(スロット/キャラ)を選択してください。");
+                break;
+
+            default:
+                Debug.LogWarning("未対応のカードタイプです：" + card.cardData.cardType);
+                break;
+        }
     }
     #endregion
 
