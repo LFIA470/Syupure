@@ -1035,13 +1035,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_gameObject: {fileID: 0}
   playerDeck:
+  - {fileID: 11400000, guid: d3f311d592ce36241ac63d22f2ea973d, type: 2}
+  - {fileID: 11400000, guid: d3f311d592ce36241ac63d22f2ea973d, type: 2}
+  - {fileID: 11400000, guid: 592bad705d17e1f4a926bb6545ce3269, type: 2}
   - {fileID: 11400000, guid: 1d8cfbb61f7f09c4e927a30a41c331ac, type: 2}
   - {fileID: 11400000, guid: 1d8cfbb61f7f09c4e927a30a41c331ac, type: 2}
   - {fileID: 11400000, guid: 8e68592cfd8e07e48a2a9d5f394f9105, type: 2}
   - {fileID: 11400000, guid: 8e68592cfd8e07e48a2a9d5f394f9105, type: 2}
-  - {fileID: 11400000, guid: 1d8cfbb61f7f09c4e927a30a41c331ac, type: 2}
-  - {fileID: 11400000, guid: 1d8cfbb61f7f09c4e927a30a41c331ac, type: 2}
-  - {fileID: 11400000, guid: 1d8cfbb61f7f09c4e927a30a41c331ac, type: 2}
   playerLeader: {fileID: 11400000, guid: 13025fad2fa1bd94daaebd104ff9ce13, type: 2}
   enemyDeck:
   - {fileID: 11400000, guid: afb3a7a0045ddd14fad68556cb7936b9, type: 2}
