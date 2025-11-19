@@ -293,6 +293,7 @@ MonoBehaviour:
   playerHandArea: {fileID: 367815213}
   playerLeaderArea: {fileID: 0}
   playerCharacterSlotsParent: {fileID: 0}
+  playerSpellArea: {fileID: 600705994}
   PlayerReserveArea: {fileID: 992611027}
   enemyLeaderArea: {fileID: 0}
   enemyCharacterSlotsParent: {fileID: 0}
