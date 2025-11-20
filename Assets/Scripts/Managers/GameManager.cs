@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public enum TurnOwner
 {
@@ -700,8 +701,7 @@ public class GameManager : MonoBehaviour
     }
     public bool AIPlayCharacter(CardView card, CharacterSlot slot)  //AIがキャラクターをプレイする
     {
-        // 1. 共通ルールチェック (Enemyとしてチェック)
-        // ※ CanPlayCardメソッドは private のままでOK
+        //共通ルールチェック
         if (!PlayCard(card.cardData, TurnOwner.Enemy))
         {
             return false;
@@ -731,6 +731,41 @@ public class GameManager : MonoBehaviour
 
         // 登場時効果があれば発動 (TimingID.ENTRY)
         EffectManager.Instance.ExecuteEffect(card.cardData, TurnOwner.Enemy);
+
+        return true;
+    }
+    public bool AIPlayAppeal(CardView card, CardView target) //AIがアピールをプレイする
+    {
+        //共通ルールチェック
+        if (!PlayCard(card.cardData, TurnOwner.Enemy))
+        {
+            return false;
+        }
+
+        //ターゲットの有効性チェック
+        bool isLeader = target.cardData.cardType == CardType.Leader;
+        bool isCharacter = target.cardData.cardType == CardType.Character; // 進化キャラも含むなら調整
+
+        if (!isLeader && !isCharacter)
+        {
+            return false;
+        }
+
+        //プレイ実行
+        Debug.Log("AIが " + card.cardData.cardName + " をプレイしました。");
+
+        //マナ消費
+        AppealCard appealData = card.cardData as AppealCard;
+        enemyMana -= appealData.cost;
+
+        //効果発動 (EffectManager)
+        EffectManager.Instance.ExecuteEffect(card.cardData, TurnOwner.Enemy, target);
+
+        //アピール実行
+        PerformAppeal(TurnOwner.Enemy, target);
+
+        //カードを墓地に送る
+        MoveCardToDiscard(card, TurnOwner.Enemy);
 
         return true;
     }

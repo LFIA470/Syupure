@@ -2582,6 +2582,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04f32b3958585f349ba39617afd4cbc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyHandArea: {fileID: 1131804064}
+  enemyCharacterSlotsParent: {fileID: 1394795613}
 --- !u!4 &1404212045
 Transform:
   m_ObjectHideFlags: 0
