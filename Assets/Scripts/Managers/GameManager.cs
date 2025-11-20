@@ -698,6 +698,42 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
+    public bool AIPlayCharacter(CardView card, CharacterSlot slot)  //AIがキャラクターをプレイする
+    {
+        // 1. 共通ルールチェック (Enemyとしてチェック)
+        // ※ CanPlayCardメソッドは private のままでOK
+        if (!PlayCard(card.cardData, TurnOwner.Enemy))
+        {
+            return false;
+        }
+
+        // 2. スロットの空きチェック
+        if (slot.occupiedCard != null)
+        {
+            return false;
+        }
+
+        // --- プレイ実行 ---
+        Debug.Log("AIが " + card.cardData.cardName + " をプレイしました。");
+
+        // マナ消費
+        CharacterCard charData = card.cardData as CharacterCard;
+        enemyMana -= charData.cost;
+        // (EnemyのマナUI更新があればここで)
+
+        // カードをスロットに移動
+        card.transform.SetParent(slot.transform, false);
+        card.transform.localPosition = Vector3.zero;
+        card.transform.localRotation = Quaternion.identity;
+        card.transform.localScale = Vector3.one * 0.8f;
+
+        slot.occupiedCard = card;
+
+        // 登場時効果があれば発動 (TimingID.ENTRY)
+        EffectManager.Instance.ExecuteEffect(card.cardData, TurnOwner.Enemy);
+
+        return true;
+    }
     #endregion
 
     //EffectManagerから呼ばれる窓口メソッド
