@@ -10,6 +10,14 @@ public enum TurnOwner
     Enemy,
 }
 
+public enum GamePhase
+{
+    Start,
+    Main,
+    Appeal, // アピールカード使用時のターゲット選択中など
+    End
+}
+
 public class GameManager : MonoBehaviour
 {
     //シングルトン
@@ -57,6 +65,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Game State")]
     public bool isPlayerTurn = true;        //ターン確認
+    public GamePhase currentPhase = GamePhase.Start;
     private bool isTargetingMode = false;   //盤面選択モード中かどうかのフラグ
     private CardView cardToPlay;            //プレイしようとしているカード
     private List<CardView> buffedCardsThisTurn = new List<CardView>();
@@ -68,6 +77,9 @@ public class GameManager : MonoBehaviour
     public int enemyAppealPoints = 0;       //相手アピールポイント(相手の勝利条件)
 
     public CardView selectedCard;           //選択されているカードを一時的に保存する
+
+    [Header("AI")]
+    [SerializeField] private EnemyAI enemyAI;
     #endregion
 
     //Start,UpdateなどUnityが自動で呼ぶメソッド
@@ -81,6 +93,60 @@ public class GameManager : MonoBehaviour
 
     //ゲームの流れを管理するメソッド
     #region Game Flow Methods
+    public void ChangePhase(GamePhase newPhase) //フェーズを切り替え、そのフェーズ開始時の処理を行う
+    {
+        currentPhase = newPhase;
+        Debug.Log($"フェーズ移行：{newPhase}");
+
+        switch (newPhase)
+        {
+            case GamePhase.Start:
+                OnStartPhase();
+                break;
+            case GamePhase.Main:
+                if (isPlayerTurn)
+                {
+                    Debug.Log("メインフェイズ：カードをプレイ出来ます。");
+                }
+                else
+                {
+                    Debug.Log("メインフェイズ：相手の番です。AI起動。");
+                    enemyAI.StartEnemyTurn();
+                }
+                break;
+            case GamePhase.Appeal:
+                Debug.Log("アピールステップ：ターゲットを選択してください。");
+                break;
+            case GamePhase.End:
+                OnEndPhase();
+                break;
+        }
+    }
+    private void OnStartPhase()
+    {
+        //マナ回復
+        if (isPlayerTurn) playerMana = GameConstants.DefaultMaxMana;
+        else enemyMana = GameConstants.DefaultMaxMana;
+
+        //カードを引く
+        deckManager.DrawCard(isPlayerTurn ? TurnOwner.Player : TurnOwner.Enemy);
+
+        //スタートフェイズの効果処理
+
+        //自動的にメインフェイズへ移行
+        ChangePhase(GamePhase.Main);
+    }
+    private void OnEndPhase()
+    {
+        //エンドフェイズの効果処理
+
+        //バフの解除
+        ClearAllBuffs();
+
+        //相手にターンを渡す
+        if (isPlayerTurn) StartTurn(TurnOwner.Enemy);
+        else StartTurn(TurnOwner.Player);
+    }
     public void StartGame() //ゲームの準備と開始を行う
     {
         Debug.Log("ゲームを開始します。");
@@ -107,56 +173,21 @@ public class GameManager : MonoBehaviour
     public void StartTurn(TurnOwner owner)  //ターン移行(開始)
     {
         Debug.Log(owner + "のターンを開始します。");
+        isPlayerTurn = (owner == TurnOwner.Player);
 
-        if (owner == TurnOwner.Player)
-        {
-            isPlayerTurn = true;
-
-            //マナ回復
-            playerMana = GameConstants.DefaultMaxMana;
-
-            //マナのUIを更新
-
-            //カードを一枚引く
-            deckManager.DrawCard(TurnOwner.Player);
-        }
-        else
-        {
-            isPlayerTurn = false;
-            //相手のマナを回復
-            enemyMana = GameConstants.DefaultMaxMana;
-
-            //相手のマナUIを更新
-
-            //相手がカードを一枚引く
-            deckManager.DrawCard(TurnOwner.Enemy);
-        }
+        //いきなり処理せず、スタートフェイズに移行するだけにする
+        ChangePhase(GamePhase.Start);
     }
     public void EndTurn(TurnOwner owner)//ターン移行(終了)
     {
-        //バフ解除
-        ClearAllBuffs();
-
-        switch (owner)
+        //いきなりターンを交代せず、エンドフェイズに移行する
+        if (currentPhase == GamePhase.Main)
         {
-            case TurnOwner.Player:
-                //プレイヤーがターンを終了した場合
-                if (isPlayerTurn)   //自分のターンじゃないのに押されるのを防ぐ
-                {
-                    isPlayerTurn = false;
-                    Debug.Log("プレイヤーのターン終了。相手のターンを開始します。");
-                    StartTurn(TurnOwner.Enemy);
-                }
-                break;
-            case TurnOwner.Enemy:
-                //相手がターンを終了した場合
-                if (!isPlayerTurn)
-                {
-                    isPlayerTurn = true;
-                    Debug.Log("相手のターン終了。プレイヤーのターンを開始します。");
-                    StartTurn(TurnOwner.Player);
-                }
-                break;
+            ChangePhase(GamePhase.End);
+        }
+        else
+        {
+            Debug.Log("メインフェイズ以外ではターンを終了出来ません。");
         }
     }
     private void CheckGameEnd() //勝敗がついたかチェック
@@ -584,6 +615,13 @@ public class GameManager : MonoBehaviour
         if (!isCorrectTurn)
         {
             Debug.Log("正しいターンではありません。");
+            return false;
+        }
+
+        //フェーズチェック
+        if (currentPhase != GamePhase.Main)
+        {
+            Debug.Log("メインフェイズ以外ではカードをプレイできません。");
             return false;
         }
 
