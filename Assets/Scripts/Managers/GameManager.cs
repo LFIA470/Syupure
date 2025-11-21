@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEngine.GraphicsBuffer;
 
 public enum TurnOwner
@@ -197,10 +198,14 @@ public class GameManager : MonoBehaviour
         if (playerAppealPoints >= GameConstants.WinAppealPoint)
         {
             Debug.Log("プレイヤーの勝利です！");
+
+            SceneManager.LoadScene("Result");
         }
         else if (enemyAppealPoints >= GameConstants.WinAppealPoint)
         {
             Debug.Log("あなたの敗北です。");
+
+            SceneManager.LoadScene("Result");
         }
     }
     private void ClearAllBuffs()
