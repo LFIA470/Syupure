@@ -199,11 +199,15 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("プレイヤーの勝利です！");
 
+            GameResultData.IsPlayerWin = true;
+
             SceneManager.LoadScene("Result");
         }
         else if (enemyAppealPoints >= GameConstants.WinAppealPoint)
         {
             Debug.Log("あなたの敗北です。");
+
+            GameResultData.IsPlayerWin = false;
 
             SceneManager.LoadScene("Result");
         }
