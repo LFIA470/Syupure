@@ -108,16 +108,16 @@ public class GameManager : MonoBehaviour
             case GamePhase.Main:
                 if (isPlayerTurn)
                 {
-                    Debug.Log("メインフェイズ：カードをプレイ出来ます。");
+                    BattleLogManager.Instance.ShowNotification("メインフェイズ");
                 }
                 else
                 {
-                    Debug.Log("メインフェイズ：相手の番です。AI起動。");
+                    BattleLogManager.Instance.ShowNotification("メインフェイズ");
                     enemyAI.StartEnemyTurn();
                 }
                 break;
             case GamePhase.Appeal:
-                Debug.Log("アピールステップ：ターゲットを選択してください。");
+                BattleLogManager.Instance.ShowGuide("アピールステップ（リーダーかキャラクター）を選択してください");
                 break;
             case GamePhase.End:
                 OnEndPhase();
@@ -174,7 +174,9 @@ public class GameManager : MonoBehaviour
     }
     public void StartTurn(TurnOwner owner)  //ターン移行(開始)
     {
-        Debug.Log(owner + "のターンを開始します。");
+        string msg = owner + "のターンを開始します。";
+        Debug.Log(msg); // エディタ用
+        //BattleLogManager.Instance.AddLog(msg);
         isPlayerTurn = (owner == TurnOwner.Player);
 
         //いきなり処理せず、スタートフェイズに移行するだけにする
