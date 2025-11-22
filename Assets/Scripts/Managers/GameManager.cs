@@ -491,6 +491,8 @@ public class GameManager : MonoBehaviour
         //モード解除
         isTargetingMode = false;
         cardToPlay = null;
+
+        UIManager.Instance.SetTurnEndButtonActive(true);
     }
     #endregion
 
@@ -500,6 +502,9 @@ public class GameManager : MonoBehaviour
     {
         isTargetingMode = true;
         cardToPlay = card;
+
+        UIManager.Instance.SetTurnEndButtonActive(false);
+
         Debug.Log("盤面選択モードに移行しました");
     }
     public bool IsTargetingMode()//現在、盤面選択モード中かどうかを返す
