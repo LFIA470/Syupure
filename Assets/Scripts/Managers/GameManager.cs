@@ -103,16 +103,16 @@ public class GameManager : MonoBehaviour
         switch (newPhase)
         {
             case GamePhase.Start:
+                BattleLogManager.Instance.ShowNotification("スタートフェイズ");
                 OnStartPhase();
                 break;
             case GamePhase.Main:
+                BattleLogManager.Instance.ShowNotification("メインフェイズ");
                 if (isPlayerTurn)
                 {
-                    BattleLogManager.Instance.ShowNotification("メインフェイズ");
                 }
                 else
                 {
-                    BattleLogManager.Instance.ShowNotification("メインフェイズ");
                     enemyAI.StartEnemyTurn();
                 }
                 break;
@@ -120,6 +120,7 @@ public class GameManager : MonoBehaviour
                 BattleLogManager.Instance.ShowGuide("アピールステップ（リーダーかキャラクター）を選択してください");
                 break;
             case GamePhase.End:
+                BattleLogManager.Instance.ShowNotification("エンドフェイズ");
                 OnEndPhase();
                 break;
         }
@@ -127,6 +128,7 @@ public class GameManager : MonoBehaviour
     private void OnStartPhase()
     {
         //マナ回復
+        BattleLogManager.Instance.ShowNotification("マナを回復");
         if (isPlayerTurn) playerMana = GameConstants.DefaultMaxMana;
         else enemyMana = GameConstants.DefaultMaxMana;
 
@@ -151,7 +153,7 @@ public class GameManager : MonoBehaviour
     }
     public void StartGame() //ゲームの準備と開始を行う
     {
-        Debug.Log("ゲームを開始します。");
+        BattleLogManager.Instance.ShowNotification("ゲームスタート");
 
         //両プレイヤーのデッキシャッフル
         deckManager.DeckShuffle(TurnOwner.Player);
@@ -174,9 +176,7 @@ public class GameManager : MonoBehaviour
     }
     public void StartTurn(TurnOwner owner)  //ターン移行(開始)
     {
-        string msg = owner + "のターンを開始します。";
-        Debug.Log(msg); // エディタ用
-        //BattleLogManager.Instance.AddLog(msg);
+        BattleLogManager.Instance.ShowNotification(owner + "のターン");
         isPlayerTurn = (owner == TurnOwner.Player);
 
         //いきなり処理せず、スタートフェイズに移行するだけにする
@@ -191,7 +191,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("メインフェイズ以外ではターンを終了出来ません。");
+            BattleLogManager.Instance.ShowNotification("メインフェイズ以外ではターンを終了出来ません");
         }
     }
     private void CheckGameEnd() //勝敗がついたかチェック
@@ -251,7 +251,7 @@ public class GameManager : MonoBehaviour
         //カードタイプがキャラクターかどうか
         if (card.cardData.cardType != CardType.Character)
         {
-            Debug.Log("キャラクターカード以外はフィールドに出せません");
+            BattleLogManager.Instance.ShowNotification("キャラクターカード以外はフィールドに出せません");
             card.ReturnToOriginalParent();
             return;
         }
@@ -259,7 +259,7 @@ public class GameManager : MonoBehaviour
         //キャラクターエリアが使用済みかどうか
         if (slot.occupiedCard != null)
         {
-            Debug.Log("このスロットは既に使用されています。");
+            BattleLogManager.Instance.ShowNotification("このスロットは既に使用されています");
             card.ReturnToOriginalParent();
             return;
         }
@@ -312,7 +312,7 @@ public class GameManager : MonoBehaviour
             CharacterSlot slot = baseCharacter.transform.parent.GetComponent<CharacterSlot>();
             if (slot == null)
             {
-                Debug.LogError("進化元のキャラクターがスロットにいません！");
+                BattleLogManager.Instance.ShowNotification("進化元のキャラクターがスロットにいません");
                 evolveCard.ReturnToOriginalParent();
                 return;
             }
@@ -657,7 +657,7 @@ public class GameManager : MonoBehaviour
 
         if (currentMana < cost)
         {
-            Debug.Log("マナが足りません。");
+            BattleLogManager.Instance.ShowNotification("マナが足りません");
             return false;
         }
 
