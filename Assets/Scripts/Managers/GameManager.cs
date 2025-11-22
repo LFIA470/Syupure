@@ -63,6 +63,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform enemyCharacterSlotsParent;   //キャラクタースロットのTransformを設定※相手用
     public Transform EnemyCharacterSlotsParent { get {return enemyCharacterSlotsParent; } }
 
+    [SerializeField] private Transform enemySpellArea;  //スペルエリア※相手用
+
     [SerializeField] private Transform EnemyReserveArea;    //トラッシュのTransformを設定※相手用
 
     [Header("Game State")]
@@ -606,10 +608,16 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        foreach (Transform existingCard in targetPile)
+        {
+            existingCard.gameObject.SetActive(false);
+        }
+
         //カードの親を墓地エリアに変更
         card.transform.SetParent(targetPile, false);
 
         //カードの操作を不能にし、見た目をリセット
+        card.transform.localPosition = Vector3.zero;
         card.transform.localRotation = Quaternion.identity; //傾きをリセット
         card.transform.localScale = Vector3.one * 0.8f;    //大きさをリセット
 
@@ -769,6 +777,14 @@ public class GameManager : MonoBehaviour
 
         //プレイ実行
         Debug.Log("AIが " + card.cardData.cardName + " をプレイしました。");
+
+        if (enemySpellArea != null)
+        {
+            card.transform.SetParent(enemySpellArea, false);
+            card.transform.localPosition = Vector3.zero;
+            card.transform.localRotation = Quaternion.identity;
+            card.transform.localScale = Vector3.one * 0.8f;
+        }
 
         //マナ消費
         AppealCard appealData = card.cardData as AppealCard;
