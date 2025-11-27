@@ -105,8 +105,7 @@ public class GameManager : MonoBehaviour
         switch (newPhase)
         {
             case GamePhase.Start:
-                BattleLogManager.Instance.ShowNotification("スタートフェイズ");
-                OnStartPhase();
+                StartCoroutine(OnStartPhase());
                 break;
             case GamePhase.Main:
                 BattleLogManager.Instance.ShowNotification("メインフェイズ");
@@ -122,17 +121,23 @@ public class GameManager : MonoBehaviour
                 BattleLogManager.Instance.ShowGuide("アピールステップ（リーダーかキャラクター）を選択してください");
                 break;
             case GamePhase.End:
-                BattleLogManager.Instance.ShowNotification("エンドフェイズ");
-                OnEndPhase();
+                StartCoroutine(OnEndPhase());
                 break;
         }
     }
-    private void OnStartPhase()
+    private IEnumerator OnStartPhase()
     {
+        //スタートフェイズ開始演出
+        BattleLogManager.Instance.ShowPhaseAnnounce("スタートフェイズ");
+        
+        yield return new WaitForSeconds(1.0f);
+
         //マナ回復
         BattleLogManager.Instance.ShowNotification("マナを回復");
         if (isPlayerTurn) playerMana = GameConstants.DefaultMaxMana;
         else enemyMana = GameConstants.DefaultMaxMana;
+
+        yield return new WaitForSeconds(1.0f);
 
         //カードを引く
         deckManager.DrawCard(isPlayerTurn ? TurnOwner.Player : TurnOwner.Enemy);
@@ -142,8 +147,12 @@ public class GameManager : MonoBehaviour
         //自動的にメインフェイズへ移行
         ChangePhase(GamePhase.Main);
     }
-    private void OnEndPhase()
+    private IEnumerator OnEndPhase()
     {
+        BattleLogManager.Instance.ShowPhaseAnnounce("エンドフェイズ");
+
+        yield return new WaitForSeconds(1.0f);
+
         //エンドフェイズの効果処理
 
         //バフの解除

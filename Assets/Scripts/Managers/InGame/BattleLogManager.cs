@@ -26,6 +26,14 @@ public class BattleLogManager : MonoBehaviour
     private Coroutine currentCoroutine; //現在実行中の表示処理
 
     private bool isShowingGuide = false;
+
+    [Header("Phase UI")]
+    [SerializeField] private RectTransform phasePanelRect;
+    [SerializeField] private Text phaseText;
+    [SerializeField] private float slideDuration = 0.5f;
+    [SerializeField] private float stayDuration = 1.0f;
+    [SerializeField] private AnimationCurve slideInCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 入りの動き
+    [SerializeField] private AnimationCurve slideOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 出の動き
     #endregion
 
     //ログ表示に関するメソッド
@@ -64,6 +72,38 @@ public class BattleLogManager : MonoBehaviour
         {
             messageText.text = "";
         }
+    }
+    public void ShowPhaseAnnounce(string phaseName)
+    {
+        phaseText.text = phaseName;
+        float screenWidth = 1300.0f;
+
+        //初期位置設定（画面右外）
+        phasePanelRect.anchoredPosition = new Vector2(screenWidth, 0);
+
+        //右から中央へスライド (In)
+        SimpleTweenManager.Instance.SlideUI(
+            phasePanelRect,
+            new Vector2(0, 0), // 目標：中央
+            slideDuration,
+            0f,                // 前の待機：なし
+            stayDuration,      // 後の待機：中央で止まる時間
+            slideInCurve,      // カーブ：In用
+            () =>              // 完了後の処理（コールバック）
+            {
+                //中央から左へ戻る (Out)
+                //Inが終わった後に実行される
+                SimpleTweenManager.Instance.SlideUI(
+                    phasePanelRect,
+                    new Vector2(-screenWidth, 0), // 目標：左外
+                    slideDuration,
+                    0f,
+                    0f,
+                    slideOutCurve, // カーブ：Out用
+                    null
+                );
+            }
+        );
     }
     #endregion
 }
