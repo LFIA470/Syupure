@@ -381,7 +381,14 @@ public class GameManager : MonoBehaviour
     }
     public void CardDroppedOnSpellArea(CardView card, SpellArea spellArea)//アピール・イベントエリアにドロップされた時の処理
     {
-        //ルールチェック
+        //カードタイプチェック
+        if (card.cardData.cardType != CardType.Event && card.cardData.cardType != CardType.Appeal)
+        {
+            Debug.Log("このエリアにはイベントかアピールしか出せません。");
+            card.ReturnToOriginalParent();
+            return;
+        }
+
         //共通ルールチェック
         bool canPlay = PlayCard(card.cardData, TurnOwner.Player);
 
@@ -398,7 +405,6 @@ public class GameManager : MonoBehaviour
             case CardType.Appeal:
                 Debug.Log(card.cardData.cardName + " をプレイするため、ターゲット選択に移行します。");
                 card.transform.SetParent(spellArea.transform, false);
-                //card.transform.localPosition = Vector2.zero;    //エリアの真ん中に配置
                 card.transform.localRotation = Quaternion.identity;
                 card.transform.localScale = Vector3.one * 0.8f;
                 EnterTargetingMode(card);
@@ -720,10 +726,7 @@ public class GameManager : MonoBehaviour
             enemyMana -= cost;
             UIManager.Instance.UpdateCheerPowertUI(enemyMana, GameConstants.DefaultMaxMana, TurnOwner.Enemy);
         }
-
-        //UI更新
-        //UIManager.Instance.UpdateManaUI
-    
+        
         return true;
     }
     public void ProcessPlayRequest(CardView card)
@@ -777,8 +780,6 @@ public class GameManager : MonoBehaviour
 
         // マナ消費
         CharacterCard charData = card.cardData as CharacterCard;
-        enemyMana -= charData.cost;
-        // (EnemyのマナUI更新があればここで)
 
         // カードをスロットに移動
         card.transform.SetParent(slot.transform, false);
@@ -823,7 +824,6 @@ public class GameManager : MonoBehaviour
 
         //マナ消費
         AppealCard appealData = card.cardData as AppealCard;
-        enemyMana -= appealData.cost;
 
         //効果発動 (EffectManager)
         EffectManager.Instance.ExecuteEffect(card.cardData, TurnOwner.Enemy, target);
