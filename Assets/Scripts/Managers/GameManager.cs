@@ -16,8 +16,14 @@ public enum GamePhase
 {
     Start,
     Main,
-    Appeal, // アピールカード使用時のターゲット選択中など
     End
+}
+
+public enum MainPhaseState
+{
+    Idle,       // 何もしていない、入力待ち
+    Appealing,  // アピール演出中・処理中
+    Selection   // 対象選択中など
 }
 
 public class GameManager : MonoBehaviour
@@ -70,7 +76,7 @@ public class GameManager : MonoBehaviour
     [Header("Game State")]
     public bool isPlayerTurn = true;        //ターン確認
     public GamePhase currentPhase = GamePhase.Start;
-    private bool isTargetingMode = false;   //盤面選択モード中かどうかのフラグ
+    public MainPhaseState currentMainPhaseState = MainPhaseState.Idle;
     private CardView cardToPlay;            //プレイしようとしているカード
     private List<CardView> buffedCardsThisTurn = new List<CardView>();
 
@@ -109,9 +115,6 @@ public class GameManager : MonoBehaviour
                 break;
             case GamePhase.Main:
                 StartCoroutine(OnMainPhase());
-                break;
-            case GamePhase.Appeal:
-                BattleLogManager.Instance.ShowGuide("アピールステップ（リーダーかキャラクター）を選択してください");
                 break;
             case GamePhase.End:
                 StartCoroutine(OnEndPhase());
@@ -457,7 +460,7 @@ public class GameManager : MonoBehaviour
     public void OnFieldClicked(Transform fieldTransform)
     {
         //盤面選択モード出なければ、何もせず終了
-        if (!isTargetingMode || cardToPlay == null) return;
+        if (currentMainPhaseState != MainPhaseState.Selection|| cardToPlay == null) return;
 
         //プレイするカードの種類を取得
         CardType type = cardToPlay.cardData.cardType;
@@ -510,7 +513,7 @@ public class GameManager : MonoBehaviour
                 break;
         }
         //モード解除
-        isTargetingMode = false;
+        currentMainPhaseState = MainPhaseState.Idle;
         cardToPlay = null;
 
         UIManager.Instance.SetTurnEndButtonActive(true);
@@ -521,16 +524,16 @@ public class GameManager : MonoBehaviour
     #region Game State Methods
     public void EnterTargetingMode(CardView card)//zoomUIManagerから呼ばれる
     {
-        isTargetingMode = true;
+        currentMainPhaseState = MainPhaseState.Selection;
         cardToPlay = card;
 
         UIManager.Instance.SetTurnEndButtonActive(false);
 
         Debug.Log("盤面選択モードに移行しました");
     }
-    public bool IsTargetingMode()//現在、盤面選択モード中かどうかを返す
+    public MainPhaseState CurrentMainPhase()//現在、盤面選択モード中かどうかを返す
     {
-        return isTargetingMode;
+        return currentMainPhaseState;
     }
     #endregion
 

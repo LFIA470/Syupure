@@ -138,7 +138,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
         if (eventData.dragging) return;
 
         //GameManagerに「現在のモード」を問い合わせる
-        if (GameManager.Instance.IsTargetingMode())
+        if (GameManager.Instance.CurrentMainPhase() == MainPhaseState.Selection)
         {
             Debug.Log(this.cardData.cardName + "がターゲットとしてクリックされました。");
             GameManager.Instance.OnFieldClicked(this.transform);
