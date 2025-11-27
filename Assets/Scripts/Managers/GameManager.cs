@@ -311,6 +311,12 @@ public class GameManager : MonoBehaviour
             card.transform.localScale = Vector3.one * 0.8f;
             card.transform.localRotation = Quaternion.identity;
             slot.occupiedCard = card;
+
+            if (card.cardData.timingID == "ENTRY")
+            {
+                Debug.Log("“oêŒø‰Ê”­“®I");
+                EffectManager.Instance.ExecuteEffect(card.cardData, TurnOwner.Player);
+            }
         }
         else
         {
