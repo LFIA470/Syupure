@@ -34,6 +34,16 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Text playerAppealPointText;
     [SerializeField] private Text enemyAppealPointText;
 
+    [Header("CheerPower UI")]
+    [SerializeField] private Transform playerCheerPowerArea; // 親オブジェクト
+    [SerializeField] private Transform enemyCheerPowerArea; // 親オブジェクト※相手用
+    [SerializeField] private GameObject cheerPowerIconPrefab; // アイコンのプレハブ
+    [SerializeField] private Sprite iconOnSprite;  // ON画像
+    [SerializeField] private Sprite iconOffSprite; // OFF画像
+
+    private List<Image> PlayerCheerPowerIcons = new List<Image>();
+    private List<Image> EnemyCheerPowerIcons = new List<Image>();
+
     [Header("Buttons")]
     [SerializeField] private GameObject turnEndButton;
     #endregion
@@ -52,7 +62,66 @@ public class UIManager : MonoBehaviour
             enemyAppealPointText.text = enemyPoints.ToString();
         }
     }
+    public void UpdateCheerPowertUI(int current, int max, TurnOwner owner)   //応援ポイント（マナ）の表示を更新する
+    {
+        if (owner == TurnOwner.Player)
+        {
+            //アイコンの数が足りなければ増やす、多すぎれば減らす
+            //(最大値が変わるカード効果などに対応するため)
+            while (PlayerCheerPowerIcons.Count < max)
+            {
+                GameObject newIcon = Instantiate(cheerPowerIconPrefab, playerCheerPowerArea);
+                PlayerCheerPowerIcons.Add(newIcon.GetComponent<Image>());
+            }
+            while (PlayerCheerPowerIcons.Count > max)
+            {
+                Destroy(PlayerCheerPowerIcons[PlayerCheerPowerIcons.Count - 1].gameObject);
+                PlayerCheerPowerIcons.RemoveAt(PlayerCheerPowerIcons.Count - 1);
+            }
 
+            //アイコンの画像を切り替える
+            for (int i = 0; i < PlayerCheerPowerIcons.Count; i++)
+            {
+                if (i < current)
+                {
+                    //現在値より小さいインデックスは「ON」
+                    PlayerCheerPowerIcons[i].sprite = iconOnSprite;
+                }
+                else
+                {
+                    //それ以外は「OFF」
+                    PlayerCheerPowerIcons[i].sprite = iconOffSprite;
+                }
+            }
+        }
+        else
+        {
+            while (EnemyCheerPowerIcons.Count < max)
+            {
+                GameObject newIcon = Instantiate(cheerPowerIconPrefab, enemyCheerPowerArea);
+                EnemyCheerPowerIcons.Add(newIcon.GetComponent<Image>());
+            }
+            while (EnemyCheerPowerIcons.Count > max)
+            {
+                Destroy(EnemyCheerPowerIcons[EnemyCheerPowerIcons.Count - 1].gameObject);
+                EnemyCheerPowerIcons.RemoveAt(EnemyCheerPowerIcons.Count - 1);
+            }
+
+            for (int i = 0; i < EnemyCheerPowerIcons.Count; i++)
+            {
+                if (i < current)
+                {
+                    //現在値より小さいインデックスは「ON」
+                    EnemyCheerPowerIcons[i].sprite = iconOnSprite;
+                }
+                else
+                {
+                    //それ以外は「OFF」
+                    EnemyCheerPowerIcons[i].sprite = iconOffSprite;
+                }
+            }
+        }        
+    }
     public void SetTurnEndButtonActive(bool isActive)   //ボタンの表示・非表示を切り替えるメソッド
     {
         if (turnEndButton != null)

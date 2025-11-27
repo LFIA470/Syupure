@@ -48,21 +48,6 @@ public class BattleLogManager : MonoBehaviour
         if (currentCoroutine != null) StopCoroutine(currentCoroutine);
         currentCoroutine = StartCoroutine(ShowMessageRoutine(message, displayTime));
     }
-    //public void ShowGuide(string message)   //操作ガイドを表示する（ずっと消えない）
-    //{
-    //    if (currentCoroutine != null) StopCoroutine(currentCoroutine);
-
-    //    //時間制限なしで表示する
-    //    messageText.text = message;
-    //    logPanelRect.gameObject.SetActive(true);
-    //    isShowingGuide = true; //ガイド表示中フラグを立てる
-    //}
-    //public void HideGuide() //ガイドを消す（操作完了時などに呼ぶ）
-    //{
-    //    isShowingGuide = false;
-    //    messageText.text = "";
-    //    logPanelRect.gameObject.SetActive(false);
-    //}
     private IEnumerator ShowMessageRoutine(string message, float duration)
     {
         messageText.text = message;

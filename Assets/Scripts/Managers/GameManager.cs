@@ -130,10 +130,18 @@ public class GameManager : MonoBehaviour
 
         //マナ回復
         BattleLogManager.Instance.ShowNotification("マナを回復");
-        if (isPlayerTurn) playerMana = GameConstants.DefaultMaxMana;
-        else enemyMana = GameConstants.DefaultMaxMana;
+        if (isPlayerTurn)
+        {
+            playerMana = GameConstants.DefaultMaxMana;
+            UIManager.Instance.UpdateCheerPowertUI(playerMana, GameConstants.DefaultMaxMana, TurnOwner.Player);
+        }
+        else
+        {
+            enemyMana = GameConstants.DefaultMaxMana;
+            UIManager.Instance.UpdateCheerPowertUI(enemyMana, GameConstants.DefaultMaxMana, TurnOwner.Enemy);
+        }
 
-        yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(1.0f);
 
         //カードを引く
         deckManager.DrawCard(isPlayerTurn ? TurnOwner.Player : TurnOwner.Enemy);
@@ -177,6 +185,9 @@ public class GameManager : MonoBehaviour
     }
     public void StartGame() //ゲームの準備と開始を行う
     {
+        UIManager.Instance.UpdateCheerPowertUI(playerMana, GameConstants.DefaultMaxMana, TurnOwner.Player);
+        UIManager.Instance.UpdateCheerPowertUI(playerMana, GameConstants.DefaultMaxMana, TurnOwner.Enemy);
+
         BattleLogManager.Instance.ShowNotification("ゲームスタート");
 
         //両プレイヤーのデッキシャッフル
@@ -702,10 +713,12 @@ public class GameManager : MonoBehaviour
         if (owner == TurnOwner.Player)
         {
             playerMana -= cost;
+            UIManager.Instance.UpdateCheerPowertUI(playerMana, GameConstants.DefaultMaxMana, TurnOwner.Player);
         }
         else
         {
             enemyMana -= cost;
+            UIManager.Instance.UpdateCheerPowertUI(enemyMana, GameConstants.DefaultMaxMana, TurnOwner.Enemy);
         }
 
         //UI更新
