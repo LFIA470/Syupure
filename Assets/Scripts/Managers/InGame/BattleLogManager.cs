@@ -17,9 +17,6 @@ public class BattleLogManager : MonoBehaviour
 
     //変数宣言
     #region Variables
-    [Header("UI References")]
-    [SerializeField] private Text messageText; //画面に表示するテキスト
-
     [Header("Settings")]
     [SerializeField] private float displayTime = 3.0f; //メッセージを表示する秒数
 
@@ -34,8 +31,11 @@ public class BattleLogManager : MonoBehaviour
     [SerializeField] private float stayDuration = 1.0f;
     [SerializeField] private AnimationCurve slideInCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 入りの動き
     [SerializeField] private AnimationCurve slideOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 出の動き
-
     [SerializeField] private List<Sprite> phaseSprites;
+
+    [Header("Log UI")]
+    [SerializeField] private RectTransform logPanelRect;
+    [SerializeField] private Text messageText; //画面に表示するテキスト
     #endregion
 
     //ログ表示に関するメソッド
@@ -48,25 +48,25 @@ public class BattleLogManager : MonoBehaviour
         if (currentCoroutine != null) StopCoroutine(currentCoroutine);
         currentCoroutine = StartCoroutine(ShowMessageRoutine(message, displayTime));
     }
-    public void ShowGuide(string message)   //操作ガイドを表示する（ずっと消えない）
-    {
-        if (currentCoroutine != null) StopCoroutine(currentCoroutine);
+    //public void ShowGuide(string message)   //操作ガイドを表示する（ずっと消えない）
+    //{
+    //    if (currentCoroutine != null) StopCoroutine(currentCoroutine);
 
-        //時間制限なしで表示する
-        messageText.text = message;
-        messageText.gameObject.SetActive(true);
-        isShowingGuide = true; //ガイド表示中フラグを立てる
-    }
-    public void HideGuide() //ガイドを消す（操作完了時などに呼ぶ）
-    {
-        isShowingGuide = false;
-        messageText.text = "";
-        messageText.gameObject.SetActive(false);
-    }
+    //    //時間制限なしで表示する
+    //    messageText.text = message;
+    //    logPanelRect.gameObject.SetActive(true);
+    //    isShowingGuide = true; //ガイド表示中フラグを立てる
+    //}
+    //public void HideGuide() //ガイドを消す（操作完了時などに呼ぶ）
+    //{
+    //    isShowingGuide = false;
+    //    messageText.text = "";
+    //    logPanelRect.gameObject.SetActive(false);
+    //}
     private IEnumerator ShowMessageRoutine(string message, float duration)
     {
         messageText.text = message;
-        messageText.gameObject.SetActive(true);
+        logPanelRect.gameObject.SetActive(true);
         yield return new WaitForSeconds(duration);
 
         //ガイド表示中でなければ消す
@@ -74,6 +74,8 @@ public class BattleLogManager : MonoBehaviour
         {
             messageText.text = "";
         }
+
+        logPanelRect.gameObject.SetActive(false);
     }
     public void ShowPhaseAnnounce(GamePhase phaseName) //フェーズ遷移演出呼び出し
     {
