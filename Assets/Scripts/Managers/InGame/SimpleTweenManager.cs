@@ -21,12 +21,12 @@ public class SimpleTweenManager : MonoBehaviour
     /// <param name="delayAfter">移動後の待機時間</param>
     /// <param name="curve">動きのカーブ（緩急）</param>
     /// <param name="onComplete">完了後に実行したい処理（あれば）</param>
-    public void SlideUI(RectTransform target, Vector2 targetPosition, float duration, float delayBefore, float delayAfter, AnimationCurve curve, Action onComplete = null)
+    public void SlideUI(RectTransform target, Vector2 targetPosition, float duration, float delayBefore, float delayAfter, AnimationCurve curve, Action onComplete = null)  //二点間移動演出呼び出し
     {
         StartCoroutine(SlideRoutine(target, targetPosition, duration, delayBefore, delayAfter, curve, onComplete));
     }
 
-    private IEnumerator SlideRoutine(RectTransform target, Vector2 targetPos, float duration, float delayBefore, float delayAfter, AnimationCurve curve, Action onComplete)
+    private IEnumerator SlideRoutine(RectTransform target, Vector2 targetPos, float duration, float delayBefore, float delayAfter, AnimationCurve curve, Action onComplete) //二点間移動演出
     {
         //移動前の待機
         if (delayBefore > 0)

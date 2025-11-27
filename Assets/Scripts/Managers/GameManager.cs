@@ -108,14 +108,7 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(OnStartPhase());
                 break;
             case GamePhase.Main:
-                BattleLogManager.Instance.ShowNotification("メインフェイズ");
-                if (isPlayerTurn)
-                {
-                }
-                else
-                {
-                    enemyAI.StartEnemyTurn();
-                }
+                StartCoroutine(OnMainPhase());
                 break;
             case GamePhase.Appeal:
                 BattleLogManager.Instance.ShowGuide("アピールステップ（リーダーかキャラクター）を選択してください");
@@ -128,7 +121,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator OnStartPhase()
     {
         //スタートフェイズ開始演出
-        BattleLogManager.Instance.ShowPhaseAnnounce("スタートフェイズ");
+        BattleLogManager.Instance.ShowPhaseAnnounce(GamePhase.Start);
         
         yield return new WaitForSeconds(1.0f);
 
@@ -147,9 +140,26 @@ public class GameManager : MonoBehaviour
         //自動的にメインフェイズへ移行
         ChangePhase(GamePhase.Main);
     }
+    private IEnumerator OnMainPhase()
+    {
+        //エンドフェイズ開始演出
+        BattleLogManager.Instance.ShowPhaseAnnounce(GamePhase.Main);
+
+        yield return new WaitForSeconds(1.0f);
+
+        //メインフェイズ開始時効果
+
+        if (isPlayerTurn)
+        {
+        }
+        else
+        {
+            enemyAI.StartEnemyTurn();
+        }
+    }
     private IEnumerator OnEndPhase()
     {
-        BattleLogManager.Instance.ShowPhaseAnnounce("エンドフェイズ");
+        BattleLogManager.Instance.ShowPhaseAnnounce(GamePhase.End);
 
         yield return new WaitForSeconds(1.0f);
 

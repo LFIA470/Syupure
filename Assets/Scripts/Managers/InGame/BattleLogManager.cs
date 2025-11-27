@@ -29,11 +29,13 @@ public class BattleLogManager : MonoBehaviour
 
     [Header("Phase UI")]
     [SerializeField] private RectTransform phasePanelRect;
-    [SerializeField] private Text phaseText;
+    [SerializeField] private Image phaseImage;
     [SerializeField] private float slideDuration = 0.5f;
     [SerializeField] private float stayDuration = 1.0f;
     [SerializeField] private AnimationCurve slideInCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 入りの動き
     [SerializeField] private AnimationCurve slideOutCurve = AnimationCurve.EaseInOut(0, 0, 1, 1); // 出の動き
+
+    [SerializeField] private List<Sprite> phaseSprites;
     #endregion
 
     //ログ表示に関するメソッド
@@ -73,9 +75,21 @@ public class BattleLogManager : MonoBehaviour
             messageText.text = "";
         }
     }
-    public void ShowPhaseAnnounce(string phaseName)
+    public void ShowPhaseAnnounce(GamePhase phaseName) //フェーズ遷移演出呼び出し
     {
-        phaseText.text = phaseName;
+        phaseImage.sprite = phaseSprites[(int)phaseName];
+        //switch (phaseName)
+        //{
+        //    case GamePhase.Start:
+        //        phaseImage.sprite = phaseSprites[0];
+        //        break;
+        //    case GamePhase.Main:
+        //        phaseImage.sprite = phaseSprites[1];
+        //        break;
+        //    case GamePhase.End:
+        //        phaseImage.sprite = phaseSprites[2];
+        //        break;
+        //}
         float screenWidth = 1300.0f;
 
         //初期位置設定（画面右外）
