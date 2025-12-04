@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using static UnityEngine.GraphicsBuffer;
 
 public enum TurnOwner
+{
+    Player,
+    Enemy,
+}
+
+public enum FieldOwner
 {
     Player,
     Enemy,
@@ -24,6 +27,14 @@ public enum MainPhaseState
     Idle,       // 何もしていない、入力待ち
     Appealing,  // アピール演出中・処理中
     Selection   // 対象選択中など
+}
+
+public enum TargetingState
+{
+    None,           // 選択していない
+    SelectAlly,     // 味方を選択中
+    SelectEnemy,    // 敵を選択中
+    SelectHandCard, // 手札を選択中
 }
 
 public class GameManager : MonoBehaviour
@@ -77,7 +88,9 @@ public class GameManager : MonoBehaviour
     public bool isPlayerTurn = true;        //ターン確認
     public GamePhase currentPhase = GamePhase.Start;
     public MainPhaseState currentMainPhaseState = MainPhaseState.Idle;
+    public TargetingState targetingState = TargetingState.None;
     private CardView cardToPlay;            //プレイしようとしているカード
+    private CardView appealSourceCard;
     private List<CardView> buffedCardsThisTurn = new List<CardView>();
 
     [Header("Player & Enemy Stats")]
@@ -471,6 +484,24 @@ public class GameManager : MonoBehaviour
         //３つの条件を全て満たしていれば true (プレイ可能)を返す
         return condition1 && condition2 && condition3;
     }
+    // クリックされたカードが「自分の場のキャラ/リーダー」か？
+    private bool IsMyFieldCard(CardView card)
+    {
+        if (card.transform.parent == playerLeaderArea) return true;
+        CharacterSlot slot = card.GetComponentInParent<CharacterSlot>();
+        if (slot != null && slot.owner == FieldOwner.Player) return true;
+        return false;
+    }
+
+    // クリックされたカードが「相手の場のキャラ/リーダー」か？
+    private bool IsEnemyFieldCard(CardView card)
+    {
+        if (card.transform.parent == enemyLeaderArea) return true; // (相手リーダーエリアの変数が必要)
+        CharacterSlot slot = card.GetComponentInParent<CharacterSlot>();
+        if (slot != null && slot.owner == FieldOwner.Enemy) return true;
+
+        return false;
+    }
     #endregion
 
     //UI操作に関するメソッド
@@ -493,52 +524,94 @@ public class GameManager : MonoBehaviour
         {
             //キャラクターをプレイしようとしている場合
             case CardType.Character:
-                //クリックした場所は「空のスロット」か？
-                CharacterSlot slot = fieldTransform.GetComponent<CharacterSlot>();
-                if (slot != null)
-                {
-                    //正しい場所→スロット処理を呼ぶ
-                    CardDroppedOnSlot(cardToPlay, slot);
-                }
+                HandleCharacterClick(fieldTransform);
                 break;
             case CardType.EvolveCharacter:
-                //クリックした場所は「キャラクターカード」か？
-                CardView baseCharacter = fieldTransform.GetComponent<CardView>();
-                if (baseCharacter != null && baseCharacter.cardData.cardType == CardType.Character)
-                {
-                    //正しい場所→進化処理を呼ぶ
-                    CardDroppedOnCharacter(cardToPlay, baseCharacter);
-                }
+                HandleEvolveCharacterClick(fieldTransform);
                 break;
             case CardType.Appeal:
-                //クリックした場所は「リーダー」か「キャラクター」か？
-                CardView targetCard = fieldTransform.GetComponent<CardView>();
-                if (targetCard != null && (targetCard.cardData.cardType == CardType.Leader || targetCard.cardData.cardType == CardType.Character))
-                {
-                    //アピール効果実行
-                    EffectManager.Instance.ExecuteEffect(cardToPlay.cardData, TurnOwner.Player, targetCard);
-
-                    //アピール処理を実行
-                    PerformAppeal(TurnOwner.Player, targetCard);
-
-                    //待機していたアピールカードを破棄
-                    MoveCardToDiscard(cardToPlay, TurnOwner.Player);
-                }
+                HandleAppealClick(fieldTransform);
                 break;
             case CardType.Event:
-                //クリックした場所は「呪文エリア」か？
-                SpellArea spellArea = fieldTransform.GetComponent<SpellArea>();
-                if (spellArea != null)
-                {
-                    //正しい場所→呪文処理を呼ぶ
-                    CardDroppedOnSpellArea(cardToPlay, spellArea);
-                }
+                HandleEventClick(fieldTransform);
                 break;
+        }        
+    }
+    #endregion
+
+    //カードタイプごとの処理に関するメソッド
+    #region Card Type Flow
+    private void HandleCharacterClick(Transform target)
+    {
+        //クリックした場所は「空のスロット」か？
+        CharacterSlot clickedSlot = target.GetComponent<CharacterSlot>();
+        if (clickedSlot != null)
+        {
+            //正しい場所→スロット処理を呼ぶ
+            CardDroppedOnSlot(cardToPlay, clickedSlot);
         }
-        //モード解除
+
         currentMainPhaseState = MainPhaseState.Idle;
         cardToPlay = null;
+        UIManager.Instance.SetTurnEndButtonActive(true);
+    }
+    private void HandleEvolveCharacterClick(Transform target)
+    {
+        //クリックした場所は「キャラクターカード」か？
+        CardView baseCharacter = target.GetComponent<CardView>();
+        if (baseCharacter != null && baseCharacter.cardData.cardType == CardType.Character)
+        {
+            //正しい場所→進化処理を呼ぶ
+            CardDroppedOnCharacter(cardToPlay, baseCharacter);
+        }
 
+        currentMainPhaseState = MainPhaseState.Idle;
+        cardToPlay = null;
+        UIManager.Instance.SetTurnEndButtonActive(true);
+    }
+    private void HandleAppealClick(Transform target)
+    {
+        CardView clickedCard = target.GetComponent<CardView>();
+        if (clickedCard == null) return;
+
+        if (targetingState == TargetingState.SelectAlly)
+        {
+            if (IsMyFieldCard(clickedCard))
+            {
+                appealSourceCard = clickedCard;
+
+                targetingState = TargetingState.SelectEnemy;
+                Debug.Log("相手を選んでください");
+            }
+        }
+        else if (targetingState == TargetingState.SelectEnemy)
+        {
+            if (IsEnemyFieldCard(clickedCard))
+            {
+                EffectManager.Instance.ExecuteEffect(cardToPlay.cardData, TurnOwner.Player, appealSourceCard);
+
+                PerformAppeal(TurnOwner.Player, appealSourceCard, clickedCard);
+
+                MoveCardToDiscard(cardToPlay, TurnOwner.Player);
+
+                currentMainPhaseState = MainPhaseState.Idle;
+                cardToPlay = null;
+                UIManager.Instance.SetTurnEndButtonActive(true);
+            }
+        }
+    }
+    private void HandleEventClick(Transform target)
+    {
+        //クリックした場所は「呪文エリア」か？
+        SpellArea spellArea = target.GetComponent<SpellArea>();
+        if (spellArea != null)
+        {
+            //正しい場所→呪文処理を呼ぶ
+            CardDroppedOnSpellArea(cardToPlay, spellArea);
+        }
+
+        currentMainPhaseState = MainPhaseState.Idle;
+        cardToPlay = null;
         UIManager.Instance.SetTurnEndButtonActive(true);
     }
     #endregion
@@ -549,6 +622,16 @@ public class GameManager : MonoBehaviour
     {
         currentMainPhaseState = MainPhaseState.Selection;
         cardToPlay = card;
+
+        if (card.cardData.cardType == CardType.Appeal)
+        {
+            targetingState = TargetingState.SelectAlly;
+        }
+        else
+        {
+            // キャラクターなどの場合
+            targetingState = TargetingState.None; // または専用の状態
+        }
 
         UIManager.Instance.SetTurnEndButtonActive(false);
 
@@ -562,7 +645,7 @@ public class GameManager : MonoBehaviour
 
     //ゲームのアクションに関するメソッド
     #region Game Action Methods
-    public void PerformAppeal(TurnOwner owner, CardView targetCard)//指定されたオーナーのアピール処理を実行する
+    public void PerformAppeal(TurnOwner owner, CardView ally, CardView enemy)//指定されたオーナーのアピール処理を実行する
     {
         //誰のアピールかによって
         Transform leaderArea;
@@ -586,47 +669,60 @@ public class GameManager : MonoBehaviour
         //ターゲットのアピール力を取得
         int appealPower = 0;    //効果などを考慮した最終的なカードのアピール力
         int baseAppeal = 0;     //カードに記載された本来のアピール力
-        if (targetCard.cardData is LeaderCard leaderCard)
+        if (ally.cardData is LeaderCard leaderCard)
         {
             baseAppeal = leaderCard.appeal;
         }
-        else if (targetCard.cardData is CharacterCard characterCard) // 通常キャラ
+        else if (ally.cardData is CharacterCard characterCard) // 通常キャラ
         {
             baseAppeal = characterCard.appeal;
         }
-        else if (targetCard.cardData is EvolveCharacterCard evolveCard) // 進化キャラ
+        else if (ally.cardData is EvolveCharacterCard evolveCard) // 進化キャラ
         {
             baseAppeal = evolveCard.appeal;
         }
         else
         {
-            Debug.LogWarning(targetCard.cardData.cardName + " はアピール力を持ちません。");
+            Debug.LogWarning(ally.cardData.cardName + " はアピール力を持ちません。");
             return;
         }
 
         //バフ計算
-        appealPower = baseAppeal + targetCard.appealBuff;
+        appealPower = baseAppeal + ally.appealBuff;
         //0以下の場合はアピール失敗
         if (appealPower <= 0)
         {
             appealPower = 0;
-            Debug.Log(targetCard.cardData.cardName + "のアピールは失敗しました。");
+            Debug.Log(ally.cardData.cardName + "のアピールは失敗しました。");
         }
 
-        Debug.Log($"アピール計算：基本({baseAppeal}) + 補正({targetCard.appealBuff}) = {appealPower}");
+        Debug.Log($"アピール計算：基本({baseAppeal}) + 補正({ally.appealBuff}) = {appealPower}");
 
-
-        //合計したアピール力を、対応する側のポイントに加算する
-        if (owner == TurnOwner.Player)
+        //アピールする相手がリーダーかキャラかで分岐
+        if (enemy.cardData.cardType == CardType.Leader)
         {
-            playerAppealPoints += appealPower;
+            //合計したアピール力を、対応する側のポイントに加算する
+            if (owner == TurnOwner.Player)
+            {
+                playerAppealPoints += appealPower;
+            }
+            else
+            {
+                enemyAppealPoints += appealPower;
+            }
         }
-        else
+        else if (enemy.cardData is CharacterCard characterCard)
         {
-            enemyAppealPoints += appealPower;
+            characterCard.HP -= appealPower;
+        }
+        else if (enemy.cardData is EvolveCharacterCard evolveCharacterCard)
+        {
+            evolveCharacterCard.HP -= appealPower;
         }
 
-        Debug.Log(owner + "が" + appealPower + "アピールして、合計ポイントは" + (owner == TurnOwner.Player ? playerAppealPoints : enemyAppealPoints) + " になった！");
+        {
+            Debug.Log(owner + "が" + appealPower + "アピールして、合計ポイントは" + (owner == TurnOwner.Player ? playerAppealPoints : enemyAppealPoints) + " になった！");
+        }
 
         //UIの表示を更新する
         UIManager.Instance.UppdateAppealPointUI(playerAppealPoints, enemyAppealPoints);
@@ -835,7 +931,7 @@ public class GameManager : MonoBehaviour
         EffectManager.Instance.ExecuteEffect(card.cardData, TurnOwner.Enemy, target);
 
         //アピール実行
-        PerformAppeal(TurnOwner.Enemy, target);
+        //PerformAppeal(TurnOwner.Enemy, target);
 
         //カードを墓地に送る
         MoveCardToDiscard(card, TurnOwner.Enemy);

@@ -21,5 +21,6 @@ MonoBehaviour:
   effectTarget: None
   timingID: Main
   appeal: 2
+  HP: 4
   cost: 2
   evolveBaseName: "\u30AD\u30E3\u30E9\u30AF\u30BF\u30FC"

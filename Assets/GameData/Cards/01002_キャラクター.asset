@@ -21,4 +21,5 @@ MonoBehaviour:
   effectTarget: None
   timingID: Main
   appeal: 1
+  HP: 3
   cost: 1

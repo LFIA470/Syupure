@@ -8,6 +8,7 @@ public class CharacterSlot : MonoBehaviour, IPointerClickHandler, IDropHandler
     //変数宣言
     #region Variables
     public CardView occupiedCard = null;    //このスロットに置かれているカード
+    public FieldOwner owner;
     #endregion
 
     //キャラクタースロットのプレイに関するメソッド
