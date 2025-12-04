@@ -166,7 +166,7 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator OnMainPhase()
     {
-        //エンドフェイズ開始演出
+        //メインフェイズ開始演出
         BattleLogManager.Instance.ShowPhaseAnnounce(GamePhase.Main);
 
         yield return new WaitForSeconds(1.0f);
@@ -175,6 +175,7 @@ public class GameManager : MonoBehaviour
 
         if (isPlayerTurn)
         {
+            UIManager.Instance.SetTurnEndButtonActive(true);
         }
         else
         {
@@ -183,6 +184,7 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator OnEndPhase()
     {
+        UIManager.Instance.SetTurnEndButtonActive(false);
         BattleLogManager.Instance.ShowPhaseAnnounce(GamePhase.End);
 
         yield return new WaitForSeconds(1.0f);
@@ -198,6 +200,8 @@ public class GameManager : MonoBehaviour
     }
     public void StartGame() //ゲームの準備と開始を行う
     {
+        UIManager.Instance.SetTurnEndButtonActive(false);
+
         UIManager.Instance.UpdateCheerPowertUI(playerMana, GameConstants.DefaultMaxMana, TurnOwner.Player);
         UIManager.Instance.UpdateCheerPowertUI(playerMana, GameConstants.DefaultMaxMana, TurnOwner.Enemy);
 
