@@ -6,6 +6,7 @@ public class EnemyAI : MonoBehaviour
 {
     [SerializeField] private Transform enemyHandArea;
     [SerializeField] private Transform enemyCharacterSlotsParent;
+    [SerializeField] private Transform playerLeaderArea;
 
     public void StartEnemyTurn()    //相手のターンの行動を開始する
     {
@@ -62,12 +63,13 @@ public class EnemyAI : MonoBehaviour
             {
                 //ベストなターゲットを探す
                 //(自分の場のリーダーとキャラクターの中で、一番アピール力が高いやつを探す)
-                CardView bestTarget = FindBestAppealTarget();
+                CardView bestAppealer = FindBestAppealTarget();
+                CardView bestTarget = playerLeaderArea.GetComponentInChildren<CardView>();
 
                 if (bestTarget != null)
                 {
                     //アピール実行！
-                    bool success = GameManager.Instance.AIPlayAppeal(card, bestTarget);
+                    bool success = GameManager.Instance.AIPlayAppeal(card, bestAppealer, bestTarget);
 
                     if (success)
                     {
@@ -113,7 +115,6 @@ public class EnemyAI : MonoBehaviour
 
                 // 型チェックしてアピール力を取得
                 if (charCard.cardData is CharacterCard c) appeal = c.appeal;
-                else if (charCard.cardData is EvolveCharacterCard ec) appeal = ec.appeal;
 
                 // バフも考慮
                 appeal += charCard.appealBuff;

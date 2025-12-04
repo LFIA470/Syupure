@@ -367,11 +367,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deckManager: {fileID: 789508824}
   playerHandArea: {fileID: 367815213}
-  playerLeaderArea: {fileID: 0}
+  playerLeaderArea: {fileID: 304557084}
   playerCharacterSlotsParent: {fileID: 0}
   playerSpellArea: {fileID: 600705994}
   PlayerReserveArea: {fileID: 992611027}
-  enemyLeaderArea: {fileID: 0}
+  enemyLeaderArea: {fileID: 596179265}
   enemyCharacterSlotsParent: {fileID: 0}
   enemySpellArea: {fileID: 1677505235}
   EnemyReserveArea: {fileID: 1515385856}
@@ -1544,6 +1544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   occupiedCard: {fileID: 0}
+  owner: 0
 --- !u!1 &830080641
 GameObject:
   m_ObjectHideFlags: 0
@@ -2891,6 +2892,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyHandArea: {fileID: 1131804064}
   enemyCharacterSlotsParent: {fileID: 1394795613}
+  playerLeaderArea: {fileID: 304557084}
 --- !u!4 &1404212045
 Transform:
   m_ObjectHideFlags: 0
@@ -4005,6 +4007,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   occupiedCard: {fileID: 0}
+  owner: 0
 --- !u!1 &1875958299
 GameObject:
   m_ObjectHideFlags: 0
@@ -4202,6 +4205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   occupiedCard: {fileID: 0}
+  owner: 0
 --- !u!1 &2071487780
 GameObject:
   m_ObjectHideFlags: 0
@@ -4318,6 +4322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   occupiedCard: {fileID: 0}
+  owner: 0
 --- !u!1001 &3807830013869591210
 PrefabInstance:
   m_ObjectHideFlags: 0
