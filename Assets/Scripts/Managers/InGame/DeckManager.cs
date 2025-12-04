@@ -30,6 +30,20 @@ public class DeckManager : MonoBehaviour
     {
         playerDeckPile = new List<Card>(playerDeck);
         enemyDeckPile = new List<Card>(enemyDeck);
+
+        List<Card> targetDeck;
+
+        targetDeck = playerDeckPile;
+        for (int i = 0; i < targetDeck.Count; i++)
+        {
+            targetDeck[i].isPlayerCard = true;
+        }
+
+        targetDeck = enemyDeckPile;
+        for (int i = 0;i < targetDeck.Count; i++)
+        {
+            targetDeck[i].isPlayerCard = false;
+        }
     }
     #endregion
 

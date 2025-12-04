@@ -1544,7 +1544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   occupiedCard: {fileID: 0}
-  owner: 0
+  owner: 1
 --- !u!1 &830080641
 GameObject:
   m_ObjectHideFlags: 0
@@ -4323,7 +4323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   occupiedCard: {fileID: 0}
-  owner: 0
+  owner: 1
 --- !u!1001 &3807830013869591210
 PrefabInstance:
   m_ObjectHideFlags: 0

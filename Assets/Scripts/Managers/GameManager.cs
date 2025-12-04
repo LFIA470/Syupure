@@ -715,6 +715,7 @@ public class GameManager : MonoBehaviour
         else if (enemy.cardData is CharacterCard characterCard)
         {
             characterCard.hp -= appealPower;
+            CharacterHPCheck(enemy);
         }
 
         {
@@ -762,6 +763,48 @@ public class GameManager : MonoBehaviour
         //カードをクリックやドラッグの対象外にする
         CanvasGroup cg = card.GetComponent<CanvasGroup>();
         if (cg != null )
+        {
+            cg.blocksRaycasts = false;
+        }
+
+        Debug.Log(card.cardData.cardName + "を墓地に送りました。");
+    }
+    public void MoveCardToDiscard(CardView card)  //使用したカードを墓地に送る
+    {
+        Transform targetPile = null;
+
+        if (card.cardData.isPlayerCard)
+        {
+            targetPile = PlayerReserveArea;
+        }
+        else
+        {
+            targetPile = EnemyReserveArea;
+        }
+
+        if (targetPile == null)
+        {
+            //Debug.LogError(owner + "の墓地が設定されていません！カードは破棄されます。");
+            Destroy(card.gameObject);
+            return;
+        }
+
+        foreach (Transform existingCard in targetPile)
+        {
+            existingCard.gameObject.SetActive(false);
+        }
+
+        //カードの親を墓地エリアに変更
+        card.transform.SetParent(targetPile, false);
+
+        //カードの操作を不能にし、見た目をリセット
+        card.transform.localPosition = Vector3.zero;
+        card.transform.localRotation = Quaternion.identity; //傾きをリセット
+        card.transform.localScale = Vector3.one * 0.8f;    //大きさをリセット
+
+        //カードをクリックやドラッグの対象外にする
+        CanvasGroup cg = card.GetComponent<CanvasGroup>();
+        if (cg != null)
         {
             cg.blocksRaycasts = false;
         }
@@ -858,6 +901,17 @@ public class GameManager : MonoBehaviour
             default:
                 Debug.LogWarning("未対応のカードタイプです：" + card.cardData.cardType);
                 break;
+        }
+    }
+    public void CharacterHPCheck(CardView card)
+    {
+        if (card.cardData is CharacterCard character)
+        {
+            if (character.hp <= 0)
+            {
+                character.hp = 0;
+                MoveCardToDiscard(card);
+            }
         }
     }
     public bool AIPlayCharacter(CardView card, CharacterSlot slot)  //AIがキャラクターをプレイする

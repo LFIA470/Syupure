@@ -25,4 +25,7 @@ public abstract class Card : ScriptableObject
     public int effectValue;     //効果値
     public string effectTarget; //効果対象
     public string timingID;     //カード使用タイミングID
+
+    [Header("所持者")]
+    public bool isPlayerCard;   //どちらのデッキのカードか？
 } 
