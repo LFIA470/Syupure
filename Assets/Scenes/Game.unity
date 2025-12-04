@@ -2892,6 +2892,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyHandArea: {fileID: 1131804064}
   enemyCharacterSlotsParent: {fileID: 1394795613}
+  enemyLeaderArea: {fileID: 596179265}
   playerLeaderArea: {fileID: 304557084}
 --- !u!4 &1404212045
 Transform:

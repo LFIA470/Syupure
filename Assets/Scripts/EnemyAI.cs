@@ -6,6 +6,7 @@ public class EnemyAI : MonoBehaviour
 {
     [SerializeField] private Transform enemyHandArea;
     [SerializeField] private Transform enemyCharacterSlotsParent;
+    [SerializeField] private Transform enemyLeaderArea;
     [SerializeField] private Transform playerLeaderArea;
 
     public void StartEnemyTurn()    //相手のターンの行動を開始する
@@ -94,14 +95,12 @@ public class EnemyAI : MonoBehaviour
         // 1. 敵のリーダーをチェック (EnemyLeaderAreaにいるCardView)
         // (GameManagerからEnemyLeaderAreaへの参照を取得するか、EnemyAIに持たせる必要があります)
         // ここでは仮に EnemyAI に [SerializeField] private Transform enemyLeaderArea; があるとします
-        /*
         CardView leader = enemyLeaderArea.GetComponentInChildren<CardView>();
         if (leader != null)
         {
-             int appeal = ((LeaderCard)leader.cardData).appeal + leader.appealBuff;
-             if (appeal > maxAppeal) { maxAppeal = appeal; bestTarget = leader; }
+            int appeal = ((LeaderCard)leader.cardData).appeal + leader.appealBuff;
+            if (appeal > maxAppeal) { maxAppeal = appeal; bestTarget = leader; }
         }
-        */
 
         // 2. 敵のフィールドのキャラクターをチェック
         // (enemyCharacterSlotsParent の子要素のスロットを確認)
