@@ -5,11 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewEvolveCharacterCard", menuName = "Cards/EvolveCharacter Card")]
 
 
-public class EvolveCharacterCard : Card
+public class EvolveCharacterCard : CharacterCard
 {
-    [Header("進化キャラクターカードの情報")]
-    public int appeal;
-    public int HP;
-    public int cost;
+    [Header("進化情報")]
     public string evolveBaseName;
 }

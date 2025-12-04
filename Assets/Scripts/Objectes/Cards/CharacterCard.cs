@@ -9,6 +9,6 @@ public class CharacterCard : Card
 {
     [Header("キャラクターカードの情報")]
     public int appeal;
-    public int HP;
+    public int hp;
     public int cost;
 }

@@ -380,6 +380,8 @@ public class GameManager : MonoBehaviour
             //子オブジェクトになった後、ローカルスケールを(1, 1, 1)にリセットする
             evolveCard.transform.localScale = Vector3.one;
 
+            evolveCard.transform.localRotation = Quaternion.identity;
+
             //スロットの「使用中のカード」情報を、新しい進化カードに更新する
             slot.occupiedCard = evolveCard;
 
@@ -492,7 +494,6 @@ public class GameManager : MonoBehaviour
         if (slot != null && slot.owner == FieldOwner.Player) return true;
         return false;
     }
-
     // クリックされたカードが「相手の場のキャラ/リーダー」か？
     private bool IsEnemyFieldCard(CardView card)
     {
@@ -677,10 +678,6 @@ public class GameManager : MonoBehaviour
         {
             baseAppeal = characterCard.appeal;
         }
-        else if (ally.cardData is EvolveCharacterCard evolveCard) // 進化キャラ
-        {
-            baseAppeal = evolveCard.appeal;
-        }
         else
         {
             Debug.LogWarning(ally.cardData.cardName + " はアピール力を持ちません。");
@@ -713,11 +710,7 @@ public class GameManager : MonoBehaviour
         }
         else if (enemy.cardData is CharacterCard characterCard)
         {
-            characterCard.HP -= appealPower;
-        }
-        else if (enemy.cardData is EvolveCharacterCard evolveCharacterCard)
-        {
-            evolveCharacterCard.HP -= appealPower;
+            characterCard.hp -= appealPower;
         }
 
         {
@@ -896,7 +889,7 @@ public class GameManager : MonoBehaviour
 
         return true;
     }
-    public bool AIPlayAppeal(CardView card, CardView target) //AIがアピールをプレイする
+    public bool AIPlayAppeal(CardView card, CardView appealer, CardView target) //AIがアピールをプレイする
     {
         //共通ルールチェック
         if (!PlayCard(card.cardData, TurnOwner.Enemy))
@@ -905,8 +898,8 @@ public class GameManager : MonoBehaviour
         }
 
         //ターゲットの有効性チェック
-        bool isLeader = target.cardData.cardType == CardType.Leader;
-        bool isCharacter = target.cardData.cardType == CardType.Character; // 進化キャラも含むなら調整
+        bool isLeader = appealer.cardData.cardType == CardType.Leader;
+        bool isCharacter = appealer.cardData.cardType == CardType.Character; // 進化キャラも含むなら調整
 
         if (!isLeader && !isCharacter)
         {
@@ -928,10 +921,10 @@ public class GameManager : MonoBehaviour
         AppealCard appealData = card.cardData as AppealCard;
 
         //効果発動 (EffectManager)
-        EffectManager.Instance.ExecuteEffect(card.cardData, TurnOwner.Enemy, target);
+        EffectManager.Instance.ExecuteEffect(card.cardData, TurnOwner.Enemy, appealer);
 
         //アピール実行
-        //PerformAppeal(TurnOwner.Enemy, target);
+        PerformAppeal(TurnOwner.Enemy, appealer, target);
 
         //カードを墓地に送る
         MoveCardToDiscard(card, TurnOwner.Enemy);
