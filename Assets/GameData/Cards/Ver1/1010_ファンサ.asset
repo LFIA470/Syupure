@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9d0c9d8bc64a34c8b178858759500f, type: 3}
+  m_Name: "1010_\u30D5\u30A1\u30F3\u30B5"
+  m_EditorClassIdentifier: 
+  cardName: "\u30D5\u30A1\u30F3\u30B5"
+  cardType: 4
+  description: "\u3053\u306E\u30AB\u30FC\u30C9\u306F\u30C7\u30C3\u30AD\u306B\uFF16\u679A\u307E\u3067\u5165\u308C\u308B\u3053\u3068\u304C\u3067\u304D\u308B"
+  artwork: {fileID: 21300000, guid: 266fa2d07f4e1c441859256c64334946, type: 3}
+  effectID: NONE
+  effectValue: 0
+  effectTarget: None
+  timingID: Main
+  isPlayerCard: 0
+  cost: 1

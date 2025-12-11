@@ -5,7 +5,8 @@ using UnityEditor;  //Unityエディタの機能を扱うために必要
 using System.IO;    //ファイルやフォルダを扱うために必要
 using System;
 using System.Linq.Expressions;
-using Unity.VisualScripting;       //Enum.Parse(文字列をenum型に変換)のために必要
+using Unity.VisualScripting;
+using UnityEngine.Assertions.Must;       //Enum.Parse(文字列をenum型に変換)のために必要
 
 public class CardDataImporter : EditorWindow
 {
@@ -13,7 +14,7 @@ public class CardDataImporter : EditorWindow
     #region Variables
     private TextAsset csvFile;  //インスペクターで設定するCSVファイル
     private string saveFolderPath = "Assets/GameData/Cards/";   //.assetファイルの保存先
-    private string artworkFolderPath = "Assets/Images/Images/"; //イラスト画像の保存先
+    private string artworkFolderPath = "Assets/Images/Images/Cards/"; //イラスト画像の保存先
     #endregion
 
     //Unityに表示するウィンドウメソッド
@@ -85,12 +86,15 @@ public class CardDataImporter : EditorWindow
                 CardType cardType = (CardType)Enum.Parse(typeof(CardType), values[2]);
                 string artworkFileName = values[3];
                 string effectID = values[4];
-                int effectValue = int.Parse(values[5]);
+                int effectValue = ParseIntSafe(values[5]);
                 string effectTarget = values[6];
-                string description = values[7];
-                int cost = int.Parse(values[8]);
-                int appeal = int.Parse(values[9]);
-                string evolveBaseName = values[10];
+                string timingID = values[7];
+                string description = values[8];
+                int cost = ParseIntSafe(values[9]);
+                int appeal = ParseIntSafe(values[10]);
+                int mental = ParseIntSafe(values[11]);
+                string evolveBaseID = values[12];
+                string evolveTargetID = values[13];
 
                 //ScriptableObjectアセットの作成
 
@@ -103,16 +107,16 @@ public class CardDataImporter : EditorWindow
                 if (existingCard == null)
                 {
                     //アセットが存在しない -> 新規作成
-                    CreateNewCardAsset(assetPath, cardName, cardType, artworkFileName,
-                        effectID, effectValue, effectTarget, description,
-                        cost, appeal, evolveBaseName);
+                    CreateNewCardAsset(assetPath, cardID, cardName, cardType, artworkFileName,
+                        effectID, effectValue, effectTarget, timingID, description,
+                        cost, appeal, mental, evolveBaseID, evolveTargetID);
                 }
                 else
                 {
                     //アセットが存在する -> 更新
-                    UpdateCardAsset(existingCard, cardName, cardType, artworkFileName,
-                        effectID, effectValue, effectTarget, description,
-                        cost, appeal, evolveBaseName);
+                    UpdateCardAsset(existingCard, cardID, cardName, cardType, artworkFileName,
+                        effectID, effectValue, effectTarget, timingID, description,
+                        cost, appeal, mental, evolveBaseID, evolveTargetID);
                 }
             }
             catch (Exception e)
@@ -132,9 +136,9 @@ public class CardDataImporter : EditorWindow
     //アセットの作成・更新に関するメソッド
     #region Asset Methods
     private void CreateNewCardAsset //新規アセット作成メソッド
-    (string assetPath, string cardName, CardType cardType, string artworkFileName,
-    string effectID, int effectValue, string effectTarget, string description,
-    int cost, int appeal, string evolveBaseName)   
+    (string assetPath, string cardID, string cardName, CardType cardType, string artworkFileName,
+    string effectID, int effectValue, string effectTarget, string timingID, string description,
+    int cost, int appeal, int mental, string evolveBaseID, string evolveTargetID)   
     {
         Card newCard = null;
 
@@ -145,18 +149,26 @@ public class CardDataImporter : EditorWindow
                 newCard = ScriptableObject.CreateInstance<LeaderCard>();
                 // LeaderCard固有の値を設定
                 (newCard as LeaderCard).appeal = appeal;
-                (newCard as LeaderCard).evolveBaseName = evolveBaseName;
+                (newCard as LeaderCard).evolveBaseName = evolveBaseID;
                 break;
             case CardType.Character:
                 newCard = ScriptableObject.CreateInstance<CharacterCard>();
-                (newCard as CharacterCard).appeal = appeal;
                 (newCard as CharacterCard).cost = cost;
+                (newCard as CharacterCard).appeal = appeal;
+                (newCard as CharacterCard).mental = mental;
                 break;
             case CardType.EvolveCharacter:
                 newCard = ScriptableObject.CreateInstance<EvolveCharacterCard>();
-                (newCard as EvolveCharacterCard).appeal = appeal;
                 (newCard as EvolveCharacterCard).cost = cost;
-                (newCard as EvolveCharacterCard).evolveBaseName = evolveBaseName;
+                (newCard as EvolveCharacterCard).appeal = appeal;
+                (newCard as EvolveCharacterCard).mental = mental;
+                (newCard as EvolveCharacterCard).evolveBaseName = evolveBaseID;
+                break;
+            case CardType.Accessory:
+                newCard = ScriptableObject.CreateInstance<AccessoryCard>();
+                (newCard as AccessoryCard).cost = cost;
+                (newCard as AccessoryCard).evolveBaseID = evolveBaseID;
+                (newCard as AccessoryCard).evolveTargetID = evolveTargetID;
                 break;
             case CardType.Event:
                 newCard = ScriptableObject.CreateInstance<EventCard>();
@@ -187,9 +199,9 @@ public class CardDataImporter : EditorWindow
     }
 
     private void UpdateCardAsset    //既存アセット更新メソッド
-    (Card existingCard, string cardName, CardType cardType, string artworkFileName,
-    string effectID, int effectValue, string effectTarget, string description,
-    int cost, int appeal, string evolveBaseName)
+    (Card existingCard, string cardID, string cardName, CardType cardType, string artworkFileName,
+    string effectID, int effectValue, string effectTarget, string timingID, string description,
+    int cost, int appeal, int mental, string evolveBaseID, string evolveTargetID)
     {
         // 既存のアセットの値を上書き
         // (面倒なので、CreateNewCardAssetとほぼ同じ内容をもう一度書く)
@@ -206,7 +218,7 @@ public class CardDataImporter : EditorWindow
         {
             case CardType.Leader:
                 (existingCard as LeaderCard).appeal = appeal;
-                (existingCard as LeaderCard).evolveBaseName = evolveBaseName;
+                (existingCard as LeaderCard).evolveBaseName = evolveBaseID;
                 break;
                 // ... 他のカードタイプも同様に ...
         }
@@ -237,4 +249,15 @@ public class CardDataImporter : EditorWindow
         return sprite;
     }
     #endregion
+
+    int ParseIntSafe(string value)
+    {
+        // 空欄、null、"None" なら 0 を返す
+        if (string.IsNullOrEmpty(value) || value == "None")
+        {
+            return 0;
+        }
+        // それ以外なら数値に変換する
+        return int.Parse(value);
+    }
 }

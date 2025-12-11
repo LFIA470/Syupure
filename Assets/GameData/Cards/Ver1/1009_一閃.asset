@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9d0c9d8bc64a34c8b178858759500f, type: 3}
+  m_Name: "1009_\u4E00\u9583"
+  m_EditorClassIdentifier: 
+  cardName: "\u4E00\u9583"
+  cardType: 4
+  description: "\u5C71\u672D\u304B\u3089\u4E00\u679A\u5F15\u304F"
+  artwork: {fileID: 21300000, guid: 1b593b0d01dd2e74d847f1e270d3d904, type: 3}
+  effectID: DRAW_CARD
+  effectValue: 1
+  effectTarget: None
+  timingID: Main
+  isPlayerCard: 0
+  cost: 2

@@ -1246,7 +1246,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 400, y: -430}
-  m_SizeDelta: {x: 480, y: 440}
+  m_SizeDelta: {x: 616, y: 336}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &609629166
 MonoBehaviour:
@@ -1317,23 +1317,69 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_gameObject: {fileID: 0}
   playerDeck:
-  - {fileID: 11400000, guid: d3f311d592ce36241ac63d22f2ea973d, type: 2}
-  - {fileID: 11400000, guid: d3f311d592ce36241ac63d22f2ea973d, type: 2}
-  - {fileID: 11400000, guid: 592bad705d17e1f4a926bb6545ce3269, type: 2}
-  - {fileID: 11400000, guid: 1d8cfbb61f7f09c4e927a30a41c331ac, type: 2}
-  - {fileID: 11400000, guid: 1d8cfbb61f7f09c4e927a30a41c331ac, type: 2}
-  - {fileID: 11400000, guid: 8e68592cfd8e07e48a2a9d5f394f9105, type: 2}
-  - {fileID: 11400000, guid: 8e68592cfd8e07e48a2a9d5f394f9105, type: 2}
-  playerLeader: {fileID: 11400000, guid: 13025fad2fa1bd94daaebd104ff9ce13, type: 2}
+  - {fileID: 11400000, guid: fd4e07a389925c645b1b43bf7b7bfe30, type: 2}
+  - {fileID: 11400000, guid: fd4e07a389925c645b1b43bf7b7bfe30, type: 2}
+  - {fileID: 11400000, guid: fd4e07a389925c645b1b43bf7b7bfe30, type: 2}
+  - {fileID: 11400000, guid: 364efe9cc5d6e484f854d017a02122d5, type: 2}
+  - {fileID: 11400000, guid: 364efe9cc5d6e484f854d017a02122d5, type: 2}
+  - {fileID: 11400000, guid: 364efe9cc5d6e484f854d017a02122d5, type: 2}
+  - {fileID: 11400000, guid: 58ff0ff141a65d349afd3184593eac86, type: 2}
+  - {fileID: 11400000, guid: 58ff0ff141a65d349afd3184593eac86, type: 2}
+  - {fileID: 11400000, guid: 9898fc60dc2c8df4d81d53d2f926b4fa, type: 2}
+  - {fileID: 11400000, guid: 9898fc60dc2c8df4d81d53d2f926b4fa, type: 2}
+  - {fileID: 11400000, guid: 11630fd3dfc186e48b4cef03ecd4acd0, type: 2}
+  - {fileID: 11400000, guid: 9b54e830997ef284dbe75a4a1d6e75e5, type: 2}
+  - {fileID: 11400000, guid: 23b187c631ae7c348a26661444ad30c7, type: 2}
+  - {fileID: 11400000, guid: 23b187c631ae7c348a26661444ad30c7, type: 2}
+  - {fileID: 11400000, guid: 23b187c631ae7c348a26661444ad30c7, type: 2}
+  - {fileID: 11400000, guid: e87a66664544cd44d90c89d9e67b1e45, type: 2}
+  - {fileID: 11400000, guid: e87a66664544cd44d90c89d9e67b1e45, type: 2}
+  - {fileID: 11400000, guid: e87a66664544cd44d90c89d9e67b1e45, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0fc7102cf91dd6b45b30eba4462cc37a, type: 2}
+  - {fileID: 11400000, guid: 0fc7102cf91dd6b45b30eba4462cc37a, type: 2}
+  - {fileID: 11400000, guid: e7e95bfcb03bb5647a88b176cea27c7e, type: 2}
+  - {fileID: 11400000, guid: e7e95bfcb03bb5647a88b176cea27c7e, type: 2}
+  - {fileID: 11400000, guid: d6ee574adef981f4c9257016b77ac2b7, type: 2}
+  - {fileID: 11400000, guid: d6ee574adef981f4c9257016b77ac2b7, type: 2}
+  playerLeader: {fileID: 11400000, guid: c38ca2556c80bfb46835e77ff27e5c51, type: 2}
   enemyDeck:
-  - {fileID: 11400000, guid: d3f311d592ce36241ac63d22f2ea973d, type: 2}
-  - {fileID: 11400000, guid: d3f311d592ce36241ac63d22f2ea973d, type: 2}
-  - {fileID: 11400000, guid: 592bad705d17e1f4a926bb6545ce3269, type: 2}
-  - {fileID: 11400000, guid: 1d8cfbb61f7f09c4e927a30a41c331ac, type: 2}
-  - {fileID: 11400000, guid: 1d8cfbb61f7f09c4e927a30a41c331ac, type: 2}
-  - {fileID: 11400000, guid: 8e68592cfd8e07e48a2a9d5f394f9105, type: 2}
-  - {fileID: 11400000, guid: 8e68592cfd8e07e48a2a9d5f394f9105, type: 2}
-  enemyLeader: {fileID: 11400000, guid: 13025fad2fa1bd94daaebd104ff9ce13, type: 2}
+  - {fileID: 11400000, guid: fd4e07a389925c645b1b43bf7b7bfe30, type: 2}
+  - {fileID: 11400000, guid: fd4e07a389925c645b1b43bf7b7bfe30, type: 2}
+  - {fileID: 11400000, guid: fd4e07a389925c645b1b43bf7b7bfe30, type: 2}
+  - {fileID: 11400000, guid: 364efe9cc5d6e484f854d017a02122d5, type: 2}
+  - {fileID: 11400000, guid: 364efe9cc5d6e484f854d017a02122d5, type: 2}
+  - {fileID: 11400000, guid: 364efe9cc5d6e484f854d017a02122d5, type: 2}
+  - {fileID: 11400000, guid: 58ff0ff141a65d349afd3184593eac86, type: 2}
+  - {fileID: 11400000, guid: 58ff0ff141a65d349afd3184593eac86, type: 2}
+  - {fileID: 11400000, guid: 9898fc60dc2c8df4d81d53d2f926b4fa, type: 2}
+  - {fileID: 11400000, guid: 9898fc60dc2c8df4d81d53d2f926b4fa, type: 2}
+  - {fileID: 11400000, guid: 11630fd3dfc186e48b4cef03ecd4acd0, type: 2}
+  - {fileID: 11400000, guid: 9b54e830997ef284dbe75a4a1d6e75e5, type: 2}
+  - {fileID: 11400000, guid: 23b187c631ae7c348a26661444ad30c7, type: 2}
+  - {fileID: 11400000, guid: 23b187c631ae7c348a26661444ad30c7, type: 2}
+  - {fileID: 11400000, guid: 23b187c631ae7c348a26661444ad30c7, type: 2}
+  - {fileID: 11400000, guid: e87a66664544cd44d90c89d9e67b1e45, type: 2}
+  - {fileID: 11400000, guid: e87a66664544cd44d90c89d9e67b1e45, type: 2}
+  - {fileID: 11400000, guid: e87a66664544cd44d90c89d9e67b1e45, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0071b2f0b62513b4cbee43c1699f036e, type: 2}
+  - {fileID: 11400000, guid: 0fc7102cf91dd6b45b30eba4462cc37a, type: 2}
+  - {fileID: 11400000, guid: 0fc7102cf91dd6b45b30eba4462cc37a, type: 2}
+  - {fileID: 11400000, guid: e7e95bfcb03bb5647a88b176cea27c7e, type: 2}
+  - {fileID: 11400000, guid: e7e95bfcb03bb5647a88b176cea27c7e, type: 2}
+  - {fileID: 11400000, guid: d6ee574adef981f4c9257016b77ac2b7, type: 2}
+  - {fileID: 11400000, guid: d6ee574adef981f4c9257016b77ac2b7, type: 2}
+  enemyLeader: {fileID: 11400000, guid: c38ca2556c80bfb46835e77ff27e5c51, type: 2}
   playerHandArea: {fileID: 367815213}
   playerFieldArea: {fileID: 0}
   enemyHandArea: {fileID: 1131804064}
@@ -2028,17 +2074,10 @@ MonoBehaviour:
   AppealContainer: {fileID: 1104978051}
   HeartIconPrefab: {fileID: 2309065552918568181, guid: e29f52d83b4c9f74c8d54fab9c53e3f2, type: 3}
   numberSprites:
-  - {fileID: 2112869226, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
-  - {fileID: -1290249369, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
-  - {fileID: -1577267339, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
-  - {fileID: -2003496658, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
-  - {fileID: -943401538, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
-  - {fileID: 1252258075, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
-  - {fileID: 1966903668, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
-  - {fileID: 1308526861, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
-  - {fileID: -294039216, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
-  - {fileID: -1177596856, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
-  - {fileID: 298104370, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
+  - {fileID: 21300000, guid: 67d6fc298c253934eb7045a8ce246f9f, type: 3}
+  - {fileID: 21300000, guid: 5ab032d2e2de56343a196122959cc626, type: 3}
+  - {fileID: 21300000, guid: 19aa5195f88d5a2478d06f097a7b16e7, type: 3}
+  - {fileID: 21300000, guid: f6bcc2623a4a01a40983750dd3c8e350, type: 3}
   playButton: {fileID: 870610376}
 --- !u!4 &901190457
 Transform:
@@ -4387,6 +4426,14 @@ PrefabInstance:
     - target: {fileID: 2974829890920100470, guid: 8ffad6874c916bc4c873779d98a03032, type: 3}
       propertyPath: m_FontData.m_FontSize
       value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 3100425351106298874, guid: 8ffad6874c916bc4c873779d98a03032, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 616
+      objectReference: {fileID: 0}
+    - target: {fileID: 3100425351106298874, guid: 8ffad6874c916bc4c873779d98a03032, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 336
       objectReference: {fileID: 0}
     - target: {fileID: 3182053224388611091, guid: 8ffad6874c916bc4c873779d98a03032, type: 3}
       propertyPath: m_Color.b

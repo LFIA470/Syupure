@@ -714,7 +714,7 @@ public class GameManager : MonoBehaviour
         }
         else if (enemy.cardData is CharacterCard characterCard)
         {
-            characterCard.hp -= appealPower;
+            characterCard.mental -= appealPower;
             CharacterHPCheck(enemy);
         }
 
@@ -907,9 +907,9 @@ public class GameManager : MonoBehaviour
     {
         if (card.cardData is CharacterCard character)
         {
-            if (character.hp <= 0)
+            if (character.mental <= 0)
             {
-                character.hp = 0;
+                character.mental = 0;
                 MoveCardToDiscard(card);
             }
         }

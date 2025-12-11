@@ -7,6 +7,7 @@ public enum CardType
     Leader,             //リーダーカード
     Character,          //キャラクターカード
     EvolveCharacter,    //進化キャラクターカード
+    Accessory,          //アクセサリーカード
     Appeal,             //アピールカード
     Event,              //イベントカード
 }

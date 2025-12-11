@@ -8,7 +8,7 @@ using UnityEngine;
 public class CharacterCard : Card
 {
     [Header("キャラクターカードの情報")]
-    public int appeal;
-    public int hp;
     public int cost;
+    public int appeal;
+    public int mental;
 }

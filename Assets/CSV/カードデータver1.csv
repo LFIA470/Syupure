@@ -1,0 +1,17 @@
+﻿カードID,カード名,カードタイプ,イラストファイル名,効果ID,効果値,効果対象,タイミングID,効果テキスト,消費コスト,アピール力,メンタル,進化元ID,進化先ID
+1001,グラシア,Leader,D01-001.png,DRAW_CARD,,None,APPEAL,山札から一枚引く,0,2,,None,None
+1002,アクソリィ,Character,D01-002.png,ADD_APPEAL_POINTS,1,None,BOOT,アピールポイント１アップ,1,1,2,None,None
+1003,サンティル,Character,D01-003.png,DRAW_CARD,1,None,ENTRY,山札から一枚引く,1,2,2,None,None
+1004,まったぬ,Character,D01-004.png,NONE,,None,NONE,,1,3,3,None,None
+1005,森のマント,Accessory,D01-005.png,EVOLVE,,Leader,MAIN,グラシアをドレスアップさせる,2,,,1001,1014
+1006,雨上がりの結晶,Accessory,D01-006.png,EVOLVE,,Character,MAIN,アクソリィをドレスアップさせる,1,,,1002,1015
+1007,颯のスカーフ,Accessory,D01-007.png,EVOLVE,,Character,MAIN,サンティルをドレスアップさせる,1,,,1003,1016
+1008,森のアイドル,Appeal,D01-008.png,UP_APPEAL_TEAM,2,None,MAIN,自分のステージのキャストの数×２アピール力アップ,2,,,None,None
+1009,一閃,Appeal,D01-009.png,DRAW_CARD,1,None,MAIN,山札から一枚引く,2,,,None,None
+1010,ファンサ,Appeal,D01-010.png,NONE,,None,MAIN,このカードはデッキに６枚まで入れることができる,1,,,None,None
+1011,コール,Event,D01-011.png,SEARCH_CARD,3,None,MAIN,山札の上から３枚見て１枚まで手札に加えその後山札をきる,1,,,None,None
+1012,アンコール,Event,D01-012.png,HEAL_CHEER,2,None,MAIN,応援が２回復する,1,,,None,None
+1013,差し入れ,Event,D01-013.png,DRAW_CARD,2,None,MAIN,山札から二枚引く,1,,,None,None
+1014,グラシアDU,EvolveCharacter,D01-001EV.png,UP_APPEAL_TEAM,2,None,APPEAL,自分のステージのキャストの数×２アピール力アップ,,2,,None,None
+1015,アクソリィDU,EvolveCharacter,D01-002EV.png,ADD_APPEAL_POINTS,3,None,BOOT,アピールポイント３アップ,,3,3,None,None
+1016,サンティルDU,EvolveCharacter,D01-003EV.png,DRAW_CARD,2,None,ENTRY,山札から二枚引く,,3,3,None,None
