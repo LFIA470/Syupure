@@ -595,7 +595,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f53af1cdfd38d744b9f8fc9653afecc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedCardScale: 1
+  selectedCardScale: 1.25
   cardSpacing: 10
   curveRadius: 800
   cardElevation: 0
@@ -759,7 +759,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 400, y: 580}
+  m_AnchoredPosition: {x: 380, y: 580}
   m_SizeDelta: {x: 360, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &497021400
@@ -2068,16 +2068,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   zoomPanel: {fileID: 1556042201}
   artworkImage: {fileID: 609629166}
+  frameImage: {fileID: 794600872}
   nameText: {fileID: 1059958692}
   descriptionText: {fileID: 1062177890}
   costImage: {fileID: 976479570}
+  apeealPowerImage: {fileID: 0}
+  apeealPowerIcon: {fileID: 0}
+  mentalImage: {fileID: 0}
+  mentalIcon: {fileID: 0}
   AppealContainer: {fileID: 1104978051}
   HeartIconPrefab: {fileID: 2309065552918568181, guid: e29f52d83b4c9f74c8d54fab9c53e3f2, type: 3}
+  frameSprites:
+  - {fileID: 21300000, guid: 26ce36fbe52fd3547bf46dacc9d8fbcd, type: 3}
+  - {fileID: 21300000, guid: 9e10fa66ac6e80749bc9a2446a2f173c, type: 3}
+  - {fileID: 21300000, guid: 9e10fa66ac6e80749bc9a2446a2f173c, type: 3}
+  - {fileID: 21300000, guid: f73aedabce4729f4c98876a7a534c84b, type: 3}
+  - {fileID: 21300000, guid: c0a42c8e0844e784a8412127c7737295, type: 3}
+  - {fileID: 21300000, guid: 46d87e10ef76bad498a36070d7f79369, type: 3}
   numberSprites:
   - {fileID: 21300000, guid: 67d6fc298c253934eb7045a8ce246f9f, type: 3}
   - {fileID: 21300000, guid: 5ab032d2e2de56343a196122959cc626, type: 3}
   - {fileID: 21300000, guid: 19aa5195f88d5a2478d06f097a7b16e7, type: 3}
   - {fileID: 21300000, guid: f6bcc2623a4a01a40983750dd3c8e350, type: 3}
+  powerNumberSprites: []
   playButton: {fileID: 870610376}
 --- !u!4 &901190457
 Transform:
@@ -2566,7 +2579,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 490, y: 165}
+  m_AnchoredPosition: {x: 470, y: 165}
   m_SizeDelta: {x: 250, y: 340}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1090794247
@@ -3274,7 +3287,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -400, y: -580}
+  m_AnchoredPosition: {x: -380, y: -580}
   m_SizeDelta: {x: 360, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1519700447
@@ -4082,7 +4095,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -490, y: -175}
+  m_AnchoredPosition: {x: -470, y: -175}
   m_SizeDelta: {x: 250, y: 340}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1875958301

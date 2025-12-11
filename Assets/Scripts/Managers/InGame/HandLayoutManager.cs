@@ -9,7 +9,7 @@ public class HandLayoutManager : MonoBehaviour
     [Header("レイアウト設定")]
     [SerializeField]
     [Tooltip("選択中のカードをどれだけ大きくするか")]
-    private float selectedCardScale = 1f;
+    private float selectedCardScale = 1.25f;
 
     [SerializeField]
     [Tooltip("カード同士が重なる角度（大きいほど広がる）")]
@@ -123,7 +123,7 @@ public class HandLayoutManager : MonoBehaviour
             else
             {
                 //それ以外のカードなら、通常のスケールに戻す
-                card.localScale = Vector3.one * 0.8f;
+                card.localScale = Vector3.one;
             }
 
                 //重なり順を調整（真ん中のカードが一番手前になるように）
