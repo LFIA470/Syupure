@@ -14,7 +14,7 @@ public class CardDataImporter : EditorWindow
     #region Variables
     private TextAsset csvFile;  //インスペクターで設定するCSVファイル
     private string saveFolderPath = "Assets/GameData/Cards/";   //.assetファイルの保存先
-    private string artworkFolderPath = "Assets/Images/Images/Cards/"; //イラスト画像の保存先
+    private string artworkFolderPath = "Assets/Images/Images/CardImages/Illusts/"; //イラスト画像の保存先
     #endregion
 
     //Unityに表示するウィンドウメソッド
@@ -81,7 +81,7 @@ public class CardDataImporter : EditorWindow
                 //(0:カードID, 1:カード名, 2:カードタイプ, 3:イラストファイル名,
                 //4:効果ID, 5:効果値, 6:効果対象, 7:効果テキスト,
                 //8:消費コスト, 9:アピール力, 10:進化元名
-                string cardID = values[0];
+                int cardID = ParseIntSafe(values[0]);
                 string cardName = values[1];
                 CardType cardType = (CardType)Enum.Parse(typeof(CardType), values[2]);
                 string artworkFileName = values[3];
@@ -93,8 +93,8 @@ public class CardDataImporter : EditorWindow
                 int cost = ParseIntSafe(values[9]);
                 int appeal = ParseIntSafe(values[10]);
                 int mental = ParseIntSafe(values[11]);
-                string evolveBaseID = values[12];
-                string evolveTargetID = values[13];
+                int evolveBaseID = ParseIntSafe(values[12]);
+                int evolveTargetID = ParseIntSafe(values[13]);
 
                 //ScriptableObjectアセットの作成
 
@@ -136,9 +136,9 @@ public class CardDataImporter : EditorWindow
     //アセットの作成・更新に関するメソッド
     #region Asset Methods
     private void CreateNewCardAsset //新規アセット作成メソッド
-    (string assetPath, string cardID, string cardName, CardType cardType, string artworkFileName,
+    (string assetPath, int cardID, string cardName, CardType cardType, string artworkFileName,
     string effectID, int effectValue, string effectTarget, string timingID, string description,
-    int cost, int appeal, int mental, string evolveBaseID, string evolveTargetID)   
+    int cost, int appeal, int mental, int evolveBaseID, int evolveTargetID)   
     {
         Card newCard = null;
 
@@ -149,7 +149,7 @@ public class CardDataImporter : EditorWindow
                 newCard = ScriptableObject.CreateInstance<LeaderCard>();
                 // LeaderCard固有の値を設定
                 (newCard as LeaderCard).appeal = appeal;
-                (newCard as LeaderCard).evolveBaseName = evolveBaseID;
+                //(newCard as LeaderCard).evolveBaseName = evolveBaseID;
                 break;
             case CardType.Character:
                 newCard = ScriptableObject.CreateInstance<CharacterCard>();
@@ -162,7 +162,7 @@ public class CardDataImporter : EditorWindow
                 (newCard as EvolveCharacterCard).cost = cost;
                 (newCard as EvolveCharacterCard).appeal = appeal;
                 (newCard as EvolveCharacterCard).mental = mental;
-                (newCard as EvolveCharacterCard).evolveBaseName = evolveBaseID;
+                //(newCard as EvolveCharacterCard).evolveBaseName = evolveBaseID;
                 break;
             case CardType.Accessory:
                 newCard = ScriptableObject.CreateInstance<AccessoryCard>();
@@ -184,6 +184,7 @@ public class CardDataImporter : EditorWindow
         }
 
         //全カード共通の値を設定
+        newCard.cardID = cardID;
         newCard.cardName = cardName;
         newCard.cardType = cardType;
         newCard.description = description;
@@ -199,28 +200,50 @@ public class CardDataImporter : EditorWindow
     }
 
     private void UpdateCardAsset    //既存アセット更新メソッド
-    (Card existingCard, string cardID, string cardName, CardType cardType, string artworkFileName,
+    (Card existingCard, int cardID, string cardName, CardType cardType, string artworkFileName,
     string effectID, int effectValue, string effectTarget, string timingID, string description,
-    int cost, int appeal, int mental, string evolveBaseID, string evolveTargetID)
+    int cost, int appeal, int mental, int evolveBaseID, int evolveTargetID)
     {
         // 既存のアセットの値を上書き
-        // (面倒なので、CreateNewCardAssetとほぼ同じ内容をもう一度書く)
 
+        existingCard.cardID = cardID;
         existingCard.cardName = cardName;
         existingCard.cardType = cardType;
         existingCard.description = description;
         existingCard.artwork = LoadSprite(artworkFileName);
-        // existingCard.effectID = effectID;
-        // ...
 
         // カードタイプに応じて固有の値を更新
         switch (cardType)
         {
             case CardType.Leader:
                 (existingCard as LeaderCard).appeal = appeal;
-                (existingCard as LeaderCard).evolveBaseName = evolveBaseID;
+                //(existingCard as LeaderCard).evolveBaseName = evolveBaseID;
                 break;
-                // ... 他のカードタイプも同様に ...
+            case CardType.Character:
+                (existingCard as CharacterCard).cost = cost;
+                (existingCard as CharacterCard).appeal = appeal;
+                (existingCard as CharacterCard).mental = mental;
+                break;
+            case CardType.EvolveCharacter:
+                (existingCard as EvolveCharacterCard).cost = cost;
+                (existingCard as EvolveCharacterCard).appeal = appeal;
+                (existingCard as EvolveCharacterCard).mental = mental;
+                //(existingCard as EvolveCharacterCard).evolveBaseName = evolveBaseID;
+                break;
+            case CardType.Accessory:
+                (existingCard as AccessoryCard).cost = cost;
+                (existingCard as AccessoryCard).evolveBaseID = evolveBaseID;
+                (existingCard as AccessoryCard).evolveTargetID = evolveTargetID;
+                break;
+            case CardType.Event:
+                (existingCard as EventCard).cost = cost;
+                break;
+            case CardType.Appeal:
+                (existingCard as AppealCard).cost = cost;
+                break;
+            default:
+                Debug.LogError($"未知のカードタイプ:{cardType}");
+                return;
         }
 
         EditorUtility.SetDirty(existingCard); // 変更をマーク

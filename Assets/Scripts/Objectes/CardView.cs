@@ -35,7 +35,9 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
 
     [Header("Buff")]
     public int appealBuff = 0;  //アピール力への一時的な補正値(バフ/デバフ)
-    
+
+    [Header("Settings")]
+    public bool isZoomPanel = true;
     #endregion
 
     //Start,UpdateなどUnityが自動で呼ぶメソッド
@@ -196,8 +198,11 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
         }
         else
         {
-            Debug.Log("Card clicked: " + nameText.text);
-            ZoomUIPanelManager.Instance.Show(this);
+            if (isZoomPanel)
+            {
+                Debug.Log("Card clicked: " + nameText.text);
+                ZoomUIPanelManager.Instance.Show(this);
+            }
         }
     }
     #endregion
@@ -279,7 +284,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
 
         CardType type = droppedCard.cardData.cardType;
 
-        if (type == CardType.EvolveCharacter)
+        if (type == CardType.Accessory)
         {
             //GameMangerに「このカードの上に、進化カードがドロップされました」と報告
             //thisはドロップされた側(進化元)のカード

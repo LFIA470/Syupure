@@ -15,6 +15,7 @@ public enum CardType
 public abstract class Card : ScriptableObject
 {
     [Header("全カード共通の基本情報")]
+    public int cardID;       //カードID
     public string cardName;     //カードネーム
     [TextArea]
     public CardType cardType;   //カードタイプ

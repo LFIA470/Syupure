@@ -18,6 +18,9 @@ public class DeckManager : MonoBehaviour
     private List<Card> playerDeckPile;
     private List<Card> enemyDeckPile;
 
+    //public List<int> nPlayerDeck = new List<int>();
+    //public List<int> nEnemyDeck = new List<int>();
+
     public Transform playerHandArea;
     public Transform playerFieldArea;
     public Transform enemyHandArea;
@@ -117,42 +120,34 @@ public class DeckManager : MonoBehaviour
         Debug.Log(owner + "が" + cardData.cardName + "を引きました。");
     }
 
-    //山札からランダムに一枚引く
-    public void RandomDrawCard(TurnOwner owner)
+    public List<Card> DrawCardsTemporary(TurnOwner owner, int count)
     {
-        //誰が引くかに応じて、使う山札と手札を決定する
-        List<Card> targetDeck;
-        Transform targetHandArea;
+        // どちらのデッキを操作するか決める
+        List<Card> targetDeck = (owner == TurnOwner.Player) ? playerDeckPile : enemyDeckPile;
 
-        if (owner == TurnOwner.Player)
-        {
-            targetDeck = playerDeckPile;
-            targetHandArea = playerHandArea;
-        }
-        else
-        {
-            targetDeck = enemyDeckPile;
-            targetHandArea = enemyHandArea;
-        }
+        List<Card> drawnIds = new List<Card>();
 
-        //山札の枚数をチェック
-        if (targetDeck.Count == 0)
+        // 枚数チェック（山札が足りない場合、あるだけ引く）
+        if (targetDeck.Count < count) count = targetDeck.Count;
+
+        for (int i = 0; i < count; i++)
         {
-            Debug.Log(owner + "の山札がありません。");
-            return;
+            drawnIds.Add(targetDeck[0]);
+            targetDeck.RemoveAt(0); // 山札から消す
         }
 
-        //山札からランダムに１枚選んで取り出す
-        int index = Random.Range(0, targetDeck.Count);
-        Card cardData = targetDeck[index];
-        targetDeck.RemoveAt(index);
+        return drawnIds; // 抜き出したIDリストを返す
+    }
 
-        //選んだカードを手札を生成して表示する
-        GameObject cardObj = Instantiate(cardPrefab, targetHandArea);
-        CardView view = cardObj.GetComponent<CardView>();
-        view.SetCard(cardData);
+    public void ReturnCardsAndShuffle(TurnOwner owner, List<Card> returnIds)
+    {
+        List<Card> targetDeck = (owner == TurnOwner.Player) ? playerDeckPile : enemyDeckPile;
 
-        Debug.Log(owner + "が" + cardData.cardName + "を引きました。");
+        // 残りを山札に戻す
+        targetDeck.AddRange(returnIds);
+
+        // そのデッキをシャッフル
+        DeckShuffle(owner);
     }
     #endregion
 }

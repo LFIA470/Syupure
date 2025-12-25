@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -92,6 +93,12 @@ public class GameManager : MonoBehaviour
     private CardView cardToPlay;            //プレイしようとしているカード
     private CardView appealSourceCard;
     private List<CardView> buffedCardsThisTurn = new List<CardView>();
+    public List<Card> playerFieldList = new List<Card>();
+    public List<Card> allCardDataList;
+    public GameObject cardPrefab;
+    public SearchPanel searchPanel;
+    private List<Card> tempDrawnIds = new List<Card>();
+    private TurnOwner _currentSearchOwner;
 
     [Header("Player & Enemy Stats")]
     public int playerMana = 0;              //マナ(プレイヤー)
@@ -341,68 +348,26 @@ public class GameManager : MonoBehaviour
             card.ReturnToOriginalParent();
         }
     }
-    public void CardDroppedOnCharacter(CardView evolveCard, CardView baseCharacter)//キャラクターの上にドロップされた時の処理(進化)
+    public void CardDroppedOnCharacter(CardView droppedCard, CardView targetCharacter)
     {
-        //ルールチェック
-        //カードタイプが進化カードかどうか
-        if (evolveCard.cardData.cardType != CardType.EvolveCharacter)
+        if (droppedCard.cardData.cardType != CardType.Accessory)
         {
-            evolveCard.ReturnToOriginalParent();
-            return;
-        }
-        //進化元のカードがキャラクターカードかどうか
-        if (baseCharacter.cardData.cardType != CardType.Character)
-        {
-            evolveCard.ReturnToOriginalParent();
+            Debug.Log("カードタイプ違い");
+            droppedCard.ReturnToOriginalParent();
             return;
         }
 
-        //共通ルールチェック
-        bool canPlay = PlayCard(evolveCard.cardData, TurnOwner.Player);
-
-
-        //実行処理
-        if (canPlay)
+        bool canPlay = PlayCard(droppedCard.cardData, TurnOwner.Player);
+        if (!canPlay)
         {
-            Debug.Log(evolveCard.cardData.cardName + "に進化しました。");
-            
-            //進化元のキャラクターがいたスロットを探す
-            CharacterSlot slot = baseCharacter.transform.parent.GetComponent<CharacterSlot>();
-            if (slot == null)
-            {
-                BattleLogManager.Instance.ShowNotification("進化元のキャラクターがスロットにいません");
-                evolveCard.ReturnToOriginalParent();
-                return;
-            }
-
-            //進化カードを、進化元カードの子オブジェクトにする
-            evolveCard.transform.SetParent(baseCharacter.transform, false);
-
-            //進化カードの位置を親（進化元）の真上にピッタリ合わせる
-            evolveCard.transform.localPosition = Vector3.zero;
-
-            //子オブジェクトになった後、ローカルスケールを(1, 1, 1)にリセットする
-            evolveCard.transform.localScale = Vector3.one;
-
-            evolveCard.transform.localRotation = Quaternion.identity;
-
-            //スロットの「使用中のカード」情報を、新しい進化カードに更新する
-            slot.occupiedCard = evolveCard;
-
-            //進化カードの見た目と当たり判定を消す
-            CanvasGroup baseCardCanvasGroup = baseCharacter.GetComponent<CanvasGroup>();
-            if (baseCardCanvasGroup != null)
-            {
-                baseCardCanvasGroup.alpha = 0;
-                baseCardCanvasGroup.blocksRaycasts = false;
-            }
+            Debug.Log("ルール違反");
+            droppedCard.ReturnToOriginalParent();
+            return;
         }
-        else
-        {
-            //共通ルールチェックで失敗した場合
-            evolveCard.ReturnToOriginalParent();
-        }
-        
+
+        EffectManager.Instance.ExecuteEffect(droppedCard.cardData, TurnOwner.Player, targetCharacter);
+
+        MoveCardToDiscard(droppedCard, TurnOwner.Player);
     }
     public void CardDroppedOnSpellArea(CardView card, SpellArea spellArea)//アピール・イベントエリアにドロップされた時の処理
     {
@@ -440,16 +405,8 @@ public class GameManager : MonoBehaviour
                 MoveCardToDiscard(card, TurnOwner.Player);
                 break;
         }
-
-        //全てOKなら効果発動
-        Debug.Log(card.cardData.cardName + "の効果を発動！");
-
-        //効果処理
-
-        //効果発動後処理(トラッシュに送るなど)
-        //Destroy(card.gameObject);
     }
-      #endregion
+    #endregion
 
     //ルールの判定に関するメソッド
     #region Rule Check Methods
@@ -506,6 +463,11 @@ public class GameManager : MonoBehaviour
         if (slot != null && slot.owner == FieldOwner.Enemy) return true;
 
         return false;
+    }
+    //カードリストの中からIDが一致するものを探す
+    public Card GetCardDataByID(int id)
+    {
+        return allCardDataList.Find(data => data.cardID == id);
     }
     #endregion
 
@@ -646,10 +608,49 @@ public class GameManager : MonoBehaviour
     {
         return currentMainPhaseState;
     }
+    public int PlayerCharacterCount //現在のフィールドのキャラクター数分を返す
+    {
+        get
+        {
+            return playerFieldList.Count(card => card.cardType == CardType.Character);
+        }
+    }
     #endregion
 
     //ゲームのアクションに関するメソッド
     #region Game Action Methods
+    public void DressUP(CardView baseView, int nextFormID, Card accessoryData)
+    {
+        Debug.Log($"{baseView.cardData.cardName} を ID:{nextFormID} にドレスアップさせます！");
+
+        //進化先のデータを取得
+        Card nextCardData = GetCardDataByID(nextFormID);
+        if (nextCardData == null) return;
+
+        //新しいカードオブジェクトを生成
+        GameObject newCardObj = Instantiate(cardPrefab, baseView.transform.parent);
+        newCardObj.transform.position = baseView.transform.position;
+        newCardObj.transform.rotation = baseView.transform.rotation;
+
+        //データのセットアップ
+        CardView newView = newCardObj.GetComponent<CardView>();
+        newView.SetCard(nextCardData);
+
+        //ステータスの引き継ぎ（必要なら）
+        // int damage = baseView.InitialHp - baseView.CurrentHp;
+        // newView.TakeDamage(damage);
+
+        //元のカードの処理
+        //非表示にする
+        baseView.gameObject.SetActive(false);
+
+        //リストの入れ替え（GameManagerが管理しているフィールドリストなどがあれば更新）
+        //playerFieldList.Remove(baseView);
+        //playerFieldList.Add(newView);
+
+        //アクセサリーカードの処理（装備状態にする）
+        //ドロップしたアクセカードを手札から消し、進化後カードの子要素にする等の処理
+    }
     public void PerformAppeal(TurnOwner owner, CardView ally, CardView enemy)//指定されたオーナーのアピール処理を実行する
     {
         //誰のアピールかによって
@@ -914,6 +915,47 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    public void StartSearchTransaction(TurnOwner owner, int lookCount, int selectCount)
+    {
+        _currentSearchOwner = owner;
+
+        //デッキからIDを抜き出す
+        tempDrawnIds = deckManager.DrawCardsTemporary(owner, lookCount);
+
+        //パネルを表示
+        searchPanel.Open(tempDrawnIds, selectCount);
+    }
+
+    //サーチ完了
+    public void OnSearchCompleted(List<Card> selectedCards)
+    {
+        //選ばれたカードを手札へ
+        foreach (Card card in selectedCards)
+        {
+            CreateCardInHand(card);
+
+            //全候補リストから、選ばれたIDを除外する（＝残りが戻す分）
+            tempDrawnIds.Remove(card);
+        }
+
+        //選ばれなかった残りのIDをデッキに戻してシャッフル
+        deckManager.ReturnCardsAndShuffle(_currentSearchOwner, tempDrawnIds);
+    }
+    public void CreateCardInHand(Card cardData)
+    {
+        //プレハブから新しいカードオブジェクトを作る
+        GameObject newCardObj = Instantiate(cardPrefab, playerHandArea);
+
+        //作ったカードにデータを持たせる
+        CardView cardView = newCardObj.GetComponent<CardView>();
+
+        //データセット
+        cardView.SetCard(cardData);
+
+        //必要ならSE（効果音）を鳴らすなど
+        Debug.Log($"手札に {cardData.cardName} を生成しました");
+    }
+
     public bool AIPlayCharacter(CardView card, CharacterSlot slot)  //AIがキャラクターをプレイする
     {
         //共通ルールチェック

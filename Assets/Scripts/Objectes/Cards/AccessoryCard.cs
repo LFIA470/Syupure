@@ -10,6 +10,6 @@ public class AccessoryCard : Card
     public int cost;
 
     [Header("i‰»î•ñ")]
-    public string evolveBaseID;
-    public string evolveTargetID;
+    public int evolveBaseID;
+    public int evolveTargetID;
 }
