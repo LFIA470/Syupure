@@ -1539,22 +1539,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_gameObject: {fileID: 0}
   playerDeck:
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  - {fileID: 11400000, guid: 0be56f7cfb7832f46b5995af9f2860bd, type: 2}
-  playerLeader: {fileID: 11400000, guid: d864542f4f1e8554d960a5f8a6e54c96, type: 2}
+  - {fileID: 11400000, guid: c3f69011482193549b36c23fd0898b88, type: 2}
+  - {fileID: 11400000, guid: c3f69011482193549b36c23fd0898b88, type: 2}
+  - {fileID: 11400000, guid: c3f69011482193549b36c23fd0898b88, type: 2}
+  - {fileID: 11400000, guid: c3f69011482193549b36c23fd0898b88, type: 2}
+  - {fileID: 11400000, guid: c3f69011482193549b36c23fd0898b88, type: 2}
+  - {fileID: 11400000, guid: e7e95bfcb03bb5647a88b176cea27c7e, type: 2}
+  - {fileID: 11400000, guid: e7e95bfcb03bb5647a88b176cea27c7e, type: 2}
+  - {fileID: 11400000, guid: e7e95bfcb03bb5647a88b176cea27c7e, type: 2}
+  - {fileID: 11400000, guid: e7e95bfcb03bb5647a88b176cea27c7e, type: 2}
+  playerLeader: {fileID: 11400000, guid: 2da253ae258ae0d46a6f28fc11cffc80, type: 2}
   enemyDeck:
   - {fileID: 11400000, guid: fd4e07a389925c645b1b43bf7b7bfe30, type: 2}
   - {fileID: 11400000, guid: fd4e07a389925c645b1b43bf7b7bfe30, type: 2}
@@ -1564,8 +1558,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 364efe9cc5d6e484f854d017a02122d5, type: 2}
   - {fileID: 11400000, guid: 58ff0ff141a65d349afd3184593eac86, type: 2}
   enemyLeader: {fileID: 11400000, guid: d864542f4f1e8554d960a5f8a6e54c96, type: 2}
-  nPlayerDeck: 
-  nEnemyDeck: 
   playerHandArea: {fileID: 367815213}
   playerFieldArea: {fileID: 0}
   enemyHandArea: {fileID: 1131804064}
@@ -4652,6 +4644,7 @@ GameObject:
   - component: {fileID: 2120792111}
   - component: {fileID: 2120792113}
   - component: {fileID: 2120792112}
+  - component: {fileID: 2120792114}
   m_Layer: 5
   m_Name: SearchCardContainer
   m_TagString: Untagged
@@ -4716,6 +4709,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2120792110}
   m_CullTransparentMesh: 1
+--- !u!114 &2120792114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2120792110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 4
+  m_Spacing: 170
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1001 &3807830013869591210
 PrefabInstance:
   m_ObjectHideFlags: 0
