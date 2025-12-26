@@ -16,9 +16,6 @@ public class SearchPanel : MonoBehaviour
     {
         // 決定ボタンを押したら、GameManagerに報告してパネルを閉じる
         decideButton.onClick.AddListener(OnDecideButtonClicked);
-
-        // 最初は非表示にしておく
-        this.gameObject.SetActive(false);
     }
 
     public void Open(List<Card> choices, int selectCount)
@@ -30,6 +27,7 @@ public class SearchPanel : MonoBehaviour
         // 表示のリセット
         foreach (Transform child in cardContainer) Destroy(child.gameObject);
         this.gameObject.SetActive(true);
+
 
         // カードを並べる
         foreach (Card data in choices)

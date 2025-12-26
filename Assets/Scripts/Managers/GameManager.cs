@@ -64,25 +64,17 @@ public class GameManager : MonoBehaviour
     [SerializeField] private DeckManager deckManager;
     [SerializeField] private Transform playerHandArea;  //手札エリアのTransformを設定
     public Transform PlayerHandArea { get { return playerHandArea; } }
-        
     [SerializeField] private Transform playerLeaderArea;    //リーダーエリアのTransformを設定
     public Transform PlayerLeaderArea { get { return playerLeaderArea; } }
-
     [SerializeField] private Transform playerCharacterSlotsParent;  //キャラクタースロットのTrasnformを設定
     public Transform PlayerCharacterSlotsParent { get { return playerCharacterSlotsParent; } }
-
     [SerializeField] private SpellArea playerSpellArea; //スペルエリア
-
     [SerializeField] private Transform PlayerReserveArea;   //トラッシュのTransformを設定
-
     [SerializeField] private Transform enemyLeaderArea; //リーダーエリアのTransformを設定※相手用
     public Transform EnemyLeaderArea { get {return enemyLeaderArea; } }
-
     [SerializeField] private Transform enemyCharacterSlotsParent;   //キャラクタースロットのTransformを設定※相手用
     public Transform EnemyCharacterSlotsParent { get {return enemyCharacterSlotsParent; } }
-
     [SerializeField] private Transform enemySpellArea;  //スペルエリア※相手用
-
     [SerializeField] private Transform EnemyReserveArea;    //トラッシュのTransformを設定※相手用
 
     [Header("Game State")]
@@ -99,6 +91,7 @@ public class GameManager : MonoBehaviour
     public SearchPanel searchPanel;
     private List<Card> tempDrawnIds = new List<Card>();
     private TurnOwner _currentSearchOwner;
+    private float defaultCardSize = 1.04f;
 
     [Header("Player & Enemy Stats")]
     public int playerMana = 0;              //マナ(プレイヤー)
@@ -332,7 +325,7 @@ public class GameManager : MonoBehaviour
             //成功した場合のみ、カードをスロットに配置し、スロットに使用中であることを記憶させる
             Debug.Log(card.cardData.cardName + "をスロットに配置しました。");
             card.transform.SetParent(slot.transform, false);
-            card.transform.localScale = Vector3.one * 0.8f;
+            card.transform.localScale = Vector3.one * defaultCardSize;
             card.transform.localRotation = Quaternion.identity;
             slot.occupiedCard = card;
 
@@ -396,7 +389,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log(card.cardData.cardName + " をプレイするため、ターゲット選択に移行します。");
                 card.transform.SetParent(spellArea.transform, false);
                 card.transform.localRotation = Quaternion.identity;
-                card.transform.localScale = Vector3.one * 0.8f;
+                card.transform.localScale = Vector3.one * defaultCardSize;
                 EnterTargetingMode(card);
                 break;
             case CardType.Event:
@@ -759,7 +752,7 @@ public class GameManager : MonoBehaviour
         //カードの操作を不能にし、見た目をリセット
         card.transform.localPosition = Vector3.zero;
         card.transform.localRotation = Quaternion.identity; //傾きをリセット
-        card.transform.localScale = Vector3.one * 0.8f;    //大きさをリセット
+        card.transform.localScale = Vector3.one * defaultCardSize;    //大きさをリセット
 
         //カードをクリックやドラッグの対象外にする
         CanvasGroup cg = card.GetComponent<CanvasGroup>();
@@ -801,7 +794,7 @@ public class GameManager : MonoBehaviour
         //カードの操作を不能にし、見た目をリセット
         card.transform.localPosition = Vector3.zero;
         card.transform.localRotation = Quaternion.identity; //傾きをリセット
-        card.transform.localScale = Vector3.one * 0.8f;    //大きさをリセット
+        card.transform.localScale = Vector3.one * defaultCardSize;    //大きさをリセット
 
         //カードをクリックやドラッグの対象外にする
         CanvasGroup cg = card.GetComponent<CanvasGroup>();
@@ -925,9 +918,7 @@ public class GameManager : MonoBehaviour
         //パネルを表示
         searchPanel.Open(tempDrawnIds, selectCount);
     }
-
-    //サーチ完了
-    public void OnSearchCompleted(List<Card> selectedCards)
+    public void OnSearchCompleted(List<Card> selectedCards) //サーチ完了
     {
         //選ばれたカードを手札へ
         foreach (Card card in selectedCards)
@@ -955,7 +946,6 @@ public class GameManager : MonoBehaviour
         //必要ならSE（効果音）を鳴らすなど
         Debug.Log($"手札に {cardData.cardName} を生成しました");
     }
-
     public bool AIPlayCharacter(CardView card, CharacterSlot slot)  //AIがキャラクターをプレイする
     {
         //共通ルールチェック
@@ -980,7 +970,7 @@ public class GameManager : MonoBehaviour
         card.transform.SetParent(slot.transform, false);
         card.transform.localPosition = Vector3.zero;
         card.transform.localRotation = Quaternion.identity;
-        card.transform.localScale = Vector3.one * 0.8f;
+        card.transform.localScale = Vector3.one * defaultCardSize;
 
         slot.occupiedCard = card;
 
@@ -1014,7 +1004,7 @@ public class GameManager : MonoBehaviour
             card.transform.SetParent(enemySpellArea, false);
             card.transform.localPosition = Vector3.zero;
             card.transform.localRotation = Quaternion.identity;
-            card.transform.localScale = Vector3.one * 0.8f;
+            card.transform.localScale = Vector3.one * defaultCardSize;
         }
 
         //マナ消費
