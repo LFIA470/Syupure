@@ -66,7 +66,11 @@ public class ZoomUIPanelManager : MonoBehaviour
 
         //コストとハート(アピール力)の表示リセット
         costImage.gameObject.SetActive(false);
-        foreach (Transform child in AppealContainer.transform) { Destroy(child.gameObject); }
+        apeealPowerIcon.gameObject.SetActive(false);
+        apeealPowerImage.gameObject.SetActive(false);
+        mentalIcon.gameObject.SetActive(false);
+        mentalImage.gameObject.SetActive(false);
+
 
         //カードタイプに応じて処理を分岐
         switch (cardView.cardData.cardType)
