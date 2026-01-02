@@ -805,7 +805,7 @@ public class GameManager : MonoBehaviour
 
         Debug.Log(card.cardData.cardName + "を墓地に送りました。");
     }
-    private bool PlayCard(Card cardData, TurnOwner owner)//カードプレイのルールチェックとコストの消費
+    public bool PlayCard(Card cardData, TurnOwner owner)//カードプレイのルールチェックとコストの消費
     {
         //誰のターンで、誰のマナを使うか
         bool isCorrectTurn = (owner == TurnOwner.Player) ? isPlayerTurn : !isPlayerTurn;
@@ -915,8 +915,15 @@ public class GameManager : MonoBehaviour
         //デッキからIDを抜き出す
         tempDrawnIds = deckManager.DrawCardsTemporary(owner, lookCount);
 
-        //パネルを表示
-        searchPanel.Open(tempDrawnIds, selectCount);
+        if (owner == TurnOwner.Player)
+        {
+            //パネルを表示
+            searchPanel.Open(tempDrawnIds, selectCount);
+        }
+        else
+        {
+            StartCoroutine(AI_ProcessSearch(tempDrawnIds, selectCount));
+        }
     }
     public void OnSearchCompleted(List<Card> selectedCards) //サーチ完了
     {
@@ -1020,6 +1027,33 @@ public class GameManager : MonoBehaviour
         MoveCardToDiscard(card, TurnOwner.Enemy);
 
         return true;
+    }
+    private IEnumerator AI_ProcessSearch(List<Card> choices, int selectCount)   //AI用のサーチ思考ルーチン
+    {
+        yield return new WaitForSeconds(0.5f); // 考えている演出
+
+        List<Card> selected = new List<Card>();
+
+        //AIの選び方：とりあえず「一番コストが高いカード」を選ぶ（強いカードが欲しいから）
+        choices = choices.OrderByDescending(c => GetCardCost(c)).ToList();
+
+        for (int i = 0; i < selectCount; i++)
+        {
+            if (i < choices.Count) selected.Add(choices[i]);
+        }
+
+        Debug.Log("AIがサーチで " + selected.Count + " 枚選びました");
+
+        //完了処理（既存のOnSearchCompletedを呼ぶ）
+        OnSearchCompleted(selected);
+    }
+    private int GetCardCost(Card card)  // 補助：コスト取得
+    {
+        if (card is CharacterCard ch) return ch.cost;
+        if (card is AccessoryCard ac) return ac.cost;
+        if (card is AppealCard ap) return ap.cost;
+        if (card is EventCard ev) return ev.cost;
+        return 0;
     }
     #endregion
 

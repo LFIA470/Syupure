@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1385f8e179100b4468b080f5cfc9bdcf, type: 3}
+  m_Name: "1002_\u30A2\u30AF\u30BD\u30EA\u30A3"
+  m_EditorClassIdentifier: 
+  cardID: 1002
+  cardName: "\u30A2\u30AF\u30BD\u30EA\u30A3"
+  cardType: 1
+  description: "\u30A2\u30D4\u30FC\u30EB\u30DD\u30A4\u30F3\u30C8\uFF11\u30A2\u30C3\u30D7"
+  artwork: {fileID: 21300000, guid: f00882ad3b6b51649926aac338a0ed04, type: 3}
+  effectID: ADD_APPEAL_POINTS
+  effectValue: 1
+  effectTarget: None
+  timingID: BOOT
+  isPlayerCard: 0
+  cost: 1
+  appeal: 1
+  mental: 2

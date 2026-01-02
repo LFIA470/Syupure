@@ -192,7 +192,7 @@ public class CardDataImporter : EditorWindow
         newCard.effectID = effectID;
         newCard.effectValue = effectValue;
         newCard.effectTarget = effectTarget;
-        newCard.timingID = "Main";
+        newCard.timingID = timingID;
         
 
         //アセットとしてプロジェクトに保存

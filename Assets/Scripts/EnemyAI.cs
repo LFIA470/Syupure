@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
@@ -7,11 +8,212 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private Transform enemyHandArea;
     [SerializeField] private Transform enemyCharacterSlotsParent;
     [SerializeField] private Transform enemyLeaderArea;
+    [SerializeField] private Transform enemySpellArea;
     [SerializeField] private Transform playerLeaderArea;
+
+    private bool isThinking = false;
 
     public void StartEnemyTurn()    //相手のターンの行動を開始する
     {
-        StartCoroutine(AIActionRoutine());
+        StartCoroutine(ThinkAndActRoutine());
+    }
+
+    private IEnumerator ThinkAndActRoutine()
+    {
+        isThinking = true;
+
+        //まず少し待つ（人間らしさの演出）
+        yield return new WaitForSeconds(1.5f);
+
+        //フィールドの状況を見て攻撃（アピール）する
+        yield return StartCoroutine(ProcessAttacks());
+
+        //手札からカードをプレイする
+        yield return StartCoroutine(ProcessPlayCards());
+
+        //やることがなくなったらターン終了
+        yield return new WaitForSeconds(1.0f);
+        Debug.Log("AI: ターン終了");
+        GameManager.Instance.EndTurn(TurnOwner.Enemy);
+
+        isThinking = false;
+    }
+
+    private IEnumerator ProcessPlayCards()
+    {
+        //敵の手札にあるカードを全部取得してリスト化
+        List<CardView> handCards = new List<CardView>();
+        if (enemyHandArea != null)
+        {
+            foreach (Transform child in enemyHandArea)
+            {
+                CardView view = child.GetComponent<CardView>();
+                if (view != null) handCards.Add(view);
+            }
+        }
+
+        //コストの低い順に並べ替え
+        var sortedHand = handCards.OrderBy(c => GetCardCost(c.cardData)).ToList();
+
+        //ループ中に手札リストが変わるとエラーになるのでコピーして回す
+        List<CardView> tryList = new List<CardView>(sortedHand);
+
+        foreach (CardView card in tryList)
+        {
+            //すでにプレイされて消えている、または墓地に行っている場合はスキップ
+            if (card == null || card.transform.parent != enemyHandArea) continue;
+
+            //プレイ可能かチェック
+            if (CanAIPlay(card))
+            {
+                //ちょっと考える演出
+                yield return new WaitForSeconds(0.5f);
+
+                //プレイ実行
+                //失敗しても、ループを止めずに次のカードを試すのが大事
+                bool played = TryPlayCard(card);
+
+                if (played)
+                {
+                    //プレイ成功
+                    Debug.Log($"AI: {card.cardData.cardName} (Cost:{GetCardCost(card.cardData)}) をプレイしました");
+                }
+            }
+        }
+    }
+
+    private IEnumerator ProcessAttacks()
+    {
+        //自分の場のキャラを取得
+        List<CardView> myCharacters = GetMyFieldCards();
+
+        foreach (CardView attacker in myCharacters)
+        {
+            //攻撃済みならスキップ
+
+            //誰を狙う？
+            CardView target = GetBestTarget();
+
+            if (target != null)
+            {
+                // 攻撃演出
+                yield return new WaitForSeconds(0.5f);
+                GameManager.Instance.PerformAppeal(TurnOwner.Enemy, attacker, target);
+            }
+        }
+    }
+
+    private int GetCardCost(Card card)
+    {
+        if (card is CharacterCard ch) return ch.cost;
+        if (card is AccessoryCard ac) return ac.cost;
+        if (card is AppealCard ap) return ap.cost;
+        if (card is EventCard ev) return ev.cost;
+        return 0;
+    }
+
+    private bool CanAIPlay(CardView card)
+    {
+        int cost = GetCardCost(card.cardData);
+
+        // マナチェック
+        if (GameManager.Instance.enemyMana < cost) return false;
+
+        if (card.cardData.cardType == CardType.Character || card.cardData.cardType == CardType.EvolveCharacter)
+        {
+            return GetEmptyEnemySlot() != null;
+        }
+        else if (card.cardData.cardType == CardType.Appeal)
+        {
+            return GetMyFieldCards().Count > 0;
+        }
+        else if (card.cardData.cardType == CardType.Event)
+        {
+            return true;
+        }
+
+        return true;
+    }
+
+    private bool TryPlayCard(CardView card)
+    {
+        //カードタイプで分岐
+        if (card.cardData.cardType == CardType.Character)
+        {
+            //空いているスロットを探す
+            CharacterSlot emptySlot = GetEmptyEnemySlot();
+            if (emptySlot != null)
+            {
+                return GameManager.Instance.AIPlayCharacter(card, emptySlot);
+            }
+        }
+        else if (card.cardData.cardType == CardType.Appeal)
+        {
+            //誰がアピールする？
+            List<CardView> myUnits = GetMyFieldCards();
+            if (myUnits.Count == 0) return false; //アピールする人がいない
+
+            CardView appealer = myUnits[0]; //とりあえず一番手前のやつ
+
+            //誰を狙う？
+            CardView target = GetBestTarget();
+
+            if (appealer != null && target != null)
+            {
+                //GameManagerのアピール処理を呼ぶ
+                return GameManager.Instance.AIPlayAppeal(card, appealer, target);
+            }
+        }
+        else if (card.cardData.cardType == CardType.Event)
+        {
+            //イベント用メソッドを呼ぶ
+            if (enemySpellArea != null)
+            {
+                //スペルエリアに置いて発動
+                card.transform.SetParent(enemySpellArea, false);
+                //コスト支払いと効果発動
+                if (GameManager.Instance.PlayCard(card.cardData, TurnOwner.Enemy))
+                {
+                    EffectManager.Instance.ExecuteEffect(card.cardData, TurnOwner.Enemy);
+                    GameManager.Instance.MoveCardToDiscard(card, TurnOwner.Enemy);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private List<CardView> GetMyFieldCards()
+    {
+        List<CardView> list = new List<CardView>();
+        foreach (Transform slotTrans in GameManager.Instance.EnemyCharacterSlotsParent)
+        {
+            CharacterSlot slot = slotTrans.GetComponent<CharacterSlot>();
+            if (slot != null && slot.occupiedCard != null) list.Add(slot.occupiedCard);
+        }
+        //リーダーも含めるならここでAdd
+        return list;
+    }
+
+    private CardView GetBestTarget()
+    {
+        //とりあえずプレイヤーリーダーを返す
+        if (GameManager.Instance.PlayerLeaderArea.childCount > 0)
+        {
+            return GameManager.Instance.PlayerLeaderArea.GetChild(0).GetComponent<CardView>();
+        }
+        return null;
+    }
+
+    private CharacterSlot GetEmptyEnemySlot()
+    {
+        foreach (Transform child in GameManager.Instance.EnemyCharacterSlotsParent)
+        {
+            CharacterSlot slot = child.GetComponent<CharacterSlot>();
+            if (slot != null && slot.occupiedCard == null) return slot;
+        }
+        return null;
     }
 
     private IEnumerator AIActionRoutine()

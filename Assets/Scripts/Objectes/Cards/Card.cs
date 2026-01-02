@@ -12,6 +12,17 @@ public enum CardType
     Event,              //イベントカード
 }
 
+public enum EffectTiming
+{ 
+    NONE,
+    ENTRY,
+    MAIN,
+    BOOT,
+    APPEAL,
+    START,
+    END,
+}
+
 public abstract class Card : ScriptableObject
 {
     [Header("全カード共通の基本情報")]
