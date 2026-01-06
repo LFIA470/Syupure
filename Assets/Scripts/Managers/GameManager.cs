@@ -69,16 +69,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform playerCharacterSlotsParent;  //キャラクタースロットのTrasnformを設定
     public Transform PlayerCharacterSlotsParent { get { return playerCharacterSlotsParent; } }
     [SerializeField] private SpellArea playerSpellArea; //スペルエリア
-    [SerializeField] private Transform PlayerReserveArea;   //トラッシュのTransformを設定
+    [SerializeField] private Transform playerReserveArea;   //トラッシュのTransformを設定
+    [SerializeField] private Transform enemyHandArea;   //手札エリアのTransformを設定
+    public Transform EnemyHandArea { get {return enemyHandArea; } }
     [SerializeField] private Transform enemyLeaderArea; //リーダーエリアのTransformを設定※相手用
     public Transform EnemyLeaderArea { get {return enemyLeaderArea; } }
     [SerializeField] private Transform enemyCharacterSlotsParent;   //キャラクタースロットのTransformを設定※相手用
     public Transform EnemyCharacterSlotsParent { get {return enemyCharacterSlotsParent; } }
     [SerializeField] private Transform enemySpellArea;  //スペルエリア※相手用
-    [SerializeField] private Transform EnemyReserveArea;    //トラッシュのTransformを設定※相手用
+    [SerializeField] private Transform enemyReserveArea;    //トラッシュのTransformを設定※相手用
 
     [Header("Game State")]
     public bool isPlayerTurn = true;        //ターン確認
+    public int curreneTurnCount = 1;        //現在のターン数
     public GamePhase currentPhase = GamePhase.Start;
     public MainPhaseState currentMainPhaseState = MainPhaseState.Idle;
     public TargetingState targetingState = TargetingState.None;
@@ -90,8 +93,9 @@ public class GameManager : MonoBehaviour
     public GameObject cardPrefab;
     public SearchPanel searchPanel;
     private List<Card> tempDrawnIds = new List<Card>();
-    private TurnOwner _currentSearchOwner;
+    private TurnOwner currentSearchOwner;
     private float defaultCardSize = 1.04f;
+    private Transform currentHandArea;
 
     [Header("Player & Enemy Stats")]
     public int playerMana = 0;              //マナ(プレイヤー)
@@ -231,25 +235,42 @@ public class GameManager : MonoBehaviour
         BattleLogManager.Instance.ShowNotification(owner + "のターン");
         isPlayerTurn = (owner == TurnOwner.Player);
 
+        UIManager.Instance.UpdateTurnCount(curreneTurnCount);
+
         //いきなり処理せず、スタートフェイズに移行するだけにする
         ChangePhase(GamePhase.Start);
     }
     public void EndTurn(TurnOwner owner)//ターン移行(終了)
     {
         //いきなりターンを交代せず、エンドフェイズに移行する
-        if (currentPhase == GamePhase.Main)
-        {
-            ChangePhase(GamePhase.End);
-        }
-        else
+        if (currentPhase != GamePhase.Main)
         {
             BattleLogManager.Instance.ShowNotification("メインフェイズ以外ではターンを終了出来ません");
+
+            return;
         }
+        
+        if (owner == TurnOwner.Enemy)
+        {
+            if (curreneTurnCount >= GameConstants.MaxTurnCount)
+            {
+                CheckGameEnd();
+
+                return;
+            }
+
+            curreneTurnCount++;
+            Debug.Log($"ターン経過：{curreneTurnCount} / {GameConstants.MaxTurnCount}");
+
+            UIManager.Instance.UpdateTurnCount(curreneTurnCount);
+        }
+
+        ChangePhase(GamePhase.End);
     }
     private void CheckGameEnd() //勝敗がついたかチェック
     {
         //プレイヤーが勝ったか?
-        if (playerAppealPoints >= GameConstants.WinAppealPoint)
+        if (playerAppealPoints >　enemyAppealPoints)
         {
             Debug.Log("プレイヤーの勝利です！");
 
@@ -257,9 +278,17 @@ public class GameManager : MonoBehaviour
 
             SceneManager.LoadScene("Result");
         }
-        else if (enemyAppealPoints >= GameConstants.WinAppealPoint)
+        else if (enemyAppealPoints > playerAppealPoints)
         {
             Debug.Log("あなたの敗北です。");
+
+            GameResultData.IsPlayerWin = false;
+
+            SceneManager.LoadScene("Result");
+        }
+        else
+        {
+            Debug.Log("引き分けです。");
 
             GameResultData.IsPlayerWin = false;
 
@@ -718,8 +747,6 @@ public class GameManager : MonoBehaviour
 
         //UIの表示を更新する
         UIManager.Instance.UppdateAppealPointUI(playerAppealPoints, enemyAppealPoints);
-
-        CheckGameEnd();
     }
     public void MoveCardToDiscard (CardView card, TurnOwner owner)  //使用したカードを墓地に送る
     {
@@ -727,11 +754,11 @@ public class GameManager : MonoBehaviour
 
         if (owner == TurnOwner.Player)
         {
-            targetPile = PlayerReserveArea;
+            targetPile = playerReserveArea;
         }
         else
         {
-            targetPile = EnemyReserveArea;
+            targetPile = enemyReserveArea;
         }
 
         if (targetPile == null)
@@ -769,11 +796,11 @@ public class GameManager : MonoBehaviour
 
         if (card.cardData.isPlayerCard)
         {
-            targetPile = PlayerReserveArea;
+            targetPile = playerReserveArea;
         }
         else
         {
-            targetPile = EnemyReserveArea;
+            targetPile = enemyReserveArea;
         }
 
         if (targetPile == null)
@@ -910,7 +937,7 @@ public class GameManager : MonoBehaviour
     }
     public void StartSearchTransaction(TurnOwner owner, int lookCount, int selectCount)
     {
-        _currentSearchOwner = owner;
+        currentSearchOwner = owner;
 
         //デッキからIDを抜き出す
         tempDrawnIds = deckManager.DrawCardsTemporary(owner, lookCount);
@@ -937,12 +964,15 @@ public class GameManager : MonoBehaviour
         }
 
         //選ばれなかった残りのIDをデッキに戻してシャッフル
-        deckManager.ReturnCardsAndShuffle(_currentSearchOwner, tempDrawnIds);
+        deckManager.ReturnCardsAndShuffle(currentSearchOwner, tempDrawnIds);
     }
     public void CreateCardInHand(Card cardData)
     {
+        if (currentSearchOwner == TurnOwner.Player) currentHandArea = playerHandArea;
+        else currentHandArea = enemyHandArea;
+
         //プレハブから新しいカードオブジェクトを作る
-        GameObject newCardObj = Instantiate(cardPrefab, playerHandArea);
+        GameObject newCardObj = Instantiate(cardPrefab, currentHandArea);
 
         //作ったカードにデータを持たせる
         CardView cardView = newCardObj.GetComponent<CardView>();

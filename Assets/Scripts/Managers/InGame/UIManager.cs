@@ -29,9 +29,21 @@ public class UIManager : MonoBehaviour
 
     //変数宣言
     #region Variables
+    [Header("Turn UI")]
+    [SerializeField] private List<Image> TurnIconPrefab;
+    [SerializeField] private Sprite trueTurnIcon;
+
+    [SerializeField] private Image turnNumber;
+    [SerializeField] private List<Sprite> turnNumberPrefab;
+
     [Header("AppealTexts")]
     [SerializeField] private Text playerAppealPointText;
     [SerializeField] private Text enemyAppealPointText;
+
+    [SerializeField] private Image playerGaugeImage;
+    [SerializeField] private Image enemyGaugeImage;
+
+    [SerializeField] private float gaugeMaxScore = 20.0f;
 
     [Header("CheerPower UI")]
     [SerializeField] private Transform playerCheerPowerArea; // 親オブジェクト
@@ -41,25 +53,36 @@ public class UIManager : MonoBehaviour
     [SerializeField] private List<GameObject> playerManaIcons;
     [SerializeField] private List<GameObject> enemyManaIcons;
 
-    private List<Image> PlayerCheerPowerIcons = new List<Image>();
-    private List<Image> EnemyCheerPowerIcons = new List<Image>();
-
     [Header("Buttons")]
     [SerializeField] private GameObject turnEndButton;
     #endregion
 
     //UI更新メソッド
     #region UppdataUI Methods
+    public void UpdateTurnCount(int turnCount)
+    {
+        TurnIconPrefab[turnCount - 1].sprite = trueTurnIcon;
+
+        turnNumber.sprite = turnNumberPrefab[turnCount];
+    }
     public void UppdateAppealPointUI    //GameManagerから呼び出され、アピールポイントのUIを更新する
     (int playerPoints, int enemyPoints)
     {
-        if (playerAppealPointText != null)
+        if (playerAppealPointText != null)  playerAppealPointText.text = playerPoints.ToString();
+        if (enemyAppealPointText != null)   enemyAppealPointText.text = enemyPoints.ToString();
+    
+        if (playerGaugeImage != null)
         {
-            playerAppealPointText.text = playerPoints.ToString();
+            float ratio  = (float) playerPoints / gaugeMaxScore;
+
+            playerGaugeImage.fillAmount = Mathf.Clamp01(ratio);
         }
-        if (enemyAppealPointText != null)
+
+        if (enemyGaugeImage != null)
         {
-            enemyAppealPointText.text = enemyPoints.ToString();
+            float ratio = (float)enemyPoints / gaugeMaxScore;
+
+            enemyGaugeImage.fillAmount = Mathf.Clamp01(ratio);
         }
     }
     public void UpdateCheerPowertUI(int currentMana, int maxMana, TurnOwner owner)
