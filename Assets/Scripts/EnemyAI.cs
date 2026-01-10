@@ -25,9 +25,6 @@ public class EnemyAI : MonoBehaviour
         //まず少し待つ（人間らしさの演出）
         yield return new WaitForSeconds(1.5f);
 
-        //フィールドの状況を見て攻撃（アピール）する
-        //yield return StartCoroutine(ProcessAttacks());
-
         //手札からカードをプレイする
         yield return StartCoroutine(ProcessPlayCards());
 
