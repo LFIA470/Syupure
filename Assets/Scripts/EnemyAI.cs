@@ -26,7 +26,7 @@ public class EnemyAI : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         //フィールドの状況を見て攻撃（アピール）する
-        yield return StartCoroutine(ProcessAttacks());
+        //yield return StartCoroutine(ProcessAttacks());
 
         //手札からカードをプレイする
         yield return StartCoroutine(ProcessPlayCards());
@@ -112,6 +112,21 @@ public class EnemyAI : MonoBehaviour
         return 0;
     }
 
+    private int GetTotalAppealPower(CardView card)
+    {
+        int baseAppeal = 0;
+
+        if (card.cardData is CharacterCard charCard)
+        {
+            baseAppeal = charCard.appeal;
+        }
+        else if (card.cardData is LeaderCard leaderCard)
+        {
+            baseAppeal = leaderCard.appeal;
+        }
+
+        return baseAppeal + card.appealBuff;
+    }
     private bool CanAIPlay(CardView card)
     {
         int cost = GetCardCost(card.cardData);
@@ -150,18 +165,23 @@ public class EnemyAI : MonoBehaviour
         else if (card.cardData.cardType == CardType.Appeal)
         {
             //誰がアピールする？
-            List<CardView> myUnits = GetMyFieldCards();
-            if (myUnits.Count == 0) return false; //アピールする人がいない
+            List<CardView> potentialAppealers = new List<CardView>();
 
-            CardView appealer = myUnits[0]; //とりあえず一番手前のやつ
+            //フィールドのリーダーとキャラクターを追加
+            potentialAppealers.AddRange(GetMyFieldCards());
+
+            if (potentialAppealers.Count == 0) return false; //アピールする人がいない
+
+            CardView bestAppealer = potentialAppealers.OrderByDescending(c => GetTotalAppealPower(c)).FirstOrDefault();
 
             //誰を狙う？
             CardView target = GetBestTarget();
 
-            if (appealer != null && target != null)
+            if (bestAppealer != null && target != null)
             {
+                Debug.Log($"AI:{bestAppealer.cardData.cardName} (Power:{GetTotalAppealPower(bestAppealer)})でアピールします");
                 //GameManagerのアピール処理を呼ぶ
-                return GameManager.Instance.AIPlayAppeal(card, appealer, target);
+                return GameManager.Instance.AIPlayAppeal(card, bestAppealer, target);
             }
         }
         else if (card.cardData.cardType == CardType.Event)
@@ -192,7 +212,18 @@ public class EnemyAI : MonoBehaviour
             CharacterSlot slot = slotTrans.GetComponent<CharacterSlot>();
             if (slot != null && slot.occupiedCard != null) list.Add(slot.occupiedCard);
         }
-        //リーダーも含めるならここでAdd
+
+        Transform leaderArea = GameManager.Instance.EnemyLeaderArea;
+        if (leaderArea.childCount > 0)
+        {
+            CardView leaderCard = leaderArea.GetChild(0).GetComponent<CardView>();
+
+            if (leaderCard != null)
+            {
+                list.Add(leaderCard);
+            }
+        }
+
         return list;
     }
 
