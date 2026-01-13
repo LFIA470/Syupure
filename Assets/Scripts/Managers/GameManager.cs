@@ -269,6 +269,11 @@ public class GameManager : MonoBehaviour
     }
     private void CheckGameEnd() //勝敗がついたかチェック
     {
+        Debug.Log("ゲーム終了！結果を判定します...");
+
+        GameResultData.FinalPlayerScore = playerAppealPoints;
+        GameResultData.FinalEnemyScore = enemyAppealPoints;
+
         //プレイヤーが勝ったか?
         if (playerAppealPoints >　enemyAppealPoints)
         {

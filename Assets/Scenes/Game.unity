@@ -2422,8 +2422,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e445dd9841350cb4d8a8bff77cc5b9a9, type: 2}
   - {fileID: 11400000, guid: e445dd9841350cb4d8a8bff77cc5b9a9, type: 2}
   - {fileID: 11400000, guid: e445dd9841350cb4d8a8bff77cc5b9a9, type: 2}
-  - {fileID: 11400000, guid: e445dd9841350cb4d8a8bff77cc5b9a9, type: 2}
-  - {fileID: 11400000, guid: e445dd9841350cb4d8a8bff77cc5b9a9, type: 2}
   playerLeader: {fileID: 11400000, guid: 848cd9e4d88bb1146b26bc1a4068cf2e, type: 2}
   enemyDeck:
   - {fileID: 11400000, guid: e445dd9841350cb4d8a8bff77cc5b9a9, type: 2}

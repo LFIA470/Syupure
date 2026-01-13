@@ -4,22 +4,45 @@ using UnityEngine.UI;
 
 public class ResultManager : MonoBehaviour
 {
+    [Header("UI Refernces")]
     [SerializeField] private Text resultText;
+    [SerializeField] private Text playerScoreText;
+    [SerializeField] private Text enemyScoreText;
+    [SerializeField] private GameObject winEffectObj;
 
     void Start()
     {
-        //データを読み取って表示を変える
+        ShowResult();
+    }
+
+    private void ShowResult()
+    {
+        //スコアの表示
+        if (playerScoreText != null)
+            playerScoreText.text = GameResultData.FinalPlayerScore.ToString();
+
+        if (enemyScoreText != null)
+            enemyScoreText.text = GameResultData.FinalEnemyScore.ToString();
+
+        //勝敗による出し分け
         if (GameResultData.IsPlayerWin)
         {
-            resultText.text = "YOU WIN!!";
-            resultText.color = Color.red; // 例：勝ちなら赤文字
+            //勝利時
+            if (resultText != null)
+            {
+                resultText.text = "YOU WIN!!";
+            }
         }
         else
         {
-            resultText.text = "YOU LOSE...";
-            resultText.color = Color.white; // 例：負けなら青文字
+            //敗北時
+            if (resultText != null)
+            {
+                resultText.text = "YOU LOSE...";
+            }
         }
     }
+
 
     public void OnStartDataButtonClicked()  //スタートボタン（画面）が押されたら呼ばれる
     {
