@@ -149,24 +149,24 @@ public class HandAreaInputManager : MonoBehaviour, IPointerDownHandler, IDragHan
     private CardView GetCardAtPosition  //クリック位置からカードを計算で割り出すメソッド
     (PointerEventData eventData)
     {
-        // 1. playerHandAreaの全ての子カードを取得
+        //playerHandAreaの全ての子カードを取得
         List<CardView> cardsInHand = new List<CardView>(playerHandArea.GetComponentsInChildren<CardView>());
         if (cardsInHand.Count == 0) return null;
 
-        // 2. クリック位置をHandAreaのローカル座標に変換
+        //クリック位置をHandAreaのローカル座標に変換
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             rectTransform,
             eventData.position,
-            eventData.pressEventCamera, // Camera (Overlay CanvasならnullでOK)
+            eventData.pressEventCamera,
             out Vector2 localPos
         );
 
-        // 3. ローカルX座標からパーセンテージを計算
+        //ローカルX座標からパーセンテージを計算
         float percentage = (localPos.x + rectTransform.rect.width * rectTransform.pivot.x) / rectTransform.rect.width;
 
-        // 4. パーセンテージからインデックスを計算
+        //パーセンテージからインデックスを計算
         int index = Mathf.FloorToInt(percentage * cardsInHand.Count);
-        index = Mathf.Clamp(index, 0, cardsInHand.Count - 1); // 範囲内に収める
+        index = Mathf.Clamp(index, 0, cardsInHand.Count - 1); //範囲内に収める
 
         Debug.Log($"クリック位置 {percentage * 100:F1}% , カードインデックス: {index}");
 

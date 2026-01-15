@@ -148,9 +148,7 @@ public class CardDataImporter : EditorWindow
         {
             case CardType.Leader:
                 newCard = ScriptableObject.CreateInstance<LeaderCard>();
-                // LeaderCardå≈óLÇÃílÇê›íË
                 (newCard as LeaderCard).appeal = appeal;
-                //(newCard as LeaderCard).evolveBaseName = evolveBaseID;
                 break;
             case CardType.Character:
                 newCard = ScriptableObject.CreateInstance<CharacterCard>();
@@ -163,7 +161,6 @@ public class CardDataImporter : EditorWindow
                 (newCard as EvolveCharacterCard).cost = cost;
                 (newCard as EvolveCharacterCard).appeal = appeal;
                 (newCard as EvolveCharacterCard).mental = mental;
-                //(newCard as EvolveCharacterCard).evolveBaseName = evolveBaseID;
                 break;
             case CardType.Accessory:
                 newCard = ScriptableObject.CreateInstance<AccessoryCard>();
