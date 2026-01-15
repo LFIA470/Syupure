@@ -89,12 +89,13 @@ public class CardDataImporter : EditorWindow
                 int effectValue = ParseIntSafe(values[5]);
                 string effectTarget = values[6];
                 string timingID = values[7];
-                string description = values[8];
-                int cost = ParseIntSafe(values[9]);
-                int appeal = ParseIntSafe(values[10]);
-                int mental = ParseIntSafe(values[11]);
-                int evolveBaseID = ParseIntSafe(values[12]);
-                int evolveTargetID = ParseIntSafe(values[13]);
+                bool isUnlimited = bool.Parse(values[8]);
+                string description = values[9];
+                int cost = ParseIntSafe(values[10]);
+                int appeal = ParseIntSafe(values[11]);
+                int mental = ParseIntSafe(values[12]);
+                int evolveBaseID = ParseIntSafe(values[13]);
+                int evolveTargetID = ParseIntSafe(values[14]);
 
                 //ScriptableObjectアセットの作成
 
@@ -108,14 +109,14 @@ public class CardDataImporter : EditorWindow
                 {
                     //アセットが存在しない -> 新規作成
                     CreateNewCardAsset(assetPath, cardID, cardName, cardType, artworkFileName,
-                        effectID, effectValue, effectTarget, timingID, description,
+                        effectID, effectValue, effectTarget, timingID, isUnlimited, description,
                         cost, appeal, mental, evolveBaseID, evolveTargetID);
                 }
                 else
                 {
                     //アセットが存在する -> 更新
                     UpdateCardAsset(existingCard, cardID, cardName, cardType, artworkFileName,
-                        effectID, effectValue, effectTarget, timingID, description,
+                        effectID, effectValue, effectTarget, timingID, isUnlimited, description,
                         cost, appeal, mental, evolveBaseID, evolveTargetID);
                 }
             }
@@ -137,7 +138,7 @@ public class CardDataImporter : EditorWindow
     #region Asset Methods
     private void CreateNewCardAsset //新規アセット作成メソッド
     (string assetPath, int cardID, string cardName, CardType cardType, string artworkFileName,
-    string effectID, int effectValue, string effectTarget, string timingID, string description,
+    string effectID, int effectValue, string effectTarget, string timingID, bool isUnlimited, string description,
     int cost, int appeal, int mental, int evolveBaseID, int evolveTargetID)   
     {
         Card newCard = null;
@@ -193,6 +194,7 @@ public class CardDataImporter : EditorWindow
         newCard.effectValue = effectValue;
         newCard.effectTarget = effectTarget;
         newCard.timingID = timingID;
+        newCard.isUnlimited = isUnlimited;
         
 
         //アセットとしてプロジェクトに保存
@@ -201,7 +203,7 @@ public class CardDataImporter : EditorWindow
 
     private void UpdateCardAsset    //既存アセット更新メソッド
     (Card existingCard, int cardID, string cardName, CardType cardType, string artworkFileName,
-    string effectID, int effectValue, string effectTarget, string timingID, string description,
+    string effectID, int effectValue, string effectTarget, string timingID, bool isUnlimited, string description,
     int cost, int appeal, int mental, int evolveBaseID, int evolveTargetID)
     {
         // 既存のアセットの値を上書き

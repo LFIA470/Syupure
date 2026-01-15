@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class DeckManager : MonoBehaviour
 {
@@ -31,6 +31,8 @@ public class DeckManager : MonoBehaviour
     #region Unity Lifecycle Methods
     void Awake()
     {
+        InitDeck();
+
         playerDeckPile = new List<Card>(playerDeck);
         enemyDeckPile = new List<Card>(enemyDeck);
 
@@ -49,6 +51,41 @@ public class DeckManager : MonoBehaviour
         }
     }
     #endregion
+
+    public void InitDeck()
+    {
+        //デッキを空にする
+        playerDeck.Clear();
+
+        //セーブデータを読み込む
+        LoadDeckData();
+    }
+
+    private void LoadDeckData()
+    {
+        string deckJson = PlayerPrefs.GetString("PlayerDeck", "");
+
+        if (string.IsNullOrEmpty(deckJson))
+        {
+            Debug.LogError("セーブデータがありません！");
+            return; // テスト用データを入れる処理があっても良い
+        }
+
+        string[] idStringArray = deckJson.Split(',');
+
+        foreach (string str in idStringArray)
+        {
+            if (int.TryParse(str, out int id))
+            {
+                // CardDatabaseを使ってカードを取得
+                Card card = CardDatabase.GetCardByID(id);
+                if (card != null)
+                {
+                    playerDeck.Add(card);
+                }
+            }
+        }
+    }
 
     //デッキ操作に関するメソッド
     #region Operation Deck Methods

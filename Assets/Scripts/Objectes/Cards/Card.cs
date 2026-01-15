@@ -39,6 +39,9 @@ public abstract class Card : ScriptableObject
     public string effectTarget; //効果対象
     public string timingID;     //カード使用タイミングID
 
+    [Header("デッキルール")]
+    public bool isUnlimited = false;    //同名制限
+
     [Header("所持者")]
     public bool isPlayerCard;   //どちらのデッキのカードか？
 } 

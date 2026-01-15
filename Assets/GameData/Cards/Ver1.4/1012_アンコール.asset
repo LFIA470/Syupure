@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61adcf7c6f9fb2e4fa798129f6a0e0c2, type: 3}
+  m_Name: "1012_\u30A2\u30F3\u30B3\u30FC\u30EB"
+  m_EditorClassIdentifier: 
+  cardID: 1012
+  cardName: "\u30A2\u30F3\u30B3\u30FC\u30EB"
+  cardType: 5
+  description: "\u5FDC\u63F4\u304C\uFF12\u56DE\u5FA9\u3059\u308B"
+  artwork: {fileID: 21300000, guid: b2596734e4ba0f341be979fd089fd61d, type: 3}
+  effectID: HEAL_CHEER
+  effectValue: 2
+  effectTarget: None
+  timingID: MAIN
+  isUnlimited: 0
+  isPlayerCard: 0
+  cost: 1

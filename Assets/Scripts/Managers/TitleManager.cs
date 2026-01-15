@@ -9,6 +9,6 @@ public class TitleManager : MonoBehaviour
     {
         Debug.Log("ゲームを開始します！");
 
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("DeckEdit");
     }
 }

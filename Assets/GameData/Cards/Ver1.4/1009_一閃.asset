@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b9d0c9d8bc64a34c8b178858759500f, type: 3}
-  m_Name: "1010_\u30D5\u30A1\u30F3\u30B5"
+  m_Name: "1009_\u4E00\u9583"
   m_EditorClassIdentifier: 
-  cardID: 1010
-  cardName: "\u30D5\u30A1\u30F3\u30B5"
+  cardID: 1009
+  cardName: "\u4E00\u9583"
   cardType: 4
-  description: "\u3053\u306E\u30AB\u30FC\u30C9\u306F\u30C7\u30C3\u30AD\u306B\uFF16\u679A\u307E\u3067\u5165\u308C\u308B\u3053\u3068\u304C\u3067\u304D\u308B"
-  artwork: {fileID: 21300000, guid: 266fa2d07f4e1c441859256c64334946, type: 3}
-  effectID: NONE
-  effectValue: 0
+  description: "\u5C71\u672D\u304B\u3089\u4E00\u679A\u5F15\u304F"
+  artwork: {fileID: 21300000, guid: 1b593b0d01dd2e74d847f1e270d3d904, type: 3}
+  effectID: DRAW_CARD
+  effectValue: 1
   effectTarget: None
   timingID: MAIN
-  isUnlimited: 1
+  isUnlimited: 0
   isPlayerCard: 0
   cost: 1

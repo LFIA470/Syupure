@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b9d0c9d8bc64a34c8b178858759500f, type: 3}
-  m_Name: "1010_\u30D5\u30A1\u30F3\u30B5"
+  m_Name: "1008_\u68EE\u306E\u30A2\u30A4\u30C9\u30EB"
   m_EditorClassIdentifier: 
-  cardID: 1010
-  cardName: "\u30D5\u30A1\u30F3\u30B5"
+  cardID: 1008
+  cardName: "\u68EE\u306E\u30A2\u30A4\u30C9\u30EB"
   cardType: 4
-  description: "\u3053\u306E\u30AB\u30FC\u30C9\u306F\u30C7\u30C3\u30AD\u306B\uFF16\u679A\u307E\u3067\u5165\u308C\u308B\u3053\u3068\u304C\u3067\u304D\u308B"
-  artwork: {fileID: 21300000, guid: 266fa2d07f4e1c441859256c64334946, type: 3}
-  effectID: NONE
-  effectValue: 0
+  description: "\u81EA\u5206\u306E\u30B9\u30C6\u30FC\u30B8\u306E\u30AD\u30E3\u30B9\u30C8\u306E\u6570\xD7\uFF12\u30A2\u30D4\u30FC\u30EB\u529B\u30A2\u30C3\u30D7"
+  artwork: {fileID: 21300000, guid: bcd07845d4ee3a34ab06ca84fa09a997, type: 3}
+  effectID: UP_APPEAL_TEAM
+  effectValue: 2
   effectTarget: None
   timingID: MAIN
-  isUnlimited: 1
+  isUnlimited: 0
   isPlayerCard: 0
-  cost: 1
+  cost: 2

@@ -38,6 +38,9 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
 
     [Header("Settings")]
     public bool isZoomPanel = true;
+
+    [Header("ModeCheck")]
+    public bool isDeckEditMode = false;
     #endregion
 
     //Start,UpdateなどUnityが自動で呼ぶメソッド
@@ -187,6 +190,11 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
     #region Click Methods
     public void OnPointerClick(PointerEventData eventData)  //カードがクリックされたか
     {
+        if (isDeckEditMode)
+        {
+            return;
+        }
+
         //もしドラッグ中だったら、拡大表示せずに処理を終了する
         if (eventData.dragging) return;
 
