@@ -8,6 +8,10 @@ public class HandLayoutManager : MonoBehaviour
     #region Variables
     [Header("レイアウト設定")]
     [SerializeField]
+    [Tooltip("カードの大きさ")]
+    private float cardScale = 1.25f;
+
+    [SerializeField]
     [Tooltip("選択中のカードをどれだけ大きくするか")]
     private float selectedCardScale = 1.25f;
 
@@ -118,12 +122,13 @@ public class HandLayoutManager : MonoBehaviour
             if (cardView != null && cardView == currenlySelectedCard)
             {
                 //もし、このカードが現在選択中のカードなら
-                card.localScale = Vector3.one * selectedCardScale;
+                card.localScale = Vector3.one * cardScale * selectedCardScale;
+                card.localPosition += new Vector3(0, 60, 0);
             }
             else
             {
                 //それ以外のカードなら、通常のスケールに戻す
-                card.localScale = Vector3.one;
+                card.localScale = Vector3.one * cardScale;
             }
 
                 //重なり順を調整（真ん中のカードが一番手前になるように）
