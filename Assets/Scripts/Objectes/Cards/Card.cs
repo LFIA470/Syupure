@@ -10,6 +10,7 @@ public enum CardType
     Accessory,          //アクセサリーカード
     Appeal,             //アピールカード
     Event,              //イベントカード
+    EvolveLeader,       //進化リーダーカード
 }
 
 public enum EffectTiming

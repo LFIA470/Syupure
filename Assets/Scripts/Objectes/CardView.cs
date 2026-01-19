@@ -85,6 +85,8 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
                     apeealPowerIcon.gameObject.SetActive(true);
                 }
                 break;
+            case CardType.EvolveLeader:
+                break;
             case CardType.Character:
                 //cardDataをCharacterCard型にキャスト
                 CharacterCard character = cardData as CharacterCard;
@@ -181,7 +183,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
                     costImage.gameObject.SetActive(false);
                     Debug.LogWarning("コスト" + ev.cost + "に対応する画像がありません。");
                 }
-                    break;
+                break;
         }
     }
     #endregion
