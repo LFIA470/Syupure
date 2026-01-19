@@ -231,7 +231,7 @@ public class DeckEditManager : MonoBehaviour
         ClearContent(deckLibraryContent);
 
         //カードID順に並べ替えて表示
-        var cards = allCardsList.Where(c => c.cardType != CardType.Leader).ToList();
+        var cards = allCardsList.Where(c => c.cardType != CardType.Leader && c.cardType != CardType.EvolveCharacter && c.cardType != CardType.EvolveCharacter).ToList();
 
         foreach (var card in cards)
         {

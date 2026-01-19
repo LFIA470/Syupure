@@ -73,9 +73,16 @@ public class DeckManager : MonoBehaviour
 
         string[] idStringArray = deckJson.Split(',');
 
-        foreach (string str in idStringArray)
+        if (idStringArray.Length == 0) return;
+
+        if (int.TryParse(idStringArray[0], out int leaderId))
         {
-            if (int.TryParse(str, out int id))
+            playerLeader = CardDatabase.GetCardByID(leaderId);
+        }
+
+        for (int i = 1; i < idStringArray.Length; i++)
+        {
+            if (int.TryParse(idStringArray[i], out int id))
             {
                 // CardDatabaseを使ってカードを取得
                 Card card = CardDatabase.GetCardByID(id);
