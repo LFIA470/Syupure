@@ -218,9 +218,12 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
     //カードのドラッグ&ドロップに関連するメソッド
     #region Drag Drop Methods
     public void ManuallyBeginDrag   //HandAreaなど、外部のスクリプトからドラッグ操作を開始させるためのメソッド
-    (PointerEventData eventData)   
+    (PointerEventData eventData)
     {
-        // OnBeginDragと全く同じ処理を実行する
+        if (isDeckEditMode)
+        {
+            return;
+        }
 
         // (ドラッグ可能かのチェック)
         if (transform.parent != GameManager.Instance.PlayerHandArea)
