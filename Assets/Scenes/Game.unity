@@ -1158,13 +1158,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f53af1cdfd38d744b9f8fc9653afecc2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardScale: 1.25
   selectedCardScale: 1.25
-  cardSpacing: 10
+  cardSpacing: 12.5
   curveRadius: 800
   cardElevation: 0
   maxCurveAngle: 90
   handInputAreaRect: {fileID: 1540959949}
-  cardWidth: 120
+  cardWidth: 250
 --- !u!1 &424414471
 GameObject:
   m_ObjectHideFlags: 0
@@ -4954,8 +4955,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -875}
-  m_SizeDelta: {x: 1000, y: 200}
+  m_AnchoredPosition: {x: 0, y: -1000}
+  m_SizeDelta: {x: 1000, y: 350}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1540959950
 MonoBehaviour:
