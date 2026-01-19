@@ -363,6 +363,8 @@ public class GameManager : MonoBehaviour
             card.transform.localRotation = Quaternion.identity;
             slot.occupiedCard = card;
 
+            playerFieldList.Add(card.cardData);
+
             if (card.cardData.timingID == "ENTRY")
             {
                 Debug.Log("“oêŒø‰Ê”­“®I");

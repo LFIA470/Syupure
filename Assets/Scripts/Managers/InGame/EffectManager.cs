@@ -125,6 +125,8 @@ public class EffectManager : MonoBehaviour
 
         target.appealBuff += buffAmount;
 
+        Debug.Log($"キャラ数{count}:バフ{buffAmount}");
+
         gameManager.RegisterBuffToClear(target);
     }
     private void Effect_DebuffAppeal(TurnOwner owner, int amount, CardView target)   //アピール力Down効果
