@@ -906,9 +906,9 @@ MonoBehaviour:
   targetingState: 0
   playerFieldList: []
   allCardDataList:
-  - {fileID: 11400000, guid: cd289322edcc9854ba6d780adbb7abc4, type: 2}
-  - {fileID: 11400000, guid: 9c9b859d67cf22b4fb1a6568aa9f4a37, type: 2}
-  - {fileID: 11400000, guid: 13e3357ff0e83b646951d9d9ee990370, type: 2}
+  - {fileID: 11400000, guid: 91c936017a417ef44b83da415cf5ea5d, type: 2}
+  - {fileID: 11400000, guid: f1f0dcbcbe944ef4893c8e0fe045f12f, type: 2}
+  - {fileID: 11400000, guid: fdb4224bb9e56324fa3daba0fe3a4761, type: 2}
   cardPrefab: {fileID: 2791311752348780970, guid: f70cd24497e6cc942a5ffa40cc307be7, type: 3}
   searchPanel: {fileID: 47986340}
   playerMana: 0
