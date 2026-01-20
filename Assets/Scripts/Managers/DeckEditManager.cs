@@ -14,6 +14,8 @@ public enum EditPhase
 
 public class DeckEditManager : MonoBehaviour
 {
+    //変数宣言
+    #region Variables
     [Header("State")]
     public EditPhase currentPhase = EditPhase.LeaderSelect;
 
@@ -71,7 +73,10 @@ public class DeckEditManager : MonoBehaviour
 
     [Header("Save")]
     private const string SAVE_KEY = "PlayerDeck";
+    #endregion
 
+    //Start,UpdateなどUnityが自動で呼ぶメソッド
+    #region Unity Lifecycle Methods
     void Start()
     {
         //全カードリスト読み込み
@@ -94,28 +99,11 @@ public class DeckEditManager : MonoBehaviour
         //最初のフェーズへ
         ChangePhase(EditPhase.LeaderSelect);
     }
+    #endregion
 
-    //ボタンを押下した時の処理をセット
-    void SetupButtons()
-    {
-        //アラートのOK
-        alertOkButton.onClick.AddListener(() => alertPanel.SetActive(false));
-
-        //Yes/Noダイアログ
-        confirmDialogYesButton.onClick.AddListener(OnConfirmDialogYesClicked);
-        confirmDialogNoButton.onClick.AddListener(() => confirmDialogPanel.SetActive(false));
-
-        //各画面のボタン
-        leaderDetailNextButton.onClick.AddListener(OnLeaderDecideClicked);
-        leaderDetailBackButton.onClick.AddListener(OnLeaderDetailBackClicked);
-
-        deckChoiceNextButton.onClick.AddListener(OnDeckChoiceNextClicked);
-        deckChoiceBackButton.onClick.AddListener(OnDeckChoiceBackClicked); // ←ここでダイアログを使う
-
-        confirmSaveButton.onClick.AddListener(OnSaveButtonClicked);
-        confirmBackButton.onClick.AddListener(OnConfirmBackClicked);
-    }
-
+    //デッキ作成画面の流れを管理するメソッド
+    #region Deck Edit Flow Methods
+    //デッキ作成画面：フェーズ変更
     void ChangePhase(EditPhase nextPhase)
     {
         currentPhase = nextPhase;
@@ -151,7 +139,10 @@ public class DeckEditManager : MonoBehaviour
                 break;
         }
     }
+    #endregion
 
+    //データセットやリセットのメソッド
+    #region Set & Reset
     //指定箇所のオブジェクトを全部消す
     void ClearContent(Transform t)  
     {
@@ -160,7 +151,31 @@ public class DeckEditManager : MonoBehaviour
             Destroy(child.gameObject);
         }
     }
-    
+
+    //ボタンを押下した時の処理をセット
+    void SetupButtons()
+    {
+        //アラートのOK
+        alertOkButton.onClick.AddListener(() => alertPanel.SetActive(false));
+
+        //Yes/Noダイアログ
+        confirmDialogYesButton.onClick.AddListener(OnConfirmDialogYesClicked);
+        confirmDialogNoButton.onClick.AddListener(OnConfirmDialogNoClicked);
+
+        //各画面のボタン
+        leaderDetailNextButton.onClick.AddListener(OnLeaderDecideClicked);
+        leaderDetailBackButton.onClick.AddListener(OnLeaderDetailBackClicked);
+
+        deckChoiceNextButton.onClick.AddListener(OnDeckChoiceNextClicked);
+        deckChoiceBackButton.onClick.AddListener(OnDeckChoiceBackClicked); // ←ここでダイアログを使う
+
+        confirmSaveButton.onClick.AddListener(OnSaveButtonClicked);
+        confirmBackButton.onClick.AddListener(OnConfirmBackClicked);
+    }
+    #endregion
+
+    //デッキ作成画面の表示と操作に関するメソッド
+    #region Deck Edit Show & Action
     //リーダーカード一覧の表示
     void RefreshLibraryForLeader()
     {
@@ -417,7 +432,9 @@ public class DeckEditManager : MonoBehaviour
             }
         }
     }
+    #endregion
 
+    //警告メッセージの表示に関するメソッド
     #region Alert & Dialog
     public void ShowAlert(string message)
     {
@@ -449,6 +466,8 @@ public class DeckEditManager : MonoBehaviour
     }
     #endregion
 
+    //ボタンを押した時の処理
+    #region Button Effect
     //詳細画面：「決定」ボタンを押下された時
     void OnLeaderDecideClicked()
     {
@@ -534,4 +553,5 @@ public class DeckEditManager : MonoBehaviour
     {
         ChangePhase(EditPhase.DeckBuild);
     }
+    #endregion
 }
