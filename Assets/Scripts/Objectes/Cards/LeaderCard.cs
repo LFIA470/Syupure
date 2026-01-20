@@ -8,5 +8,4 @@ public class LeaderCard : Card
 {
     [Header("リーダーカードの情報")]
     public int appeal;
-    public string evolveBaseName;
 }

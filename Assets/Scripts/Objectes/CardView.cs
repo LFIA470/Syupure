@@ -86,6 +86,14 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
                 }
                 break;
             case CardType.EvolveLeader:
+                EvolveLeaderCard evolveLeader = cardData as EvolveLeaderCard;
+                frameImage.sprite = frameSprites[(int)evolveLeader.cardType];
+                if (evolveLeader.appeal >= 0)
+                {
+                    apeealPowerImage.sprite = powerNumberSprites[evolveLeader.appeal];
+                    apeealPowerImage.gameObject.SetActive (true);
+                    apeealPowerIcon.gameObject.SetActive(true);
+                }
                 break;
             case CardType.Character:
                 //cardData‚ðCharacterCardŒ^‚ÉƒLƒƒƒXƒg

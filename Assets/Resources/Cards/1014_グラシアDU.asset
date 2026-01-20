@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9c7dc2329a49a1478eea772bb668f57, type: 3}
+  m_Script: {fileID: 11500000, guid: b7910d939f9566846814750069decf7d, type: 3}
   m_Name: "1014_\u30B0\u30E9\u30B7\u30A2DU"
   m_EditorClassIdentifier: 
   cardID: 1014
   cardName: "\u30B0\u30E9\u30B7\u30A2DU"
-  cardType: 2
+  cardType: 6
   description: "\u81EA\u5206\u306E\u30B9\u30C6\u30FC\u30B8\u306E\u30AD\u30E3\u30B9\u30C8\u306E\u6570\xD7\uFF12\u30A2\u30D4\u30FC\u30EB\u529B\u30A2\u30C3\u30D7"
   artwork: {fileID: 21300000, guid: 1be3eb9f4bb2d4c4aa2c041d6afc24f0, type: 3}
   effectID: UP_APPEAL_TEAM
@@ -23,7 +23,5 @@ MonoBehaviour:
   timingID: APPEAL
   isUnlimited: 0
   isPlayerCard: 0
-  cost: 0
   appeal: 2
-  mental: 0
   evolveBaseName: 

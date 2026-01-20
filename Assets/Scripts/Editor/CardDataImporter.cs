@@ -150,6 +150,10 @@ public class CardDataImporter : EditorWindow
                 newCard = ScriptableObject.CreateInstance<LeaderCard>();
                 (newCard as LeaderCard).appeal = appeal;
                 break;
+            case CardType.EvolveLeader:
+                newCard = ScriptableObject.CreateInstance<EvolveLeaderCard>();
+                (newCard as EvolveLeaderCard).appeal = appeal;
+                break;
             case CardType.Character:
                 newCard = ScriptableObject.CreateInstance<CharacterCard>();
                 (newCard as CharacterCard).cost = cost;
