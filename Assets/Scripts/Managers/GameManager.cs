@@ -522,8 +522,8 @@ public class GameManager : MonoBehaviour
             case CardType.Character:
                 HandleCharacterClick(fieldTransform);
                 break;
-            case CardType.EvolveCharacter:
-                HandleEvolveCharacterClick(fieldTransform);
+            case CardType.Accessory:
+                HandleAccessoryClick(fieldTransform);
                 break;
             case CardType.Appeal:
                 HandleAppealClick(fieldTransform);
@@ -551,7 +551,7 @@ public class GameManager : MonoBehaviour
         cardToPlay = null;
         UIManager.Instance.SetTurnEndButtonActive(true);
     }
-    private void HandleEvolveCharacterClick(Transform target)
+    private void HandleAccessoryClick(Transform target)
     {
         //クリックした場所は「キャラクターカード」か？
         CardView baseCharacter = target.GetComponent<CardView>();
@@ -560,8 +560,12 @@ public class GameManager : MonoBehaviour
             //正しい場所→進化処理を呼ぶ
             CardDroppedOnCharacter(cardToPlay, baseCharacter);
         }
+        else if (baseCharacter != null && baseCharacter.cardData.cardType == CardType.Leader)
+        {
+            CardDroppedOnCharacter(cardToPlay, baseCharacter);
+        }
 
-        currentMainPhaseState = MainPhaseState.Idle;
+            currentMainPhaseState = MainPhaseState.Idle;
         cardToPlay = null;
         UIManager.Instance.SetTurnEndButtonActive(true);
     }
@@ -619,7 +623,7 @@ public class GameManager : MonoBehaviour
         currentMainPhaseState = MainPhaseState.Selection;
         cardToPlay = card;
 
-        if (card.cardData.cardType == CardType.Appeal)
+        if (card.cardData.cardType == CardType.Appeal || card.cardData.cardType == CardType.Accessory)
         {
             targetingState = TargetingState.SelectAlly;
         }
@@ -921,6 +925,7 @@ public class GameManager : MonoBehaviour
 
             case CardType.Character:
             case CardType.EvolveCharacter:
+            case CardType.Accessory:
                 //これまで通り、盤面選択モードを開始する
                 EnterTargetingMode(card);
                 Debug.Log(card.cardData.cardName + "を出す場所(スロット/キャラ)を選択してください。");
