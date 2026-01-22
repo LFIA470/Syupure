@@ -31,6 +31,7 @@ public class DeckEditManager : MonoBehaviour
 
     [Header("UI References")]
     public GameObject cardPrefab;
+    public GameObject zoomLeaderPrefab;
     public Text guideMessageText;
     public float cardScale = 3;
 
@@ -223,7 +224,7 @@ public class DeckEditManager : MonoBehaviour
         if (tempLeaderCandidate == null) return;
 
         //プレハブを生成して詳細場所に置く
-        GameObject obj = Instantiate(cardPrefab, leaderDetailCardParet);
+        GameObject obj = Instantiate(zoomLeaderPrefab, leaderDetailCardParet);
 
         //カード情報をセット
         CardView view = obj.GetComponent<CardView>();
@@ -232,6 +233,8 @@ public class DeckEditManager : MonoBehaviour
             view.SetCard(tempLeaderCandidate);
             view.isDeckEditMode = true;
         }
+
+        Debug.Log(view.cardData.description);
 
         //カードサイズ変更
         view.transform.localScale = Vector3.one * 3.5f;

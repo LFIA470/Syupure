@@ -17,6 +17,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
     public Image frameImage;        //フレーム画像（表示用
     public Text nameText;           //名前テキスト（表示用
     [SerializeField] private Image costImage;   //コスト画像（表示用
+    [SerializeField] private Text descriptionText;
     [SerializeField] private GameObject AppealContainer;    //ハート(アピール力)を入れる箱
     [SerializeField] private Image apeealPowerImage;    //アピール力画像（表示用
     [SerializeField] private Image apeealPowerIcon;     //アピール力アイコン（表示用
@@ -60,6 +61,11 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
 
         nameText.text = card.cardName;
         artworkImage.sprite = card.artwork;
+
+        if (descriptionText != null)
+        {
+            descriptionText.text = card.description;
+        }
 
         //カード種類ごとの表示処理
 
