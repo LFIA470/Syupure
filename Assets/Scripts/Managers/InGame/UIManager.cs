@@ -55,6 +55,10 @@ public class UIManager : MonoBehaviour
 
     [Header("Buttons")]
     [SerializeField] private GameObject turnEndButton;
+
+    [Header("Decks")]
+    [SerializeField] private GameObject playerDeck;
+    [SerializeField] private GameObject enemyDeck;
     #endregion
 
     //UI更新メソッド
@@ -113,6 +117,17 @@ public class UIManager : MonoBehaviour
         if (turnEndButton != null)
         {
             turnEndButton.SetActive(isActive);
+        }
+    }
+    public void SetDeckActive(bool isActive, DeckOwner owner)
+    {
+        GameObject targetDeck;
+        if (owner == DeckOwner.Player) targetDeck = playerDeck;
+        else targetDeck = enemyDeck;
+
+        if (targetDeck != null)
+        {
+            targetDeck.SetActive(isActive);
         }
     }
     #endregion

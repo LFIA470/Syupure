@@ -249,7 +249,7 @@ public class DeckEditManager : MonoBehaviour
         ClearContent(deckLibraryContent);
 
         //カードID順に並べ替えて表示
-        var cards = allCardsList.Where(c => c.cardType != CardType.Leader && c.cardType != CardType.EvolveCharacter && c.cardType != CardType.EvolveCharacter).ToList();
+        var cards = allCardsList.Where(c => c.cardType != CardType.Leader && c.cardType != CardType.EvolveLeader && c.cardType != CardType.EvolveCharacter).ToList();
 
         foreach (var card in cards)
         {
@@ -371,8 +371,10 @@ public class DeckEditManager : MonoBehaviour
             SpawnConfirmCard(leaderCard, confirmLeaderParent);
         }
 
+        var sortedDeck = currentDeck.OrderBy(c => c.cardID).ToList();
+
         //デッキ３０枚を表示
-        foreach (var card in currentDeck)
+        foreach (var card in sortedDeck)
         {
             SpawnConfirmCard(card, confirmDeckContent);
         }

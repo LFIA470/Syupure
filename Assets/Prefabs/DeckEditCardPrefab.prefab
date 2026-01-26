@@ -397,6 +397,7 @@ MonoBehaviour:
   frameImage: {fileID: 3231841100904365124}
   nameText: {fileID: 4940646270905688848}
   costImage: {fileID: 1548423463760028869}
+  descriptionText: {fileID: 0}
   AppealContainer: {fileID: 6143448853621979557}
   apeealPowerImage: {fileID: 937945728492562402}
   apeealPowerIcon: {fileID: 3278331671626216301}
@@ -786,7 +787,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6830188, g: 0.33753836, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

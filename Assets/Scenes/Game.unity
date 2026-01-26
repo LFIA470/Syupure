@@ -995,6 +995,8 @@ MonoBehaviour:
   - {fileID: 1781202501}
   - {fileID: 757680586}
   turnEndButton: {fileID: 1495545639}
+  playerDeck: {fileID: 869823874}
+  enemyDeck: {fileID: 1176106071}
 --- !u!114 &346155606
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2762,7 +2764,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1432070304, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2e11ed1a560732941935879162a8b96f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2849,7 +2851,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: dd56d7ba3a0d48748b86bf7714cfc4ae, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ecd1f14c29dfa594aae0cc9ccbdc8f03, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2995,7 +2997,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1257234887, guid: b0571c15029bd3c4da4d4289d60e9426, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 30421d2a824ba124db958ac11c47361b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4203,7 +4205,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2202a8a56ebf1984ebffb46613055796, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ecd1f14c29dfa594aae0cc9ccbdc8f03, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -127,22 +127,37 @@ public class DeckManager : MonoBehaviour
         Debug.Log(owner + "の山札をシャッフルしました。");
     }
 
+    //デッキ枚数チェック
+    public bool CheckDeckCount(DeckOwner owner)
+    {
+        List<Card> targetDeck;
+
+        if (owner == DeckOwner.Player)  targetDeck = playerDeckPile;
+        else targetDeck = enemyDeckPile;
+
+        if (targetDeck.Count == 0) return false;
+        else return true;
+    }
+
     //山札の一番上から一枚引く
     public void DrawCard(TurnOwner owner)
     {
         //誰が引くかに応じて、使う山札と手札を決定する
         List<Card> targetDeck;
         Transform targetHandArea;
+        DeckOwner deckOwner;
 
         if (owner == TurnOwner.Player)
         {
             targetDeck = playerDeckPile;
             targetHandArea = playerHandArea;
+            deckOwner = DeckOwner.Player;
         }
         else
         {
             targetDeck = enemyDeckPile;
             targetHandArea = enemyHandArea;
+            deckOwner = DeckOwner.Enemy;
         }
 
         //山札の枚数をチェック
@@ -156,6 +171,8 @@ public class DeckManager : MonoBehaviour
         Card cardData = targetDeck[0];
         targetDeck.RemoveAt(0);
 
+        UIManager.Instance.SetDeckActive(CheckDeckCount(deckOwner), deckOwner);
+
         //選んだカードを手札を生成して表示する
         GameObject cardObj = Instantiate(cardPrefab, targetHandArea);
         CardView view = cardObj.GetComponent<CardView>();
@@ -167,9 +184,20 @@ public class DeckManager : MonoBehaviour
     public List<Card> DrawCardsTemporary(TurnOwner owner, int count)
     {
         // どちらのデッキを操作するか決める
-        List<Card> targetDeck = (owner == TurnOwner.Player) ? playerDeckPile : enemyDeckPile;
+        List<Card> targetDeck;
+        DeckOwner deckOwner;
 
-        List<Card> drawnIds = new List<Card>();
+        if (owner == TurnOwner.Player)
+        {
+            targetDeck = playerDeckPile;
+            deckOwner = DeckOwner.Player;
+        }
+        else
+        {
+            targetDeck = enemyDeckPile;
+            deckOwner = DeckOwner.Enemy;
+        }
+            List<Card> drawnIds = new List<Card>();
 
         // 枚数チェック（山札が足りない場合、あるだけ引く）
         if (targetDeck.Count < count) count = targetDeck.Count;
@@ -179,6 +207,8 @@ public class DeckManager : MonoBehaviour
             drawnIds.Add(targetDeck[0]);
             targetDeck.RemoveAt(0); // 山札から消す
         }
+
+        UIManager.Instance.SetDeckActive(CheckDeckCount(deckOwner), deckOwner);
 
         return drawnIds; // 抜き出したIDリストを返す
     }

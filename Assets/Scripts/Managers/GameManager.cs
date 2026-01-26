@@ -16,6 +16,12 @@ public enum FieldOwner
     Enemy,
 }
 
+public enum DeckOwner
+{
+    Player,
+    Enemy,
+}
+
 public enum GamePhase
 {
     Start,
@@ -96,6 +102,7 @@ public class GameManager : MonoBehaviour
     private TurnOwner currentSearchOwner;
     private float defaultCardSize = 1.04f;
     private Transform currentHandArea;
+    private DeckOwner currentDeckOwner;
 
     [Header("Player & Enemy Stats")]
     public int playerMana = 0;              //マナ(プレイヤー)
