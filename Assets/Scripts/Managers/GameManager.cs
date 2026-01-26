@@ -102,7 +102,6 @@ public class GameManager : MonoBehaviour
     private TurnOwner currentSearchOwner;
     private float defaultCardSize = 1.04f;
     private Transform currentHandArea;
-    private DeckOwner currentDeckOwner;
 
     [Header("Player & Enemy Stats")]
     public int playerMana = 0;              //マナ(プレイヤー)
@@ -214,7 +213,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.SetTurnEndButtonActive(false);
 
         UIManager.Instance.UpdateCheerPowertUI(playerMana, GameConstants.DefaultMaxMana, TurnOwner.Player);
-        UIManager.Instance.UpdateCheerPowertUI(playerMana, GameConstants.DefaultMaxMana, TurnOwner.Enemy);
+        UIManager.Instance.UpdateCheerPowertUI(enemyMana, GameConstants.DefaultMaxMana, TurnOwner.Enemy);
 
         BattleLogManager.Instance.ShowNotification("ゲームスタート");
 
@@ -879,6 +878,9 @@ public class GameManager : MonoBehaviour
                 break;
             case CardType.EvolveCharacter:
                 cost = (cardData as EvolveCharacterCard).cost;
+                break;
+            case CardType.Accessory:
+                cost = (cardData as AccessoryCard).cost;
                 break;
             case CardType.Appeal:
                 cost = (cardData as  AppealCard).cost;
