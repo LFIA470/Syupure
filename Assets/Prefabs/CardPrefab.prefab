@@ -397,6 +397,7 @@ MonoBehaviour:
   frameImage: {fileID: 3231841100904365124}
   nameText: {fileID: 4940646270905688848}
   costImage: {fileID: 1548423463760028869}
+  descriptionText: {fileID: 0}
   AppealContainer: {fileID: 6143448853621979557}
   apeealPowerImage: {fileID: 937945728492562402}
   apeealPowerIcon: {fileID: 3278331671626216301}
@@ -426,6 +427,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6f7b1edb2c3444546a812319871f806a, type: 3}
   - {fileID: 21300000, guid: 6d41e82b7025ade4ca9a0c5901d7bf46, type: 3}
   - {fileID: 21300000, guid: 47861b438bd774b428a8a7ed438986c6, type: 3}
+  cardBackSprite: {fileID: 21300000, guid: ecd1f14c29dfa594aae0cc9ccbdc8f03, type: 3}
   appealBuff: 0
   isZoomPanel: 1
   isDeckEditMode: 0

@@ -176,7 +176,9 @@ public class DeckManager : MonoBehaviour
         //選んだカードを手札を生成して表示する
         GameObject cardObj = Instantiate(cardPrefab, targetHandArea);
         CardView view = cardObj.GetComponent<CardView>();
-        view.SetCard(cardData);
+
+        if (owner == TurnOwner.Player)  view.SetCard(cardData);
+        else view.SetCard(cardData, true);
 
         Debug.Log(owner + "が" + cardData.cardName + "を引きました。");
     }

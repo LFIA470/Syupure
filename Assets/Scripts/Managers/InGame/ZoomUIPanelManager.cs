@@ -54,6 +54,7 @@ public class ZoomUIPanelManager : MonoBehaviour
     {
         //拡大表示用のカードが選ばれているか？
         if (cardView == null) return;
+        if (cardView.isFaceDown) return;
         zoomedCardView = cardView;  //拡大元のカードを記憶
 
         Card card = cardView.cardData;

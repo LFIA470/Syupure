@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
@@ -28,6 +29,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
     [SerializeField] private List<Sprite> numberSprites;    //0～10の数字スプライトを格納するリスト
     [SerializeField] private List<Sprite> frameSprites;      //カードタイプごとのフレームを格納するリスト
     [SerializeField] private List<Sprite> powerNumberSprites;
+    [SerializeField] private Sprite cardBackSprite;
 
     [Header("Drag & Drop")]
     private bool isDraggable = false;    //ドラッグ中か確認
@@ -42,6 +44,7 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
 
     [Header("ModeCheck")]
     public bool isDeckEditMode = false;
+    public bool isFaceDown = false;
     #endregion
 
     //Start,UpdateなどUnityが自動で呼ぶメソッド
@@ -55,149 +58,171 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
 
     //カードを表示するためのメソッド
     #region Card View Methods
-    public void SetCard(Card card)  //カード情報
+    public void SetCard(Card card, bool isEnemy = false)  //カード情報
     {
         _cardData = card;
+        isFaceDown = isEnemy;
 
-        nameText.text = card.cardName;
-        artworkImage.sprite = card.artwork;
-
-        if (descriptionText != null)
+        if (isFaceDown)
         {
-            descriptionText.text = card.description;
+            //画像を「裏面」にする
+            if (frameImage != null && cardBackSprite != null)
+            {
+                frameImage.sprite = cardBackSprite;
+            }
+
+            //テキスト類を全部隠す
+            if (artworkImage != null) artworkImage.gameObject.SetActive(false);
+            if (nameText != null) nameText.gameObject.SetActive(false);
+            if (costImage != null) costImage.gameObject.SetActive(false);
+            if (apeealPowerImage != null) apeealPowerImage.gameObject.SetActive(false);
+            if (apeealPowerIcon != null) apeealPowerIcon.gameObject.SetActive(false);
+            if (mentalImage != null) mentalImage.gameObject.SetActive(false);
+            if (mentalIcon != null) mentalIcon.gameObject.SetActive(false);
+            if (descriptionText != null) descriptionText.gameObject.SetActive(false);
         }
-
-        //カード種類ごとの表示処理
-
-        //コストとハート(アピール力)の表示リセット
-        costImage.gameObject.SetActive(false);
-        while (AppealContainer.transform.childCount > 0)
+        else
         {
-            Destroy(AppealContainer.transform.GetChild(0).gameObject);
-        }
+            nameText.text = card.cardName;
+            artworkImage.sprite = card.artwork;
 
-        //カードタイプに応じて処理を分岐
-        switch (cardData.cardType)
-        {
-            case CardType.Leader:
-                //cardDataをLeaderCard型にキャスト
-                LeaderCard leader = cardData as LeaderCard;
-                frameImage.sprite = frameSprites[(int)leader.cardType];
-                //ハート(アピール力)を表示
-                if (leader.appeal >= 0)
-                {
-                    apeealPowerImage.sprite = powerNumberSprites[leader.appeal];
-                    apeealPowerImage.gameObject.SetActive(true);
-                    apeealPowerIcon.gameObject.SetActive(true);
-                }
-                break;
-            case CardType.EvolveLeader:
-                EvolveLeaderCard evolveLeader = cardData as EvolveLeaderCard;
-                frameImage.sprite = frameSprites[(int)evolveLeader.cardType];
-                if (evolveLeader.appeal >= 0)
-                {
-                    apeealPowerImage.sprite = powerNumberSprites[evolveLeader.appeal];
-                    apeealPowerImage.gameObject.SetActive (true);
-                    apeealPowerIcon.gameObject.SetActive(true);
-                }
-                break;
-            case CardType.Character:
-                //cardDataをCharacterCard型にキャスト
-                CharacterCard character = cardData as CharacterCard;
-                frameImage.sprite = frameSprites[(int)character.cardType];
-                //コスト画像を表示
-                if (character.cost >= 0 && character.cost < numberSprites.Count)
-                {
-                    costImage.sprite = numberSprites[character.cost];
+            if (descriptionText != null)
+            {
+                descriptionText.text = card.description;
+            }
+
+            //カード種類ごとの表示処理
+
+            //コストとハート(アピール力)の表示リセット
+            costImage.gameObject.SetActive(false);
+            while (AppealContainer.transform.childCount > 0)
+            {
+                Destroy(AppealContainer.transform.GetChild(0).gameObject);
+            }
+
+            //カードタイプに応じて処理を分岐
+            switch (cardData.cardType)
+            {
+                case CardType.Leader:
+                    //cardDataをLeaderCard型にキャスト
+                    LeaderCard leader = cardData as LeaderCard;
+                    frameImage.sprite = frameSprites[(int)leader.cardType];
+                    //ハート(アピール力)を表示
+                    if (leader.appeal >= 0)
+                    {
+                        apeealPowerImage.sprite = powerNumberSprites[leader.appeal];
+                        apeealPowerImage.gameObject.SetActive(true);
+                        apeealPowerIcon.gameObject.SetActive(true);
+                    }
+                    break;
+                case CardType.EvolveLeader:
+                    EvolveLeaderCard evolveLeader = cardData as EvolveLeaderCard;
+                    frameImage.sprite = frameSprites[(int)evolveLeader.cardType];
+                    if (evolveLeader.appeal >= 0)
+                    {
+                        apeealPowerImage.sprite = powerNumberSprites[evolveLeader.appeal];
+                        apeealPowerImage.gameObject.SetActive(true);
+                        apeealPowerIcon.gameObject.SetActive(true);
+                    }
+                    break;
+                case CardType.Character:
+                    //cardDataをCharacterCard型にキャスト
+                    CharacterCard character = cardData as CharacterCard;
+                    frameImage.sprite = frameSprites[(int)character.cardType];
+                    //コスト画像を表示
+                    if (character.cost >= 0 && character.cost < numberSprites.Count)
+                    {
+                        costImage.sprite = numberSprites[character.cost];
+                        costImage.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        costImage.gameObject.SetActive(false);  //対応画像がない場合は非表示
+                        Debug.LogWarning("コスト" + character.cost + "に対応する画像がありません。");
+                    }
+                    //ハート(アピール力)を表示
+                    if (character.appeal >= 0)
+                    {
+                        apeealPowerImage.sprite = powerNumberSprites[character.appeal];
+                        apeealPowerImage.gameObject.SetActive(true);
+                        apeealPowerIcon.gameObject.SetActive(true);
+                    }
+                    if (character.mental >= 0)
+                    {
+                        mentalImage.sprite = powerNumberSprites[character.mental];
+                        mentalImage.gameObject.SetActive(true);
+                        mentalIcon.gameObject.SetActive(true);
+                    }
+                    break;
+                case CardType.EvolveCharacter:
+                    //cardDataをCharacterCard型にキャスト
+                    EvolveCharacterCard evolveCharacter = cardData as EvolveCharacterCard;
+                    frameImage.sprite = frameSprites[(int)evolveCharacter.cardType];
+                    //コスト画像を表示
+                    if (evolveCharacter.cost >= 0 && evolveCharacter.cost < numberSprites.Count)
+                    {
+                        costImage.sprite = numberSprites[evolveCharacter.cost];
+                        costImage.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        costImage.gameObject.SetActive(false);  //対応画像がない場合は非表示
+                        Debug.LogWarning("コスト" + evolveCharacter.cost + "に対応する画像がありません。");
+                    }
+                    //ハート(アピール力)を表示
+                    if (evolveCharacter.appeal >= 0)
+                    {
+                        apeealPowerImage.sprite = powerNumberSprites[evolveCharacter.appeal];
+                        apeealPowerImage.gameObject.SetActive(true);
+                        apeealPowerIcon.gameObject.SetActive(true);
+                    }
+                    if (evolveCharacter.mental >= 0)
+                    {
+                        mentalImage.sprite = powerNumberSprites[evolveCharacter.mental];
+                        mentalImage.gameObject.SetActive(true);
+                        mentalIcon.gameObject.SetActive(true);
+                    }
+                    break;
+                case CardType.Accessory:
+                    AccessoryCard accessory = cardData as AccessoryCard;
+                    frameImage.sprite = frameSprites[(int)accessory.cardType];
+                    //コスト画像を表示
+                    costImage.sprite = numberSprites[accessory.cost];
                     costImage.gameObject.SetActive(true);
-                }
-                else
-                {
-                    costImage.gameObject.SetActive(false);  //対応画像がない場合は非表示
-                    Debug.LogWarning("コスト" + character.cost + "に対応する画像がありません。");
-                }
-                //ハート(アピール力)を表示
-                if (character.appeal >= 0)
-                {
-                    apeealPowerImage.sprite = powerNumberSprites[character.appeal];
-                    apeealPowerImage.gameObject.SetActive(true);
-                    apeealPowerIcon.gameObject.SetActive(true);
-                }
-                if (character.mental >= 0)
-                {
-                    mentalImage.sprite = powerNumberSprites[character.mental];
-                    mentalImage.gameObject.SetActive(true);
-                    mentalIcon.gameObject.SetActive(true);
-                }
-                break;
-            case CardType.EvolveCharacter:
-                //cardDataをCharacterCard型にキャスト
-                EvolveCharacterCard evolveCharacter = cardData as EvolveCharacterCard;
-                frameImage.sprite = frameSprites[(int)evolveCharacter.cardType];
-                //コスト画像を表示
-                if (evolveCharacter.cost >= 0 && evolveCharacter.cost < numberSprites.Count)
-                {
-                    costImage.sprite = numberSprites[evolveCharacter.cost];
-                    costImage.gameObject.SetActive(true);
-                }
-                else
-                {
-                    costImage.gameObject.SetActive(false);  //対応画像がない場合は非表示
-                    Debug.LogWarning("コスト" + evolveCharacter.cost + "に対応する画像がありません。");
-                }
-                //ハート(アピール力)を表示
-                if (evolveCharacter.appeal >= 0)
-                {
-                    apeealPowerImage.sprite = powerNumberSprites[evolveCharacter.appeal];
-                    apeealPowerImage.gameObject.SetActive(true);
-                    apeealPowerIcon.gameObject.SetActive(true);
-                }
-                if (evolveCharacter.mental >= 0)
-                {
-                    mentalImage.sprite = powerNumberSprites[evolveCharacter.mental];
-                    mentalImage.gameObject.SetActive(true);
-                    mentalIcon.gameObject.SetActive(true);
-                }
-                break;
-            case CardType.Accessory:
-                AccessoryCard accessory = cardData as AccessoryCard;
-                frameImage.sprite = frameSprites[(int)accessory.cardType];
-                //コスト画像を表示
-                costImage.sprite = numberSprites[accessory.cost];
-                costImage.gameObject.SetActive(true);
-                break;
-            case CardType.Appeal:
-                //cardDataをAppealCard型にキャスト
-                AppealCard appeal = cardData as AppealCard;
-                frameImage.sprite = frameSprites[(int)appeal.cardType];
-                //コスト画像を表示
-                if (appeal.cost >= 0 && appeal.cost < numberSprites.Count)
-                {
-                    costImage.sprite = numberSprites[appeal.cost];
-                    costImage.gameObject.SetActive(true);
-                }
-                else
-                {
-                    costImage.gameObject.SetActive(false);
-                    Debug.LogWarning("コスト" + appeal.cost + "に対応する画像がありません。");
-                }
-                break;
-            case CardType.Event:
-                //cardDataをEventCard型にキャスト
-                EventCard ev = cardData as EventCard;
-                frameImage.sprite = frameSprites[(int)ev.cardType];
-                //コスト画像を表示
-                if (ev.cost >= 0 && ev.cost < numberSprites.Count)
-                {
-                    costImage.sprite = numberSprites[ev.cost];
-                    costImage.gameObject.SetActive(true);
-                }
-                else
-                {
-                    costImage.gameObject.SetActive(false);
-                    Debug.LogWarning("コスト" + ev.cost + "に対応する画像がありません。");
-                }
-                break;
+                    break;
+                case CardType.Appeal:
+                    //cardDataをAppealCard型にキャスト
+                    AppealCard appeal = cardData as AppealCard;
+                    frameImage.sprite = frameSprites[(int)appeal.cardType];
+                    //コスト画像を表示
+                    if (appeal.cost >= 0 && appeal.cost < numberSprites.Count)
+                    {
+                        costImage.sprite = numberSprites[appeal.cost];
+                        costImage.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        costImage.gameObject.SetActive(false);
+                        Debug.LogWarning("コスト" + appeal.cost + "に対応する画像がありません。");
+                    }
+                    break;
+                case CardType.Event:
+                    //cardDataをEventCard型にキャスト
+                    EventCard ev = cardData as EventCard;
+                    frameImage.sprite = frameSprites[(int)ev.cardType];
+                    //コスト画像を表示
+                    if (ev.cost >= 0 && ev.cost < numberSprites.Count)
+                    {
+                        costImage.sprite = numberSprites[ev.cost];
+                        costImage.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        costImage.gameObject.SetActive(false);
+                        Debug.LogWarning("コスト" + ev.cost + "に対応する画像がありません。");
+                    }
+                    break;
+            }
         }
     }
     #endregion
