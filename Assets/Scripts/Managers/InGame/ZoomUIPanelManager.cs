@@ -89,6 +89,17 @@ public class ZoomUIPanelManager : MonoBehaviour
                     apeealPowerIcon.gameObject.SetActive(true);
                 }
                 break;
+            case CardType.EvolveLeader:
+                EvolveLeaderCard evLeader = cardView.cardData as EvolveLeaderCard;
+                frameImage.sprite = frameSprites[(int)evLeader.cardType];
+                costImage.gameObject.SetActive(false);
+                if (evLeader.appeal >= 0)
+                {
+                    apeealPowerImage.sprite = powerNumberSprites[evLeader.appeal];
+                    apeealPowerImage.gameObject.SetActive(true);
+                    apeealPowerIcon.gameObject.SetActive(true);
+                }
+                break;
             case CardType.Character:
                 //cardData‚ðCharacterCardŒ^‚ÉƒLƒƒƒXƒg
                 CharacterCard character = cardView.cardData as CharacterCard;
