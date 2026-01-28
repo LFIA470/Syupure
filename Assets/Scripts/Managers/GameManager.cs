@@ -99,7 +99,7 @@ public class GameManager : MonoBehaviour
     public GameObject cardPrefab;
     public SearchPanel searchPanel;
     private List<Card> tempDrawnIds = new List<Card>();
-    private TurnOwner currentSearchOwner;
+    public TurnOwner currentSearchOwner;
     private float defaultCardSize = 1.04f;
     private Transform currentHandArea;
 
@@ -909,6 +909,8 @@ public class GameManager : MonoBehaviour
             enemyMana -= cost;
             UIManager.Instance.UpdateCheerPowertUI(enemyMana, GameConstants.DefaultMaxMana, TurnOwner.Enemy);
         }
+
+        
         
         return true;
     }
@@ -999,10 +1001,11 @@ public class GameManager : MonoBehaviour
         CardView cardView = newCardObj.GetComponent<CardView>();
 
         //データセット
-        cardView.SetCard(cardData);
+        if (currentSearchOwner == TurnOwner.Player) cardView.SetCard(cardData);
+        else cardView.SetCard(cardData, true);
 
-        //必要ならSE（効果音）を鳴らすなど
-        Debug.Log($"手札に {cardData.cardName} を生成しました");
+            //必要ならSE（効果音）を鳴らすなど
+            Debug.Log($"手札に {cardData.cardName} を生成しました");
     }
     public bool AIPlayCharacter(CardView card, CharacterSlot slot)  //AIがキャラクターをプレイする
     {
@@ -1020,6 +1023,8 @@ public class GameManager : MonoBehaviour
 
         // --- プレイ実行 ---
         Debug.Log("AIが " + card.cardData.cardName + " をプレイしました。");
+
+        //card.SetCard(card.cardData);
 
         // マナ消費
         CharacterCard charData = card.cardData as CharacterCard;
@@ -1064,6 +1069,8 @@ public class GameManager : MonoBehaviour
             card.transform.localRotation = Quaternion.identity;
             card.transform.localScale = Vector3.one * defaultCardSize;
         }
+
+        //card.SetCard(card.cardData);
 
         //マナ消費
         AppealCard appealData = card.cardData as AppealCard;

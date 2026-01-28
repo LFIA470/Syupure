@@ -72,6 +72,7 @@ public class EnemyAI : MonoBehaviour
 
                 if (played)
                 {
+                    card.SetCard(card.cardData);
                     //プレイ成功
                     Debug.Log($"AI: {card.cardData.cardName} (Cost:{GetCardCost(card.cardData)}) をプレイしました");
                 }

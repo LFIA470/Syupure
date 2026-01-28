@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
@@ -85,7 +85,8 @@ public class CardView : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, 
         {
             nameText.text = card.cardName;
             artworkImage.sprite = card.artwork;
-
+            artworkImage.gameObject.SetActive(true);
+            
             if (descriptionText != null)
             {
                 descriptionText.text = card.description;
