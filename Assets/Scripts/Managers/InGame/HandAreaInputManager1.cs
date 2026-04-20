@@ -156,7 +156,7 @@ public class HandAreaInputManager1 : MonoBehaviour, IPointerDownHandler, IDragHa
         List<CardView> cardsInHand = new List<CardView>(playerHandArea.GetComponentsInChildren<CardView>());
         if (cardsInHand.Count == 0) return null;
 
-        // 1. クリック位置をローカル座標に変換（ここはそのまま）
+        //クリック位置をローカル座標に変換
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             rectTransform,
             eventData.position,
@@ -164,19 +164,16 @@ public class HandAreaInputManager1 : MonoBehaviour, IPointerDownHandler, IDragHa
             out Vector2 localPos
         );
 
-        // 2. パネルの中心(0,0)基準ではなく、左端を0とする座標系に直す
-        // （rect.width / 2 を足すことで、左端が 0 になる）
+        //パネルの中心(0,0)基準ではなく、左端を0とする座標系に直す
         float pointX = localPos.x + (rectTransform.rect.width / 2);
 
-        // 3. 補正（パネル内の左端の余白などを調整）
+        //補正（パネル内の左端の余白などを調整）
         pointX -= xOffset;
 
-        // 4. 「間隔」で割ってインデックスを出す！
-        // 例：マウスが350の位置で、間隔が100なら、3.5 → インデックス3（4枚目）
+        //「間隔」で割ってインデックスを出す
         int index = Mathf.FloorToInt(pointX / cardSpacing);
 
-        // 5. 範囲外エラーを防ぐ（重要）
-        // 左端より左をクリックしたら 0、右端より右なら「最後のカード」にする
+        //範囲外エラーを防ぐ
         index = Mathf.Clamp(index, 0, cardsInHand.Count - 1);
 
         Debug.Log($"計算X: {pointX}, 間隔: {cardSpacing} => インデックス: {index}");

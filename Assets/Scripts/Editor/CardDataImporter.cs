@@ -80,7 +80,9 @@ public class CardDataImporter : EditorWindow
                 //CSVの列の順番に合わせてデータを読み込む
                 //(0:カードID, 1:カード名, 2:カードタイプ, 3:イラストファイル名,
                 //4:効果ID, 5:効果値, 6:効果対象, 7:効果テキスト,
-                //8:消費コスト, 9:アピール力, 10:進化元名
+                //8:デッキ制限 9:効果内容
+                //10:消費コスト, 11:アピール力, 12:メンタル
+                //13:進化元ID, 14:進化後ID
                 int cardID = ParseIntSafe(values[0]);
                 string cardName = values[1];
                 CardType cardType = (CardType)Enum.Parse(typeof(CardType), values[2]);
